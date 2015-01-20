@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcIt.Protocol", "CalcIt.Protocol\CalcIt.Protocol.csproj", "{6C421750-400D-4EC5-92CB-084B5BAD9D15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcIt.Server", "CalcIt.Server\CalcIt.Server.csproj", "{97CCA5C2-D258-4920-A5B5-34DBDA4A7EB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcIt.Monitor", "CalcIt.Monitor\CalcIt.Monitor.csproj", "{14D8EB4E-532F-4F81-A0DA-A835D8FB33D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcIt.Lib", "CalcIt.Lib\CalcIt.Lib.csproj", "{C827F6FF-B566-4ECE-B8CB-5725FC363356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcIt.GameClient", "CalcIt.GameClient\CalcIt.GameClient.csproj", "{8CE9BDE6-557A-4F4F-8869-585A042C7D21}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://hauersoftwarenet.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CalcIt.GameClient\\CalcIt.GameClient.csproj
+		SccProjectName1 = CalcIt.GameClient
+		SccLocalPath1 = CalcIt.GameClient
+		SccProjectUniqueName2 = CalcIt.Lib\\CalcIt.Lib.csproj
+		SccProjectName2 = CalcIt.Lib
+		SccLocalPath2 = CalcIt.Lib
+		SccProjectUniqueName3 = CalcIt.Monitor\\CalcIt.Monitor.csproj
+		SccProjectName3 = CalcIt.Monitor
+		SccLocalPath3 = CalcIt.Monitor
+		SccProjectUniqueName4 = CalcIt.Protocol\\CalcIt.Protocol.csproj
+		SccProjectName4 = CalcIt.Protocol
+		SccLocalPath4 = CalcIt.Protocol
+		SccProjectUniqueName5 = CalcIt.Server\\CalcIt.Server.csproj
+		SccProjectName5 = CalcIt.Server
+		SccLocalPath5 = CalcIt.Server
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C421750-400D-4EC5-92CB-084B5BAD9D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C421750-400D-4EC5-92CB-084B5BAD9D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C421750-400D-4EC5-92CB-084B5BAD9D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C421750-400D-4EC5-92CB-084B5BAD9D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97CCA5C2-D258-4920-A5B5-34DBDA4A7EB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97CCA5C2-D258-4920-A5B5-34DBDA4A7EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97CCA5C2-D258-4920-A5B5-34DBDA4A7EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97CCA5C2-D258-4920-A5B5-34DBDA4A7EB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14D8EB4E-532F-4F81-A0DA-A835D8FB33D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D8EB4E-532F-4F81-A0DA-A835D8FB33D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D8EB4E-532F-4F81-A0DA-A835D8FB33D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D8EB4E-532F-4F81-A0DA-A835D8FB33D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C827F6FF-B566-4ECE-B8CB-5725FC363356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C827F6FF-B566-4ECE-B8CB-5725FC363356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C827F6FF-B566-4ECE-B8CB-5725FC363356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C827F6FF-B566-4ECE-B8CB-5725FC363356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CE9BDE6-557A-4F4F-8869-585A042C7D21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CE9BDE6-557A-4F4F-8869-585A042C7D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CE9BDE6-557A-4F4F-8869-585A042C7D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CE9BDE6-557A-4F4F-8869-585A042C7D21}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
