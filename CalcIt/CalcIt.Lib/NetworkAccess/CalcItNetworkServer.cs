@@ -18,6 +18,17 @@ namespace CalcIt.Lib.NetworkAccess
             {
             }
         }
+
+        public List<Guid> Sessions
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
     
         public void Start()
         {

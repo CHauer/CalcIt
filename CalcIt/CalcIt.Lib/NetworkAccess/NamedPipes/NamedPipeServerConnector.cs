@@ -38,6 +38,17 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
+        public List<Guid> Sessions
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
         public bool Send(T message)
         {
             throw new NotImplementedException();

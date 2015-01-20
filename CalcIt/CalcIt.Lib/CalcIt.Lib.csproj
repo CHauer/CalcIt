@@ -46,6 +46,11 @@
   <ItemGroup>
     <Compile Include="CommandExecution\CommandExecutor.cs" />
     <Compile Include="CommandExecution\CommandHandlerAttribute.cs" />
+    <Compile Include="Log\ConsoleLogger.cs" />
+    <Compile Include="Log\ILog.cs" />
+    <Compile Include="Log\ILogListener.cs" />
+    <Compile Include="Log\Logger.cs" />
+    <Compile Include="MonitorLogListener.cs" />
     <Compile Include="NetworkAccess\Transform\DataContractTransformer.cs" />
     <Compile Include="Server\GameClient.cs" />
     <Compile Include="Client\GameClientManager.cs" />

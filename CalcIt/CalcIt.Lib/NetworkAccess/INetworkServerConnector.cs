@@ -23,6 +23,12 @@ namespace CalcIt.Lib.NetworkAccess
             set;
         }
 
+        List<System.Guid> Sessions
+        {
+            get;
+            set;
+        }
+
         bool Send(T message);
 
         void Start();
