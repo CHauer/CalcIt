@@ -66,5 +66,16 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         {
             throw new NotImplementedException();
         }
+
+        public List<Guid> Sessions
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
     }
 }

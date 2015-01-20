@@ -51,5 +51,16 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             throw new NotImplementedException();
         }
+
+        public List<Guid> Sessions
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
     }
 }

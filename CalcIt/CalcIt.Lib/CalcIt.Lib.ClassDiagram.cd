@@ -7,7 +7,7 @@
     <Position X="15.809" Y="10.296" Height="0.546" Width="1.7" />
   </Comment>
   <Class Name="CalcIt.Lib.NetworkAccess.CalcItNetworkClient&lt;T&gt;">
-    <Position X="13" Y="1" Width="2.25" />
+    <Position X="13" Y="1" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAEAAAIAAABAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\CalcItNetworkClient.cs</FileName>
@@ -18,9 +18,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.CalcItNetworkServer&lt;T&gt;">
-    <Position X="13" Y="4" Width="2.25" />
+    <Position X="13" Y="4" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAQCAAAAAAAEAAAAAAAEAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAIAAQCAAAAAAAGAAAAAAAEAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\CalcItNetworkServer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -29,21 +29,21 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Events.MessageReceivedEventArgs&lt;T&gt;">
-    <Position X="4.25" Y="7.5" Width="2.25" />
+    <Position X="4.25" Y="7.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\MessageReceivedEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Events.ConnectionEventArgs">
-    <Position X="4.25" Y="9" Width="2.25" />
+    <Position X="4.25" Y="9" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\ConnectionEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Tcp.TcpClientConnector&lt;T&gt;">
-    <Position X="4.25" Y="1" Width="2.25" />
+    <Position X="4.25" Y="1" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAABCAEAAAIAACAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpClientConnector.cs</FileName>
@@ -51,7 +51,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpClientConnector&lt;T&gt;">
-    <Position X="7" Y="1" Width="2.25" />
+    <Position X="7" Y="1" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAABCAEAAAIAACAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpClientConnector.cs</FileName>
@@ -61,7 +61,7 @@
   <Class Name="CalcIt.Lib.NetworkAccess.Tcp.TcpServerListener&lt;T&gt;">
     <Position X="4.25" Y="4.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAEBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -69,7 +69,7 @@
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpServerListener&lt;T&gt;">
     <Position X="7" Y="4.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAEBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -87,13 +87,21 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="NetworkAccess" Type="CalcIt.Lib.NetworkAccess.INetworkAccess&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.146" Y="0.324" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAEAAAAAAAAgAAIAIAAAgAAAAAAQAIAAAA=</HashCode>
       <FileName>CommandExecution\CommandExecutor.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="NetworkAccess" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Client.GameClientManager">
-    <Position X="24" Y="1.25" Width="2" />
+    <Position X="24" Y="1.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\GameClientManager.cs</FileName>
@@ -101,9 +109,14 @@
   </Class>
   <Class Name="CalcIt.Lib.Server.ServerManager">
     <Position X="18.5" Y="3.25" Width="2" />
-    <AssociationLine Name="ConfigurationManager" Type="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;">
+    <AssociationLine Name="ConfigurationManager" Type="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.5" Y="5.439" />
+        <Point X="21.625" Y="5.439" />
+        <Point X="21.625" Y="5.75" />
+      </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="-1.805" Y="0.079" Height="0.182" Width="1.673" />
+        <Position X="-1.769" Y="0.079" Height="0.182" Width="1.673" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="Configuration" Type="CalcIt.Lib.ServerConfiguration">
@@ -124,7 +137,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.XmlConfigurationSerializer&lt;T&gt;">
-    <Position X="21.25" Y="7.5" Width="2.25" />
+    <Position X="21.25" Y="7.5" Width="2.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -142,32 +155,32 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Monitor.MonitorManager">
-    <Position X="24" Y="3.5" Width="2" />
+    <Position X="24" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\MonitorManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.CommandExecution.CommandHandlerAttribute" Collapsed="true">
-    <Position X="18.5" Y="1" Width="2" />
+    <Position X="18.5" Y="1" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CommandExecution\CommandHandlerAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.GameClient">
-    <Position X="21.5" Y="3" Width="2" />
+    <Position X="21.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BCAQAAAAAAAAgAAAAAAAAAAIAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Server\GameClient.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.Watcher.ServerConnectionWatcher">
-    <Position X="15.75" Y="7" Width="2" />
+    <Position X="15.75" Y="7" Width="2.25" />
     <AssociationLine Name="ServerCommandExecutor" Type="CalcIt.Lib.CommandExecution.CommandExecutor&lt;T&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="16.125" Y="7" />
-        <Point X="16.125" Y="6.026" />
+        <Point X="16.172" Y="7" />
+        <Point X="16.172" Y="5.834" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.843" Y="0.647" />
@@ -182,7 +195,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeClientConnector&lt;T&gt;">
-    <Position X="1.5" Y="1" Width="2.25" />
+    <Position X="1.5" Y="1" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAABAAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeClientConnector.cs</FileName>
@@ -190,10 +203,34 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeServerConnector&lt;T&gt;">
-    <Position X="1.5" Y="4.25" Width="2.25" />
+    <Position X="1.5" Y="4.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAEBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeServerConnector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CalcIt.Lib.Log.ConsoleLogListener" BaseTypeListCollapsed="true">
+    <Position X="30" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Log\ConsoleLogger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CalcIt.Lib.Log.Logger" BaseTypeListCollapsed="true">
+    <Position X="26" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAIABAAAAAARAIAAAAAAAAAgAAIABAAAAAQAABAAA=</HashCode>
+      <FileName>Log\Logger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CalcIt.Lib.MonitorLogListener">
+    <Position X="30" Y="7.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>MonitorLogListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -207,12 +244,12 @@
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkServerConnector&lt;T&gt;">
     <Position X="9.75" Y="4.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAEBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\INetworkServerConnector.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.Transform.IMessageTransformer&lt;T&gt;">
-    <Position X="9.75" Y="7.75" Width="2.25" />
+    <Position X="9.75" Y="7.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\IMessageTransformer.cs</FileName>
@@ -226,10 +263,24 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkAccess&lt;T&gt;">
-    <Position X="15.75" Y="1" Width="2" />
+    <Position X="15.75" Y="1" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\INetworkAccess.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CalcIt.Lib.Log.ILog">
+    <Position X="24.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Log\ILog.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CalcIt.Lib.Log.ILogListener">
+    <Position X="28.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Log\ILogListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
