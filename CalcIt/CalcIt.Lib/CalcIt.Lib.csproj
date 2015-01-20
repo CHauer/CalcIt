@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C827F6FF-B566-4ECE-B8CB-5725FC363356}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CalcIt.Lib</RootNamespace>
+    <AssemblyName>CalcIt.Lib</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandExecution\CommandExecutor.cs" />
+    <Compile Include="CommandExecution\CommandHandlerAttribute.cs" />
+    <Compile Include="NetworkAccess\Transform\DataContractTransformer.cs" />
+    <Compile Include="Server\GameClient.cs" />
+    <Compile Include="Client\GameClientManager.cs" />
+    <Compile Include="NetworkAccess\Transform\IMessageTransformer.cs" />
+    <Compile Include="NetworkAccess\INetworkAccess.cs" />
+    <Compile Include="Monitor\MonitorManager.cs" />
+    <Compile Include="NetworkAccess\NamedPipes\NamedPipeClientConnector.cs" />
+    <Compile Include="NetworkAccess\NamedPipes\NamedPipeServerConnector.cs" />
+    <Compile Include="NetworkAccess\CalcItNetworkClient.cs" />
+    <Compile Include="NetworkAccess\CalcItNetworkServer.cs" />
+    <Compile Include="NetworkAccess\Events\ConnectionEventArgs.cs" />
+    <Compile Include="NetworkAccess\INetworkClientConnector.cs" />
+    <Compile Include="NetworkAccess\INetworkServerConnector.cs" />
+    <Compile Include="NetworkAccess\Events\MessageReceivedEventArgs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NetworkAccess\Tcp\TcpClientConnector.cs" />
+    <Compile Include="NetworkAccess\Tcp\TcpServerListener.cs" />
+    <Compile Include="NetworkAccess\Udp\UdpClientConnector.cs" />
+    <Compile Include="NetworkAccess\Udp\UdpServerListener.cs" />
+    <Compile Include="Server\Configuration\ServerConfiguration.cs" />
+    <Compile Include="Server\Watcher\ServerConnectionWatcher.cs" />
+    <Compile Include="Server\ServerManager.cs" />
+    <Compile Include="Server\Configuration\IConfigurationManager.cs" />
+    <Compile Include="Server\Configuration\XmlDataManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CalcIt.Lib.ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CalcIt.Protocol\CalcIt.Protocol.csproj">
+      <Project>{6c421750-400d-4ec5-92cb-084b5bad9d15}</Project>
+      <Name>CalcIt.Protocol</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
