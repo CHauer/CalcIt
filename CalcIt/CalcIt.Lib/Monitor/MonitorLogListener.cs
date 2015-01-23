@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CalcIt.Lib.NetworkAccess;
+using CalcIt.Protocol.Monitor;
 
-namespace CalcIt.Lib
+namespace CalcIt.Lib.Monitor
 {
     public class MonitorLogListener : CalcIt.Lib.Log.ILogListener
     {
-        public CalcItServerListener<CalcItMonitorMessage> MonitorNetworkAccess
+        public CalcItNetworkServer<CalcItMonitorMessage> MonitorNetworkAccess
         {
             get
             {

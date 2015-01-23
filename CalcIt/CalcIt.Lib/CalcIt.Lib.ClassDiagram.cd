@@ -29,21 +29,21 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Events.MessageReceivedEventArgs&lt;T&gt;">
-    <Position X="4.25" Y="7.5" Width="2.5" />
+    <Position X="1.5" Y="7.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\MessageReceivedEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Events.ConnectionEventArgs">
-    <Position X="4.25" Y="9" Width="1.75" />
+    <Position X="4.25" Y="7.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\ConnectionEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Tcp.TcpClientConnector&lt;T&gt;">
-    <Position X="4.25" Y="1" Width="2" />
+    <Position X="4.25" Y="1" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAABCAEAAAIAACAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpClientConnector.cs</FileName>
@@ -101,27 +101,28 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Client.GameClientManager">
-    <Position X="24" Y="1.25" Width="2.25" />
+    <Position X="18.5" Y="2" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\GameClientManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.ServerManager">
-    <Position X="18.5" Y="3.25" Width="2" />
+    <Position X="18.5" Y="5" Width="2" />
     <AssociationLine Name="ConfigurationManager" Type="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="20.5" Y="5.439" />
-        <Point X="21.625" Y="5.439" />
-        <Point X="21.625" Y="5.75" />
+        <Point X="19.812" Y="7.709" />
+        <Point X="19.812" Y="7.95" />
+        <Point X="20.312" Y="7.95" />
+        <Point X="20.312" Y="8.25" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="-1.769" Y="0.079" Height="0.182" Width="1.673" />
+        <Position X="0.036" Y="0.051" Height="0.182" Width="1.673" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="Configuration" Type="CalcIt.Lib.ServerConfiguration">
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="-1.369" Y="0.06" Height="0.182" Width="1.256" />
+        <Position X="-1.386" Y="1.317" Height="0.182" Width="1.256" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -137,7 +138,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.XmlConfigurationSerializer&lt;T&gt;">
-    <Position X="21.25" Y="7.5" Width="2.5" />
+    <Position X="20.75" Y="10.25" Width="2.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -148,14 +149,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.ServerConfiguration">
-    <Position X="18.5" Y="6.5" Width="2" />
+    <Position X="18.5" Y="10.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AQAAAAACAAAAAAAABAAAAgBAAAEAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Configuration\ServerConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Monitor.MonitorManager">
-    <Position X="24" Y="3.5" Width="1.75" />
+    <Position X="18.5" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\MonitorManager.cs</FileName>
@@ -169,7 +170,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.GameClient">
-    <Position X="21.5" Y="3" Width="1.5" />
+    <Position X="21.5" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BCAQAAAAAAAAgAAAAAAAAAAIAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Server\GameClient.cs</FileName>
@@ -197,7 +198,7 @@
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeClientConnector&lt;T&gt;">
     <Position X="1.5" Y="1" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAABAAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AQAAAAAAQAAAAABCAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -205,13 +206,13 @@
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeServerConnector&lt;T&gt;">
     <Position X="1.5" Y="4.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AQAAAAAAQCAAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeServerConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.Log.ConsoleLogListener" BaseTypeListCollapsed="true">
-    <Position X="30" Y="5.75" Width="1.75" />
+    <Position X="26.25" Y="6.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>Log\ConsoleLogger.cs</FileName>
@@ -219,20 +220,39 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="CalcIt.Lib.Log.Logger" BaseTypeListCollapsed="true">
-    <Position X="26" Y="5.75" Width="2" />
+    <Position X="24" Y="6.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAIABAAAAAARAIAAAAAAAAAgAAIABAAAAAQAABAAA=</HashCode>
       <FileName>Log\Logger.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="CalcIt.Lib.MonitorLogListener">
-    <Position X="30" Y="7.5" Width="2" />
+  <Class Name="CalcIt.Lib.Monitor.MonitorLogListener">
+    <Position X="26.25" Y="8.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
-      <FileName>MonitorLogListener.cs</FileName>
+      <FileName>Monitor\MonitorLogListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint" Collapsed="true">
+    <Position X="3.25" Y="11" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint" Collapsed="true">
+    <Position X="5.5" Y="11" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.Session">
+    <Position X="1.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="SessionEndpoint" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.SessionEndpoint" Collapsed="true">
+    <Position X="4.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
   </Class>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkClientConnector&lt;T&gt;">
     <Position X="9.75" Y="1" Width="2.25" />
@@ -256,7 +276,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;">
-    <Position X="21.25" Y="5.75" Width="2.25" />
+    <Position X="18.5" Y="8.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAQAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Configuration\IConfigurationManager.cs</FileName>
@@ -270,14 +290,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.Log.ILog">
-    <Position X="24.25" Y="5.75" Width="1.5" />
+    <Position X="24" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Log\ILog.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.Log.ILogListener">
-    <Position X="28.25" Y="5.75" Width="1.5" />
+    <Position X="26.25" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>Log\ILogListener.cs</FileName>

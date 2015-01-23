@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using CalcIt.Lib.NetworkAccess.Events;
 using CalcIt.Lib.NetworkAccess.Transform;
 using CalcIt.Protocol;
+using CalcIt.Protocol.Session;
 
 namespace CalcIt.Lib.NetworkAccess
 {
@@ -23,7 +25,7 @@ namespace CalcIt.Lib.NetworkAccess
             set;
         }
 
-        List<System.Guid> Sessions
+        List<Session> Sessions
         {
             get;
             set;

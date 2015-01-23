@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CalcIt.Protocol.Data;
+using System.Threading.Tasks;
 
-namespace CalcIt.Protocol.Server
+namespace CalcIt.Protocol.Session
 {
-    public class Merge : CalcItServerMessage
+    public class Session
     {
-        public List<HighScoreItem> HighScoreList
+        public int SessionId
         {
             get
             {
@@ -19,18 +19,7 @@ namespace CalcIt.Protocol.Server
             }
         }
 
-        public List<ServerGameClientItem> GameClientList
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public List<Session> SessionTable
+        public SessionEndpoint SessionEndpoint
         {
             get
             {

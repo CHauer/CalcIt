@@ -1,60 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Lower Score is better!">
-    <Position X="9.789" Y="12.072" Height="0.295" Width="1.7" />
+    <Position X="7.656" Y="10.987" Height="0.295" Width="1.7" />
+  </Comment>
+  <Comment CommentText="MessageNr = UPD Transmittion Control">
+    <Position X="7.095" Y="1.281" Height="0.516" Width="1.7" />
   </Comment>
   <Class Name="CalcIt.Protocol.CalcItMessage">
     <Position X="9" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>CalcItMessage.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Protocol.Client.CalcItClientMessage">
-    <Position X="14" Y="2" Width="2" />
+    <Position X="14" Y="2.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAgAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
       <FileName>Client\CalcItClientMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.CalcItServerMessage">
-    <Position X="9" Y="2" Width="1.75" />
+    <Position X="9" Y="2.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\CalcItServerMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.CalcItMonitorMessage">
-    <Position X="3.75" Y="2" Width="2" />
+    <Position X="3.75" Y="2.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\CalcItMonitorMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.TunnelMessage">
-    <Position X="7.5" Y="4" Width="2" />
+    <Position X="7.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\TunnelMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.ConnectMonitor" Collapsed="true">
-    <Position X="2.5" Y="4" Width="2" />
+    <Position X="2.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\ConnectMonitor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Client.ConnectClient">
-    <Position X="12.75" Y="4.25" Width="2" />
+    <Position X="12.75" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\ConnectClient.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Client.Question">
-    <Position X="15.25" Y="6" Width="2" />
+    <Position X="15.25" Y="6.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAIAA=</HashCode>
       <FileName>Client\Question.cs</FileName>
@@ -64,35 +67,38 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Client.Answer">
-    <Position X="15.25" Y="4.25" Width="2" />
+    <Position X="15.25" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\Answer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Client.StartGame">
-    <Position X="12.75" Y="6" Width="2" />
+    <Position X="12.75" Y="6.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\StartGame.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Client.ClientOperationStatus">
-    <Position X="15.25" Y="7.75" Width="2" />
+    <Position X="15.25" Y="8.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Client\ClientOperationStatus.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Status" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Client.EndGame">
-    <Position X="12.75" Y="7.75" Width="2" />
+    <Position X="12.75" Y="8.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAQAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\EndGame.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Client.HighscoreResponse">
-    <Position X="12.75" Y="10" Width="2" />
+    <Position X="12.75" Y="10.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\HighscoreResponse.cs</FileName>
@@ -102,28 +108,28 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Client.HighscoreRequest">
-    <Position X="15.25" Y="10" Width="2" />
+    <Position X="15.25" Y="10.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\HighscoreRequest.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.Heartbeat">
-    <Position X="10.25" Y="4" Width="2" />
+    <Position X="10.25" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Heartbeat.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.MonitorOperationStatus">
-    <Position X="5" Y="4" Width="2" />
+    <Position X="5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Monitor\MonitorOperationStatus.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.LogMessage">
-    <Position X="5" Y="5.75" Width="2" />
+    <Position X="5" Y="6.5" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -133,32 +139,32 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.LogServerMessage">
-    <Position X="5" Y="8.5" Width="2" />
+    <Position X="5" Y="9.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\LogServerMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.SyncMessage">
-    <Position X="7.5" Y="5.75" Width="2" />
+    <Position X="7.5" Y="6.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQ=</HashCode>
       <FileName>Server\SyncMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.Merge">
-    <Position X="10.25" Y="5.75" Width="2" />
+    <Position X="10.25" Y="6.5" Width="2" />
     <AssociationLine Name="HighScoreList" Type="CalcIt.Protocol.Data.HighScoreItem" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.25" Y="6.249" />
-        <Point X="9.875" Y="6.249" />
-        <Point X="9.875" Y="7.625" />
-        <Point X="8.125" Y="7.625" />
-        <Point X="8.125" Y="8" />
+        <Point X="10.25" Y="7.117" />
+        <Point X="9.875" Y="7.117" />
+        <Point X="9.875" Y="8.375" />
+        <Point X="8.125" Y="8.375" />
+        <Point X="8.125" Y="8.75" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
       <FileName>Server\Merge.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -167,42 +173,81 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Data.HighScoreItem">
-    <Position X="7.5" Y="8" Width="2" />
+    <Position X="7.5" Y="8.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAiAAQAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\HighScoreItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Data.ServerGameClientItem">
-    <Position X="10.25" Y="7.5" Width="2" />
+    <Position X="10.25" Y="8.25" Width="2" />
     <TypeIdentifier>
       <HashCode>BCAQAAAAAAAAgAAAAQAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\ServerGameClientItem.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint">
+    <Position X="15.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Session\IpSessionEndpoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint">
+    <Position X="17.25" Y="0.5" Width="1.5" />
+    <InheritanceLine Type="CalcIt.Protocol.Session.SessionEndpoint" FixedFromPoint="true">
+      <Path>
+        <Point X="14.188" Y="1.603" />
+        <Point X="14.188" Y="2.108" />
+        <Point X="18" Y="2.108" />
+        <Point X="18" Y="1.733" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Session\PipeSessionEndpoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.SessionEndpoint">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Session\SessionEndpoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CalcIt.Protocol.Session.Session" Collapsed="true">
+    <Position X="10.25" Y="11" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Session\Session.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="CalcIt.Protocol.ICalcItSession">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>ICalcItSession.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SessionEndpoint" />
+    </ShowAsAssociation>
   </Interface>
   <Enum Name="CalcIt.Protocol.Data.StatusType" Collapsed="true">
-    <Position X="18.25" Y="7.75" Width="1.25" />
+    <Position X="18.25" Y="8.5" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
       <FileName>Data\StatusType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="CalcIt.Protocol.Client.OperatorType" Collapsed="true">
-    <Position X="18.25" Y="6" Width="1.5" />
+  <Enum Name="CalcIt.Protocol.Client.OperatorType">
+    <Position X="18.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAAAAAAAAABAAABAAAAAAAAACAAAAAAAAA=</HashCode>
       <FileName>Client\OperatorType.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="CalcIt.Protocol.Data.LogMessageType" Collapsed="true">
-    <Position X="3" Y="6.75" Width="1.5" />
+    <Position X="3" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAYAAAAAAABAAAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Data\LogMessageType.cs</FileName>

@@ -5,6 +5,7 @@ using System.Text;
 using CalcIt.Lib.NetworkAccess.Events;
 using CalcIt.Lib.NetworkAccess.Transform;
 using CalcIt.Protocol;
+using CalcIt.Protocol.Session;
 
 namespace CalcIt.Lib.NetworkAccess.NamedPipes
 {
@@ -38,7 +39,18 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
-        public List<Guid> Sessions
+        public List<Session> Sessions
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
+        public int PipeName
         {
             get
             {

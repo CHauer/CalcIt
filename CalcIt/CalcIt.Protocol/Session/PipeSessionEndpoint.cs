@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CalcIt.Protocol.Server;
 
-namespace CalcIt.Protocol.Monitor
+namespace CalcIt.Protocol.Session
 {
-    public class LogServerMessage : CalcIt.Protocol.Monitor.LogMessage
+    public class PipeSessionEndpoint : SessionEndpoint
     {
-        public CalcItServerMessage ServerMessage
+
+        public int PipeName
         {
             get
             {
