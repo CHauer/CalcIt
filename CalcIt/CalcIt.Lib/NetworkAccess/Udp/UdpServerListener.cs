@@ -6,6 +6,7 @@ using CalcIt.Lib.NetworkAccess;
 using CalcIt.Lib.NetworkAccess.Events;
 using CalcIt.Lib.NetworkAccess.Transform;
 using CalcIt.Protocol;
+using CalcIt.Protocol.Session;
 
 namespace CalcIt.Lib.NetworkAccess.Udp
 {
@@ -67,7 +68,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             throw new NotImplementedException();
         }
 
-        public List<Guid> Sessions
+        public List<Session> Sessions
         {
             get
             {

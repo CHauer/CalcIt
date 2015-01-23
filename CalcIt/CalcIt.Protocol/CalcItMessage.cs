@@ -20,5 +20,29 @@ namespace CalcIt.Protocol
             {
             }
         }
+
+
+        public Session.SessionEndpoint SessionEndpoint
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int MessageNr
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
     }
 }

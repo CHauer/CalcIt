@@ -36,6 +36,28 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
+        public int Hostname
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
+        public int PipeName
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
         public bool Send(T message)
         {
             throw new NotImplementedException();

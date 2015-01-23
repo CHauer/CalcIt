@@ -21,5 +21,11 @@ namespace CalcIt.Protocol
             get;
             set;
         }
+
+        CalcIt.Protocol.Session.SessionEndpoint SessionEndpoint
+        {
+            get;
+            set;
+        }
     }
 }

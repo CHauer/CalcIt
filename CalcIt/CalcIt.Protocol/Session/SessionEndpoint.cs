@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CalcIt.Protocol.Client
+namespace CalcIt.Protocol.Session
 {
-    public abstract class CalcItClientMessage : CalcItMessage
+    public abstract class SessionEndpoint
     {
-
-        public int Date
+        public int Hostname
         {
             get
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
             set
             {
+                throw new NotImplementedException();
             }
         }
     }

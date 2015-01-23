@@ -50,7 +50,7 @@
     <Compile Include="Log\ILog.cs" />
     <Compile Include="Log\ILogListener.cs" />
     <Compile Include="Log\Logger.cs" />
-    <Compile Include="MonitorLogListener.cs" />
+    <Compile Include="Monitor\MonitorLogListener.cs" />
     <Compile Include="NetworkAccess\Transform\DataContractTransformer.cs" />
     <Compile Include="Server\GameClient.cs" />
     <Compile Include="Client\GameClientManager.cs" />

@@ -5,11 +5,11 @@ using System.Text;
 
 namespace CalcIt.Protocol.Client
 {
-    public enum OperatorType
+    public enum OperatorType : int
     {
-        Plus,
-        Minus,
-        Multiply,
-        Divide,
+        Plus = 1,
+        Minus = 2,
+        Multiply = 3,
+        Divide = 4,
     }
 }

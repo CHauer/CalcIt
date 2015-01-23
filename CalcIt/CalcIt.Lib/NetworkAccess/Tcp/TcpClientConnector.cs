@@ -5,6 +5,12 @@ using CalcIt.Protocol;
 
 namespace CalcIt.Lib.NetworkAccess.Tcp
 {
+    /// <summary>
+    /// Opens a Tcp Client to the given hostname:port.
+    /// Creates a tcp listener with a random port between 30000-60000 on localhost address. (ipadress.any)
+    /// The tcp listener is for reconnect purposes when communicating with the passive game server.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class TcpClientConnector<T> : INetworkClientConnector<T> where T : class, ICalcItSession
     {
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;

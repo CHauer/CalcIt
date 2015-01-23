@@ -7,9 +7,11 @@
 // -----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using CalcIt.Lib.NetworkAccess.Events;
 using CalcIt.Lib.NetworkAccess.Transform;
 using CalcIt.Protocol;
+using CalcIt.Protocol.Session;
 
 namespace CalcIt.Lib.NetworkAccess.Tcp
 {
@@ -52,7 +54,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             throw new NotImplementedException();
         }
 
-        public List<Guid> Sessions
+        public List<Session> Sessions
         {
             get
             {

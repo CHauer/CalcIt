@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CalcIt.Protocol.Data;
 using CalcIt.Protocol.Monitor;
 
 namespace CalcIt.Protocol.Monitor
@@ -29,11 +30,6 @@ namespace CalcIt.Protocol.Monitor
             Message = message;
             IsDebug = isDebug;
             Date = DateTime.Now;
-
-            if (IsDebug)
-            {
-                this.StackTrace = GetStackTrance();
-            }
         }
 
         /// <summary>
@@ -60,7 +56,7 @@ namespace CalcIt.Protocol.Monitor
         /// </value>
         public DateTime Date { get; set; }
 
-        public CalcIt.Protocol.LogMessageType Type
+        public LogMessageType Type
         {
             get
             {
