@@ -22,7 +22,7 @@ namespace CalcIt.Lib.Server.Configuration
         private XmlSerializer serializer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer"/> class.
+        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer" /> class.
         /// </summary>
         public XmlConfigurationSerializer()
         {
@@ -35,7 +35,10 @@ namespace CalcIt.Lib.Server.Configuration
         /// <returns></returns>
         public T LoadConfiguration()
         {
-            return (T) this.serializer.Deserialize(File.OpenRead(this.ConfigurationFile));
+            using (var file = File.OpenRead(this.ConfigurationFile))
+            {
+                return (T)this.serializer.Deserialize(file);
+            }
         }
 
         /// <summary>
@@ -44,8 +47,11 @@ namespace CalcIt.Lib.Server.Configuration
         /// <param name="configuration">The configuration.</param>
         public void SaveConfiguration(T configuration)
         {
-            this.serializer.Serialize(File.Open(this.ConfigurationFile, FileMode.Create, FileAccess.Write),
-                configuration);
+            using (var file = File.Open(this.ConfigurationFile, FileMode.Create, FileAccess.Write))
+            {
+                this.serializer.Serialize(file, configuration);
+                file.Flush();
+            }
         }
 
         /// <summary>
