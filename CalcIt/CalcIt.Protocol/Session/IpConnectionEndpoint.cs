@@ -5,9 +5,10 @@ using System.Text;
 
 namespace CalcIt.Protocol.Session
 {
-    public abstract class SessionEndpoint
+    public class IpConnectionEndpoint : ConnectionEndpoint
     {
-        public int Hostname
+
+        public int Port
         {
             get
             {

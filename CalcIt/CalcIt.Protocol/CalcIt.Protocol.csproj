@@ -46,10 +46,10 @@
     <Compile Include="Client\CalcItClientMessage.cs" />
     <Compile Include="CalcItMessage.cs" />
     <Compile Include="Client\EndGame.cs" />
-    <Compile Include="Session\IpSessionEndpoint.cs" />
-    <Compile Include="Session\PipeSessionEndpoint.cs" />
+    <Compile Include="Session\IpConnectionEndpoint.cs" />
+    <Compile Include="Session\PipeConnectionEndpoint.cs" />
     <Compile Include="Session\Session.cs" />
-    <Compile Include="Session\SessionEndpoint.cs" />
+    <Compile Include="Session\ConnectionEndpoint.cs" />
     <Compile Include="Server\Heartbeat.cs" />
     <Compile Include="Data\HighScoreItem.cs" />
     <Compile Include="Client\HighscoreRequest.cs" />

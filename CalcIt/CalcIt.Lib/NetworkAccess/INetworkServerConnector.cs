@@ -11,7 +11,7 @@ namespace CalcIt.Lib.NetworkAccess
     {
         event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
-        event EventHandler IncomingConnectionOccured;
+        event EventHandler<ConnectionEventArgs> IncomingConnectionOccured;
 
         IMessageTransformer<T> MessageTransformer
         {
@@ -19,19 +19,24 @@ namespace CalcIt.Lib.NetworkAccess
             set;
         }
 
-        int IsRunning
+        bool IsRunning
         {
             get;
-            set;
+
         }
 
         List<Session> Sessions
         {
             get;
+        }
+
+        ConnectionEndpoint ConnectionSettings
+        {
+            get;
             set;
         }
 
-        bool Send(T message);
+        void Send(T message);
 
         void Start();
 

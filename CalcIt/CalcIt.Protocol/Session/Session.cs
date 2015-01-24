@@ -8,26 +8,8 @@ namespace CalcIt.Protocol.Session
 {
     public class Session
     {
-        public int SessionId
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public Guid SessionId { get; set; }
 
-        public SessionEndpoint SessionEndpoint
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public ConnectionEndpoint ConnectionEndpoint { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CalcIt.Protocol.Session
 {
-    public class PipeSessionEndpoint : SessionEndpoint
+    public class PipeConnectionEndpoint : ConnectionEndpoint
     {
 
         public int PipeName

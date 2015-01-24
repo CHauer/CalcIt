@@ -9,7 +9,7 @@
   <Class Name="CalcIt.Protocol.CalcItMessage">
     <Position X="9" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CalcItMessage.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -42,7 +42,7 @@
       <FileName>Server\TunnelMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Monitor.ConnectMonitor" Collapsed="true">
+  <Class Name="CalcIt.Protocol.Monitor.ConnectMonitor">
     <Position X="2.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -186,51 +186,40 @@
       <FileName>Data\ServerGameClientItem.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint">
+  <Class Name="CalcIt.Protocol.Session.IpConnectionEndpoint">
     <Position X="15.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\IpSessionEndpoint.cs</FileName>
+      <FileName>Session\IpConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint">
+  <Class Name="CalcIt.Protocol.Session.PipeConnectionEndpoint">
     <Position X="17.25" Y="0.5" Width="1.5" />
-    <InheritanceLine Type="CalcIt.Protocol.Session.SessionEndpoint" FixedFromPoint="true">
-      <Path>
-        <Point X="14.188" Y="1.603" />
-        <Point X="14.188" Y="2.108" />
-        <Point X="18" Y="2.108" />
-        <Point X="18" Y="1.733" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\PipeSessionEndpoint.cs</FileName>
+      <FileName>Session\PipeConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.SessionEndpoint">
+  <Class Name="CalcIt.Protocol.Session.ConnectionEndpoint">
     <Position X="13.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\SessionEndpoint.cs</FileName>
+      <FileName>Session\ConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Session.Session" Collapsed="true">
     <Position X="10.25" Y="11" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Session\Session.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="CalcIt.Protocol.ICalcItSession">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ICalcItSession.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="SessionEndpoint" />
-    </ShowAsAssociation>
   </Interface>
   <Enum Name="CalcIt.Protocol.Data.StatusType" Collapsed="true">
     <Position X="18.25" Y="8.5" Width="1.25" />

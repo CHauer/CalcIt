@@ -12,9 +12,19 @@ namespace CalcIt.Lib.NetworkAccess.Udp
 {
     public class UdpServerListener<T> : INetworkServerConnector<T> where T : class, ICalcItSession
     {
+        /// <summary>
+        /// The message send queue.
+        /// </summary>
+        private Queue<T> messageSendQueue;
+
+        /// <summary>
+        /// The calculation step sleep time.
+        /// </summary>
+        private TimeSpan taskWaitSleepTime;
+
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
-        public event EventHandler IncomingConnectionOccured;
+        public event EventHandler<ConnectionEventArgs> IncomingConnectionOccured;
 
         public int ListenPort
         {
@@ -38,30 +48,9 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             throw new NotImplementedException();
         }
 
+        public IMessageTransformer<T> MessageTransformer { get; set; }
 
-        public IMessageTransformer<T> MessageTransformer
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int IsRunning
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int IsRunning { get; set; }
 
         public bool Send(T message)
         {
@@ -77,6 +66,35 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             set
             {
             }
+        }
+
+
+        event EventHandler<ConnectionEventArgs> INetworkServerConnector<T>.IncomingConnectionOccured
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        bool INetworkServerConnector<T>.IsRunning
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public ConnectionEndpoint ConnectionSettings
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        void INetworkServerConnector<T>.Send(T message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
