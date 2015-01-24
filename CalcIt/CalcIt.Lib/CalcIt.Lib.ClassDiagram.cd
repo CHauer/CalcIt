@@ -38,44 +38,50 @@
   <Class Name="CalcIt.Lib.NetworkAccess.Events.ConnectionEventArgs">
     <Position X="4.25" Y="7.75" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\ConnectionEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Tcp.TcpClientConnector&lt;T&gt;">
-    <Position X="4.25" Y="1" Width="2.25" />
+    <Position X="4.25" Y="1" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAABCAEAAAIAACAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAQIQAAQBCAkgAgIAACLgAEIAAAAgABAKAAwA=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpClientConnector&lt;T&gt;">
-    <Position X="7" Y="1" Width="2" />
+    <Position X="7" Y="1" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAABCAEAAAIAACAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQAQAAABAAEAAAIAAAAAAAIAAAAAAAACAAAA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Tcp.TcpServerListener&lt;T&gt;">
-    <Position X="4.25" Y="4.25" Width="2.25" />
+    <Position X="4.25" Y="6.25" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQiQAAQAAAGBAwMAggIQAAIAAIAEBAEIAAgA=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpServerListener&lt;T&gt;">
-    <Position X="7" Y="4.25" Width="2.25" />
+    <Position X="7" Y="6.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAgAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCQAAAAAAGBgwAAAgAAAAIAAoAAAAAIAAAA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Transform.DataContractTransformer&lt;T&gt;">
-    <Position X="7" Y="7.75" Width="2.25" />
+    <Position X="10" Y="9.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\DataContractTransformer.cs</FileName>
@@ -198,7 +204,7 @@
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeClientConnector&lt;T&gt;">
     <Position X="1.5" Y="1" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAQAAAAABCAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQAAAAABAAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -235,36 +241,36 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint" Collapsed="true">
-    <Position X="3.25" Y="11" Width="1.5" />
+  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint">
+    <Position X="3.5" Y="13.5" Width="1.5" />
     <TypeIdentifier />
   </Class>
-  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint" Collapsed="true">
-    <Position X="5.5" Y="11" Width="1.5" />
+  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint">
+    <Position X="5.25" Y="13.5" Width="1.5" />
     <TypeIdentifier />
   </Class>
   <Class Name="CalcIt.Protocol.Session.Session">
-    <Position X="1.5" Y="9.75" Width="1.5" />
+    <Position X="1.5" Y="12.25" Width="1.5" />
     <TypeIdentifier />
     <ShowAsAssociation>
       <Property Name="SessionEndpoint" />
     </ShowAsAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Session.SessionEndpoint" Collapsed="true">
-    <Position X="4.5" Y="9.75" Width="1.5" />
+    <Position X="4.75" Y="12.25" Width="1.5" />
     <TypeIdentifier />
   </Class>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkClientConnector&lt;T&gt;">
     <Position X="9.75" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAABAAEAAAIAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQAQAAABAAEAAAIAAAAAAAIAAAAAAAACAAAA=</HashCode>
       <FileName>NetworkAccess\INetworkClientConnector.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkServerConnector&lt;T&gt;">
     <Position X="9.75" Y="4.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCAAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCQAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\INetworkServerConnector.cs</FileName>
     </TypeIdentifier>
   </Interface>

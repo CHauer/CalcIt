@@ -13,42 +13,6 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     {
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
-        public int Hostname
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int Port
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int IsConnected
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public void Connect()
         {
             throw new NotImplementedException();
@@ -67,7 +31,29 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
         }
 
-        public bool Send(T message)
+        public bool IsConnected
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public Protocol.Session.ConnectionEndpoint ConnectionSettings
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Send(T message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Close()
         {
             throw new NotImplementedException();
         }

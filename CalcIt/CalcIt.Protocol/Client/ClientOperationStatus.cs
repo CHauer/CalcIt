@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using CalcIt.Protocol.Data;
 
 namespace CalcIt.Protocol.Client
@@ -12,7 +13,7 @@ namespace CalcIt.Protocol.Client
         {
             get
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
             set
             {
@@ -23,7 +24,7 @@ namespace CalcIt.Protocol.Client
         {
             get
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
             set
             {

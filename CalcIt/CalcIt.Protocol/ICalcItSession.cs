@@ -5,6 +5,8 @@ using System.Text;
 
 namespace CalcIt.Protocol
 {
+    using CalcIt.Protocol.Session;
+
     /// <summary>
     /// 
     /// </summary>
@@ -16,13 +18,13 @@ namespace CalcIt.Protocol
         /// <value>
         /// The session identifier.
         /// </value>
-        Guid SessionId
+        Guid? SessionId
         {
             get;
             set;
         }
 
-        CalcIt.Protocol.Session.SessionEndpoint SessionEndpoint
+        ConnectionEndpoint ConnectionEndpoint
         {
             get;
             set;
