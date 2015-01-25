@@ -1,23 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="CommandHandlerAttribute.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Lib - CommandHandlerAttribute.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Lib.CommandExecution
 {
+    using System;
+
+    /// <summary>
+    /// The command handler attribute.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
     public class CommandHandlerAttribute : Attribute
     {
-
-        public Type MessageType
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandHandlerAttribute"/> class.
+        /// </summary>
+        /// <param name="messageType">
+        /// The message type.
+        /// </param>
+        public CommandHandlerAttribute(Type messageType)
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
+            this.MessageType = messageType;
         }
+
+        /// <summary>
+        /// Gets or sets the message type.
+        /// </summary>
+        public Type MessageType { get; set; }
     }
 }

@@ -4,12 +4,12 @@
     <Position X="7.656" Y="10.987" Height="0.295" Width="1.7" />
   </Comment>
   <Comment CommentText="MessageNr = UPD Transmittion Control">
-    <Position X="7.095" Y="1.281" Height="0.516" Width="1.7" />
+    <Position X="6.916" Y="1.612" Height="0.516" Width="1.7" />
   </Comment>
   <Class Name="CalcIt.Protocol.CalcItMessage">
     <Position X="9" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAA=</HashCode>
       <FileName>CalcItMessage.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -217,8 +217,15 @@
   <Interface Name="CalcIt.Protocol.ICalcItSession">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAA=</HashCode>
       <FileName>ICalcItSession.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CalcIt.Protocol.IMessageControl">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IMessageControl.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="CalcIt.Protocol.Data.StatusType" Collapsed="true">

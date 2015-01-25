@@ -22,7 +22,7 @@ namespace CalcIt.Lib.NetworkAccess.Events
         /// <param name="session">
         /// The session.
         /// </param>
-        public ConnectionEventArgs(Session session)
+        public ConnectionEventArgs(Guid session)
         {
             this.Session = session;
         }
@@ -33,6 +33,6 @@ namespace CalcIt.Lib.NetworkAccess.Events
         /// <value>
         /// The session.
         /// </value>
-        public Session Session { get; private set; }
+        public Guid Session { get; private set; }
     }
 }

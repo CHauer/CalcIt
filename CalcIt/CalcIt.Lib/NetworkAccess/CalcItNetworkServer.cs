@@ -7,29 +7,16 @@ namespace CalcIt.Lib.NetworkAccess
 {
     public class CalcItNetworkServer<T> : INetworkAccess<T> where T : class, ICalcItSession
     {
-        public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
-    
-        public INetworkServerConnector<T> ServerConnector
+        public CalcItNetworkServer()
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
+
         }
 
-        public List<Guid> Sessions
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
+
+        public INetworkServerConnector<T> ServerConnector { get; set; }
+
+        public List<Guid> Sessions { get; set; }
     
         public void Start()
         {
@@ -37,11 +24,6 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         public void Stop()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private void RunServer()
         {
             throw new System.NotImplementedException();
         }

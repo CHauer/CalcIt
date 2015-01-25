@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Serializer">
-    <Position X="9.75" Y="9.135" Height="0.365" Width="0.887" />
+    <Position X="10.253" Y="9.327" Height="0.365" Width="0.887" />
   </Comment>
   <Comment CommentText="Handels Heartbeat and SyncMessage">
     <Position X="15.809" Y="10.296" Height="0.546" Width="1.7" />
@@ -55,8 +55,11 @@
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpClientConnector&lt;T&gt;">
     <Position X="7" Y="1" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAQAAABAAEAAAIAAAAAAAIAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAIAAAAAQIQAAQBCAEgAgIAACDgAEIAIAAgABAKAAgA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -67,21 +70,24 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQiQAAQAAAGBAwMAggIQAAIAAIAEBAEIAAgA=</HashCode>
+      <HashCode>AAAAAAAAQiQAAQAAAGBAwMAAgIQAAIAAIAEBAEIAAgQ=</HashCode>
       <FileName>NetworkAccess\Tcp\TcpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Udp.UdpServerListener&lt;T&gt;">
     <Position X="7" Y="6.25" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQCQAAAAAAGBgwAAAgAAAAIAAoAAAAAIAAAA=</HashCode>
+      <HashCode>AAAAAAAAQCQAAQAAAGhA4MAAgAAAAIAAJAAAAEIAAgA=</HashCode>
       <FileName>NetworkAccess\Udp\UdpServerListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Transform.DataContractTransformer&lt;T&gt;">
-    <Position X="10" Y="9.75" Width="2.25" />
+    <Position X="10" Y="10" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\DataContractTransformer.cs</FileName>
@@ -241,25 +247,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="CalcIt.Protocol.Session.IpSessionEndpoint">
-    <Position X="3.5" Y="13.5" Width="1.5" />
-    <TypeIdentifier />
-  </Class>
-  <Class Name="CalcIt.Protocol.Session.PipeSessionEndpoint">
-    <Position X="5.25" Y="13.5" Width="1.5" />
-    <TypeIdentifier />
-  </Class>
-  <Class Name="CalcIt.Protocol.Session.Session">
-    <Position X="1.5" Y="12.25" Width="1.5" />
-    <TypeIdentifier />
-    <ShowAsAssociation>
-      <Property Name="SessionEndpoint" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="CalcIt.Protocol.Session.SessionEndpoint" Collapsed="true">
-    <Position X="4.75" Y="12.25" Width="1.5" />
-    <TypeIdentifier />
-  </Class>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkClientConnector&lt;T&gt;">
     <Position X="9.75" Y="1" Width="2.25" />
     <TypeIdentifier>
@@ -275,7 +262,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.Transform.IMessageTransformer&lt;T&gt;">
-    <Position X="9.75" Y="7.75" Width="2" />
+    <Position X="10" Y="8" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\IMessageTransformer.cs</FileName>

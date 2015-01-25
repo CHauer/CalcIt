@@ -10,18 +10,13 @@ namespace CalcIt.Lib.NetworkAccess
 {
     public class CalcItNetworkClient<T> : INetworkAccess<T> where T : class, ICalcItSession
     {
-        public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
-    
-        public INetworkClientConnector<T> ClientConnector
+        public CalcItNetworkClient()
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
         }
+
+        public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
+
+        public INetworkClientConnector<T> ClientConnector { get; set; }
 
         public void Connect()
         {
@@ -29,6 +24,10 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         public void Send(T message)
+        {
+            throw new System.NotImplementedException();
+        }
+        public void Close()
         {
             throw new System.NotImplementedException();
         }
