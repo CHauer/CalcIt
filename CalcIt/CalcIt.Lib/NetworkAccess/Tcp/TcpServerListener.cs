@@ -117,16 +117,21 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <value>
         /// The sessions.
         /// </value>
-        public List<Session> Sessions { get; private set; }
+        public List<Guid> Sessions { get; private set; }
 
         /// <summary>
         /// Sends the specified message.
         /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
+        /// <param name="message">The message.</param>
+        /// <exception cref="System.ArgumentNullException">message</exception>
         public void Send(T message)
         {
+            // ReSharper disable once MergeSequentialChecks
+            if (message == null || message.SessionId == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
             this.messageSendQueue.Enqueue(message);
         }
 
@@ -159,69 +164,17 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
-        /// Checks the session exists.
-        /// </summary>
-        /// <param name="sessionId">
-        /// The session identifier.
-        /// </param>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        private void CheckSessionExists(Guid sessionId, T message)
-        {
-            // if session id not exists in session table
-            if (!this.Sessions.Any(s => s.SessionId.Equals(sessionId)))
-            {
-                // and message has valid session "reconnect" endpoint
-                if (message != null && message.SessionId == null && message.ConnectionEndpoint != null)
-                {
-                    var createdSession = new Session()
-                                             {
-                                                 SessionId = sessionId, 
-                                                 ConnectionEndpoint = message.ConnectionEndpoint
-                                             };
-
-                    // add session to table
-                    this.Sessions.Add(createdSession);
-
-                    this.OnIncomingConnectionOccured(createdSession);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handles the incomming connection.
-        /// </summary>
-        /// <param name="result">
-        /// The result.
-        /// </param>
-        private void HandleIncommingConnection(IAsyncResult result)
-        {
-            TcpClient client = this.listener.EndAcceptTcpClient(result);
-
-            Guid newSessionId = Guid.NewGuid();
-            this.clientConnections.Add(newSessionId, client);
-
-            Task.Run(() => this.RunHandleClient(newSessionId, client));
-        }
-
-        /// <summary>
         /// Initializes the listener.
         /// </summary>
         private void InitializeListener()
         {
-            if (this.ListenPort == -1)
-            {
-                // Standardport
-                this.ListenPort = 3105;
-            }
-
             try
             {
                 this.listener = new TcpListener(IPAddress.Any, this.ListenPort);
             }
             catch (Exception ex)
             {
+                //TODO Log message
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -243,22 +196,20 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </summary>
         private void InitializeSessions()
         {
-            this.Sessions = new List<Session>();
+            this.Sessions = new List<Guid>();
             this.clientConnections = new Dictionary<Guid, TcpClient>();
         }
 
         /// <summary>
-        /// Raises the <see cref="E:IncomingConnectionOccured"/> event.
+        /// Raises the <see cref="E:IncomingConnectionOccured" /> event.
         /// </summary>
-        /// <param name="session">
-        /// The session.
-        /// </param>
-        private void OnIncomingConnectionOccured(Session session)
+        /// <param name="sessionId">The session identifier.</param>
+        protected virtual void OnIncomingConnectionOccured(Guid sessionId)
         {
             // ReSharper disable once UseNullPropagation
             if (this.IncomingConnectionOccured != null)
             {
-                this.IncomingConnectionOccured(this, new ConnectionEventArgs(session));
+                this.IncomingConnectionOccured(this, new ConnectionEventArgs(sessionId));
             }
         }
 
@@ -268,33 +219,12 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <param name="args">
         /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
         /// </param>
-        private void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
         {
             // ReSharper disable once UseNullPropagation
             if (this.MessageReceived != null)
             {
                 this.MessageReceived(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Runs the handle client.
-        /// </summary>
-        /// <param name="sessionId">
-        /// The session identifier.
-        /// </param>
-        /// <param name="client">
-        /// The client.
-        /// </param>
-        private void RunHandleClient(Guid sessionId, TcpClient client)
-        {
-            while (client.Connected && this.IsRunning)
-            {
-                T message = this.MessageTransformer.TransformFrom(client.GetStream());
-
-                this.CheckSessionExists(sessionId, message);
-
-                this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, sessionId));
             }
         }
 
@@ -320,6 +250,65 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
+        /// Handles the incomming connection.
+        /// </summary>
+        /// <param name="result">
+        /// The result.
+        /// </param>
+        private void HandleIncommingConnection(IAsyncResult result)
+        {
+            TcpClient client = this.listener.EndAcceptTcpClient(result);
+
+            Task.Run(() => this.RunHandleClient(client));
+        }
+
+        /// <summary>
+        /// Runs the handle client.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        private void RunHandleClient(TcpClient client)
+        {
+            Guid currentSessionId;
+
+            while (client.Connected && this.IsRunning)
+            {
+                //Receive message
+                T message = this.MessageTransformer.TransformFrom(client.GetStream());
+
+                if (message != null)
+                {
+                    if (message.SessionId == null)
+                    {
+                        //create new session id
+                        Guid newSessionId = Guid.NewGuid();
+
+                        currentSessionId = newSessionId;
+
+                        this.clientConnections.Add(newSessionId, client);
+                        this.Sessions.Add(newSessionId);
+
+                        message.SessionId = currentSessionId;
+
+                        this.OnIncomingConnectionOccured(newSessionId);
+                    }
+
+                    // if session does not exists in session table
+                    if (!this.Sessions.Contains(message.SessionId.Value))
+                    {
+                        //invalid message - connection close
+                        client.Close();
+                        //TODO log invalid message
+                        return;
+                    }
+
+                    currentSessionId = message.SessionId.Value;
+
+                    this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, currentSessionId));
+                }
+            }
+        }
+
+        /// <summary>
         /// Runs the send queue.
         /// </summary>
         private void RunSendQueue()
@@ -333,15 +322,53 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
 
                 T message = this.messageSendQueue.Dequeue();
 
-                if (message.SessionId != null)
+                if (message.SessionId == null)
                 {
-                    if (this.clientConnections.ContainsKey(message.SessionId.Value))
+                    continue;
+                }
+
+                if (Sessions.Contains(message.SessionId.Value))
+                {
+                    //session is in table - use cached tcp client
+                    try
                     {
-                        this.MessageTransformer.TransformTo(
-                            this.clientConnections[message.SessionId.Value].GetStream(), 
-                            message);
+                        var stream = this.clientConnections[message.SessionId.Value].GetStream();
+                        this.MessageTransformer.TransformTo(stream, message);
+                    }
+                    catch (Exception ex)
+                    {
+                        //Todo log ex
                     }
                 }
+                else
+                {
+                    //session is not in table - open tcp client
+                    if (message.ReconnectEndpoint != null && message.ReconnectEndpoint is IpConnectionEndpoint)
+                    {
+                        Task.Run(() => SendMessageToReconnectClient(message, message.ReconnectEndpoint as IpConnectionEndpoint));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends the message to new client.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="endpoint">The endpoint.</param>
+        private void SendMessageToReconnectClient(T message, IpConnectionEndpoint endpoint)
+        {
+            try
+            {
+                using (TcpClient client = new TcpClient(endpoint.Hostname, endpoint.Port))
+                {
+                    this.MessageTransformer.TransformTo(client.GetStream(), message);
+                    client.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                //Todo log ex
             }
         }
     }

@@ -1,65 +1,101 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CalcIt.Lib;
-using CalcIt.Lib.CommandExecution;
-using CalcIt.Lib.NetworkAccess;
-using CalcIt.Lib.NetworkAccess.Tcp;
-using CalcIt.Lib.NetworkAccess.Transform;
-using CalcIt.Lib.NetworkAccess.Udp;
-using CalcIt.Lib.Server;
-using CalcIt.Lib.Server.Configuration;
-using CalcIt.Lib.Server.Watcher;
-using CalcIt.Protocol;
-using CalcIt.Protocol.Client;
-using CalcIt.Protocol.Monitor;
-using CalcIt.Protocol.Server;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="Program.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Server - Program.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Server
 {
+    using System;
+
+    using CalcIt.Lib;
+    using CalcIt.Lib.CommandExecution;
+    using CalcIt.Lib.NetworkAccess;
+    using CalcIt.Lib.NetworkAccess.Tcp;
+    using CalcIt.Lib.NetworkAccess.Transform;
+    using CalcIt.Lib.NetworkAccess.Udp;
+    using CalcIt.Lib.Server;
+    using CalcIt.Lib.Server.Configuration;
+    using CalcIt.Lib.Server.Watcher;
+    using CalcIt.Protocol.Client;
+    using CalcIt.Protocol.Monitor;
+    using CalcIt.Protocol.Server;
+    using CalcIt.Protocol.Session;
+
+    /// <summary>
+    /// The program.
+    /// </summary>
     public class Program
     {
-        private static ServerManager _serverManager;
+        /// <summary>
+        /// The _connection watcher.
+        /// </summary>
+        private static ServerConnectionWatcher connectionWatcher;
 
-        private static ServerConnectionWatcher _connectionWatcher;
+        /// <summary>
+        /// The _game client commmand executor.
+        /// </summary>
+        private static CommandExecutor<CalcItClientMessage> gameClientCommmandExecutor;
 
-        private static CommandExecutor<CalcItServerMessage> _serverCommmandExecutor;
+        /// <summary>
+        /// The _game client connection server.
+        /// </summary>
+        private static CalcItNetworkServer<CalcItClientMessage> gameClientConnectionServer;
 
-        private static CommandExecutor<CalcItClientMessage> _gameClientCommmandExecutor;
+        /// <summary>
+        /// The _monitor client commmand executor.
+        /// </summary>
+        private static CommandExecutor<CalcItMonitorMessage> monitorClientCommmandExecutor;
 
-        private static CommandExecutor<CalcItMonitorMessage> _monitorClientCommmandExecutor;
+        /// <summary>
+        /// The _monitor client connection server.
+        /// </summary>
+        private static CalcItNetworkServer<CalcItMonitorMessage> monitorClientConnectionServer;
 
-        private static CalcItNetworkServer<CalcItClientMessage> _gameClientConnectionServer;
+        /// <summary>
+        /// The _server commmand executor.
+        /// </summary>
+        private static CommandExecutor<CalcItServerMessage> serverCommmandExecutor;
 
-        private static CalcItNetworkServer<CalcItMonitorMessage> _monitorClientConnectionServer;
+        /// <summary>
+        /// The _server manager.
+        /// </summary>
+        private static ServerManager serverManager;
 
+        /// <summary>
+        /// The main.
+        /// </summary>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         public static void Main(string[] args)
         {
-            _serverManager = new ServerManager(new XmlConfigurationSerializer<ServerConfiguration>()
-            {
-                ConfigurationFile = "ServerConfiguration.xml"
-            });
+            serverManager =
+                new ServerManager(
+                    new XmlConfigurationSerializer<ServerConfiguration>()
+                    {
+                        ConfigurationFile = "ServerConfiguration.xml"
+                    });
 
             InitializeNetworkAccess();
             InitializeCommandExecutor();
 
-            _connectionWatcher = new ServerConnectionWatcher(_serverManager.Configuration);
+            connectionWatcher = new ServerConnectionWatcher(serverManager.Configuration);
 
-            //the command executor for server to server messages
-            _connectionWatcher.ServerCommandExecutor = _serverCommmandExecutor;
-            _connectionWatcher.Start();
+            // the command executor for server to server messages
+            connectionWatcher.ServerCommandExecutor = serverCommmandExecutor;
+            connectionWatcher.Start();
 
-            //Start Command execution - handling input
-            _gameClientCommmandExecutor.StartExecutor();
-            _monitorClientCommmandExecutor.StartExecutor();
+            // Start Command execution - handling input
+            gameClientCommmandExecutor.StartExecutor();
+            monitorClientCommmandExecutor.StartExecutor();
 
-            //start receiving input
-            _gameClientConnectionServer.Start();
-            _monitorClientConnectionServer.Start();
+            // start receiving input
+            gameClientConnectionServer.Start();
+            monitorClientConnectionServer.Start();
 
-            //Server end
+            // Server end
             Console.Write("Enter for Server End");
             Console.ReadLine();
 
@@ -71,57 +107,63 @@ namespace CalcIt.Server
         /// </summary>
         private static void EndServer()
         {
-            _gameClientConnectionServer.Stop();
-            _monitorClientConnectionServer.Stop();
+            gameClientConnectionServer.Stop();
+            monitorClientConnectionServer.Stop();
 
-            _gameClientCommmandExecutor.StopExecutor();
-            _monitorClientCommmandExecutor.StopExecutor();
+            gameClientCommmandExecutor.StopExecutor();
+            monitorClientCommmandExecutor.StopExecutor();
 
-            _connectionWatcher.Stop();
+            connectionWatcher.Stop();
         }
 
-        private static void InitializeNetworkAccess()
-        {
-            _gameClientConnectionServer = new CalcItNetworkServer<CalcItClientMessage>()
-            {
-                ServerConnector = new UdpServerListener<CalcItClientMessage>()
-                {
-                    MessageTransformer = new DataContractTransformer<CalcItClientMessage>(),
-                    ListenPort = _serverManager.Configuration.GameClientServerPort
-                }
-            };
-
-            _monitorClientConnectionServer = new CalcItNetworkServer<CalcItMonitorMessage>()
-            {
-                ServerConnector = new TcpServerListener<CalcItMonitorMessage>()
-                {
-                    MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(),
-                    ListenPort = _serverManager.Configuration.MonitorClientServerPort
-                }
-            };
-        }
-
+        /// <summary>
+        /// The initialize command executor.
+        /// </summary>
         private static void InitializeCommandExecutor()
         {
-            _gameClientCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
+            gameClientCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
             {
-                MethodProvider = _serverManager,
-                NetworkAccess = _gameClientConnectionServer
+                MethodProvider = serverManager, 
+                NetworkAccess = gameClientConnectionServer
             };
 
-            _monitorClientCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
+            monitorClientCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
             {
-                MethodProvider = _serverManager,
-                NetworkAccess = _monitorClientConnectionServer
+                MethodProvider = serverManager, 
+                NetworkAccess = monitorClientConnectionServer
             };
 
             // No network access set - gets set by connection watcher 
             // after inital server active/passive sync
-            _serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>()
+            serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>() { MethodProvider = serverManager };
+        }
+
+        /// <summary>
+        /// The initialize network access.
+        /// </summary>
+        private static void InitializeNetworkAccess()
+        {
+            gameClientConnectionServer = new CalcItNetworkServer<CalcItClientMessage>()
             {
-                MethodProvider = _serverManager
+                ServerConnector =
+                    new UdpServerListener<CalcItClientMessage>()
+                    {
+                        MessageTransformer = new DataContractTransformer<CalcItClientMessage>(), 
+                        ConnectionSettings =
+                            new IpConnectionEndpoint() { Port = serverManager.Configuration.GameClientServerPort }
+                    }
             };
 
+            monitorClientConnectionServer = new CalcItNetworkServer<CalcItMonitorMessage>()
+            {
+                ServerConnector =
+                    new TcpServerListener<CalcItMonitorMessage>()
+                    {
+                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(), 
+                        ConnectionSettings =
+                            new IpConnectionEndpoint() { Port = serverManager.Configuration.MonitorClientServerPort }
+                    }
+            };
         }
     }
 }

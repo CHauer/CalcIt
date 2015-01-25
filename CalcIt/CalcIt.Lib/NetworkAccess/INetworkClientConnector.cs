@@ -29,6 +29,14 @@ namespace CalcIt.Lib.NetworkAccess
         event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
         /// <summary>
+        /// Gets or sets the connection settings.
+        /// </summary>
+        /// <value>
+        /// The connection settings.
+        /// </value>
+        ConnectionEndpoint ConnectionSettings { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether is connected.
         /// </summary>
         bool IsConnected { get; }
@@ -39,12 +47,9 @@ namespace CalcIt.Lib.NetworkAccess
         IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
-        /// Gets or sets the connection settings.
+        /// The close.
         /// </summary>
-        /// <value>
-        /// The connection settings.
-        /// </value>
-        ConnectionEndpoint ConnectionSettings { get; set; }
+        void Close();
 
         /// <summary>
         /// The connect.
@@ -58,7 +63,5 @@ namespace CalcIt.Lib.NetworkAccess
         /// The message.
         /// </param>
         void Send(T message);
-
-        void Close();
     }
 }

@@ -46,6 +46,7 @@
     <Compile Include="Client\CalcItClientMessage.cs" />
     <Compile Include="CalcItMessage.cs" />
     <Compile Include="Client\EndGame.cs" />
+    <Compile Include="IMessageControl.cs" />
     <Compile Include="Session\IpConnectionEndpoint.cs" />
     <Compile Include="Session\PipeConnectionEndpoint.cs" />
     <Compile Include="Session\Session.cs" />

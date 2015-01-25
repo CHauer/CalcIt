@@ -196,6 +196,11 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </param>
         public void Send(T message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
             this.messageSendQueue.Enqueue(message);
         }
 
@@ -220,9 +225,18 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             var tempClient = this.reconnectListener.EndAcceptTcpClient(result);
 
-            var message = this.MessageTransformer.TransformFrom(tempClient.GetStream());
+            T message = null;
 
-            if (message != null && message.SessionId.Equals(this.sessionId))
+            try
+            {
+               message = this.MessageTransformer.TransformFrom(tempClient.GetStream());
+            }
+            catch (Exception ex)
+            {
+                //todo log ex
+            }
+
+            if (message != null && message.SessionId != null && message.SessionId.Value.Equals(this.sessionId))
             {
                 this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, this.sessionId));
             }
@@ -291,13 +305,16 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
 
                 if (!this.firstSendHandled)
                 {
-                    // reconnect endpoint
-                    message.ConnectionEndpoint = new IpConnectionEndpoint()
-                                                     {
-                                                         Hostname = Dns.GetHostName(), 
-                                                         Port = this.reconnectPort
-                                                     };
+                    message.SessionId = null;
                 }
+
+                // reconnect endpoint
+                message.ReconnectEndpoint = new IpConnectionEndpoint()
+                {
+                    Hostname = Dns.GetHostName(),
+                    Port = this.reconnectPort
+                };
+
 
                 try
                 {
@@ -337,7 +354,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <param name="args">
         /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
         /// </param>
-        private void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
         {
             // ReSharper disable once UseNullPropagation
             if (this.MessageReceived != null)

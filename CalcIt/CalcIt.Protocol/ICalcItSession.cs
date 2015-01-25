@@ -24,7 +24,7 @@ namespace CalcIt.Protocol
             set;
         }
 
-        ConnectionEndpoint ConnectionEndpoint
+        ConnectionEndpoint ReconnectEndpoint
         {
             get;
             set;

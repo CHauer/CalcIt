@@ -1,15 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="IMessageTransformer.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Lib - IMessageTransformer.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Lib.NetworkAccess.Transform
 {
+    using System.IO;
+
+    /// <summary>
+    /// The MessageTransformer interface.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type generic placeholder.
+    /// </typeparam>
     public interface IMessageTransformer<T>
     {
-        bool TransformTo(Stream streamTo, T transformObject);
+        /// <summary>
+        /// The transform from.
+        /// </summary>
+        /// <param name="data">
+        /// The data.
+        /// </param>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
+        T TransformFrom(byte[] data);
 
+        /// <summary>
+        /// The transform from.
+        /// </summary>
+        /// <param name="streamFrom">
+        /// The stream from.
+        /// </param>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
         T TransformFrom(Stream streamFrom);
+
+        /// <summary>
+        /// The transform to.
+        /// </summary>
+        /// <param name="transformObject">
+        /// The transform object.
+        /// </param>
+        /// <returns>
+        /// The <see cref="byte[]"/>.
+        /// </returns>
+        byte[] TransformTo(T transformObject);
+
+        /// <summary>
+        /// The transform to.
+        /// </summary>
+        /// <param name="streamTo">
+        /// The stream to.
+        /// </param>
+        /// <param name="transformObject">
+        /// The transform object.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        bool TransformTo(Stream streamTo, T transformObject);
     }
 }

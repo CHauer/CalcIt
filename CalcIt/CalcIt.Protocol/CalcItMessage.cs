@@ -16,24 +16,31 @@ namespace CalcIt.Protocol
     /// The calc it message.
     /// </summary>
     [DataContract]
-    public abstract class CalcItMessage : ICalcItSession
+    public abstract class CalcItMessage : ICalcItSession, IMessageControl
     {
-        /// <summary>
-        /// Gets or sets the message nr.
-        /// </summary>
-        [DataMember]
-        public int MessageNr { get; set; }
 
         /// <summary>
         /// Gets or sets the session endpoint.
         /// </summary>
         [DataMember]
-        public ConnectionEndpoint ConnectionEndpoint { get; set; }
+        public ConnectionEndpoint ReconnectEndpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the session id.
         /// </summary>
         [DataMember]
         public Guid? SessionId { get; set; }
+
+        public int MessageNr
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }
