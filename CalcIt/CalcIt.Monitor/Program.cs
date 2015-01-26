@@ -13,6 +13,7 @@ namespace CalcIt.Monitor
     using CalcIt.Lib.NetworkAccess.Tcp;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Lib.NetworkAccess.Udp;
+    using CalcIt.Monitor.Properties;
     using CalcIt.Protocol.Client;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
@@ -54,13 +55,19 @@ namespace CalcIt.Monitor
             bool exit = false;
 
             HandleArguments(args);
+            PrepareConsoleWindow();
 
             InitializeLogger();
 
-            monitorManager = new MonitorManager();
+            monitorManager = new MonitorManager()
+            {
+                Logger = logger
+            };
 
             InitializeNetworkAccess();
             InitializeCommandExecutor();
+
+            monitorCommmandExecutor.StartExecutor();
 
             monitorManager.NetworkAccess = monitorNetworkClient;
             monitorManager.ConnectToServer();
@@ -70,6 +77,26 @@ namespace CalcIt.Monitor
                 string input = Console.ReadLine();
                 exit = input != null && input.ToLower().Trim().Equals("exit");
             }
+
+            EndMonitor();
+        }
+
+        /// <summary>
+        /// Prepares the console window.
+        /// </summary>
+        private static void PrepareConsoleWindow()
+        {
+            Console.Title = Resources.ConsoleHeader;
+            Console.WriteLine(Resources.StartUpText);
+        }
+
+        /// <summary>
+        /// Ends the monitor.
+        /// </summary>
+        private static void EndMonitor()
+        {
+            monitorNetworkClient.Close();
+            monitorCommmandExecutor.StopExecutor();
         }
 
         /// <summary>
@@ -103,6 +130,11 @@ namespace CalcIt.Monitor
             //Standard settings
             serverHostname = "localhost";
             serverPort = 50210;
+
+            if(args.Any(arg => arg.Equals("/h")))
+            {
+                Console.WriteLine(Resources.Help);
+            }
 
             if (args.Length == 2)
             {

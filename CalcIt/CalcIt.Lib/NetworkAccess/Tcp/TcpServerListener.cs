@@ -416,10 +416,8 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     //session is in table - use cached tcp client
                     try
                     {
-                        using (var networkStream = this.clientConnections[message.SessionId.Value].GetStream())
-                        {
-                            this.MessageTransformer.TransformTo(networkStream, message);
-                        }
+                        var networkStream = this.clientConnections[message.SessionId.Value].GetStream();
+                        this.MessageTransformer.TransformTo(networkStream, message);
                     }
                     catch (Exception ex)
                     {
