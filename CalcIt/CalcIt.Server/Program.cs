@@ -114,8 +114,8 @@ namespace CalcIt.Server
 
             InitializeCommandExecutor();
 
-            // the command executor for server to server messages
-            //connectionWatcher.Start();
+            // the connection watcher for server to server messages
+            // TODO connectionWatcher.Start();
 
             // Start Command execution - handling input
             gameCommmandExecutor.StartExecutor();
