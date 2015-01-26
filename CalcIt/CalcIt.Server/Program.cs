@@ -115,7 +115,7 @@ namespace CalcIt.Server
             InitializeCommandExecutor();
 
             // the connection watcher for server to server messages
-            // TODO connectionWatcher.Start();
+            //connectionWatcher.Start();
 
             // Start Command execution - handling input
             gameCommmandExecutor.StartExecutor();
@@ -124,12 +124,6 @@ namespace CalcIt.Server
             // start receiving input
             gameClientConnectionServer.Start();
             monitorClientConnectionServer.Start();
-
-            while (true)
-            {
-                logger.AddLogMessage(new LogMessage("test"));
-                Thread.Sleep(new TimeSpan(0, 0, 0, 5));
-            }
 
             // Server end
             Console.Write(Resources.Enter_for_Server_End);
@@ -168,12 +162,13 @@ namespace CalcIt.Server
         /// </summary>
         private static void InitializeServerManager()
         {
-            serverManager =
-                new ServerManager(
-                    new XmlConfigurationSerializer<ServerConfiguration>()
-                    {
-                        ConfigurationFile = configurationFile
-                    });
+            serverManager = new ServerManager(new XmlConfigurationSerializer<ServerConfiguration>()
+                                            {
+                                                ConfigurationFile = configurationFile
+                                            })
+            {
+                Logger = logger
+            };
         }
 
         /// <summary>
