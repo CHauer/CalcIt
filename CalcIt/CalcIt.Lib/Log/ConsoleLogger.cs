@@ -7,6 +7,8 @@ using CalcIt.Protocol.Monitor;
 
 namespace CalcIt.Lib.Log
 {
+    using CalcIt.Protocol.Data;
+
     /// <summary>
     /// 
     /// </summary>
@@ -24,14 +26,21 @@ namespace CalcIt.Lib.Log
                 return;
             }
 
-            //if (message.
-            //{
-            //    Console.ForegroundColor = ConsoleColor.Red;
-            //}
-            //else if (message is WarningLogMessage)
-            //{
-            //    Console.ForegroundColor = ConsoleColor.DarkYellow;
-            //}
+            switch (message.Type)
+            {
+                case LogMessageType.Log:
+                    Console.ResetColor();
+                    break;
+                case LogMessageType.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogMessageType.Warning:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case LogMessageType.Debug:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+            }
 
             Console.WriteLine(message.ToString());
             Console.ResetColor();

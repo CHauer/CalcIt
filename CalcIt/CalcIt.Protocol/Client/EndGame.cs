@@ -1,43 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="EndGame.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Protocol - EndGame.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Client
 {
+    using System.Runtime.Serialization;
+
+    /// <summary>
+    /// The end game.
+    /// </summary>
+    [DataContract]
     public class EndGame : CalcItClientMessage
     {
-        public int GameCount
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the game count.
+        /// </summary>
+        /// <value>
+        /// The game count.
+        /// </value>
+        [DataMember]
+        public int GameCount { get; set; }
 
-        public int Points
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the points.
+        /// </summary>
+        /// <value>
+        /// The points.
+        /// </value>
+        [DataMember]
+        public int Points { get; set; }
 
-        public int Username
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the username.
+        /// </summary>
+        /// <value>
+        /// The username.
+        /// </value>
+        [DataMember]
+        public int Username { get; set; }
     }
 }

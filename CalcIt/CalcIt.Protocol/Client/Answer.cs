@@ -10,10 +10,12 @@
 namespace CalcIt.Protocol.Client
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// The answer.
     /// </summary>
+    [DataContract]
     public class Answer : CalcItClientMessage
     {
         /// <summary>
@@ -22,17 +24,7 @@ namespace CalcIt.Protocol.Client
         /// <value>
         /// The content of the answer.
         /// </value>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public int AnswerContent
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-            }
-        }
+        [DataMember]
+        public int AnswerContent { get; set; }
     }
 }

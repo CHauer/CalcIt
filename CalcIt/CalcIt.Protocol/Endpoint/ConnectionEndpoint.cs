@@ -1,27 +1,29 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TunnelMessage.cs" company="FH Wr.Neustadt">
+// <copyright file="ConnectionEndpoint.cs" company="FH Wr.Neustadt">
 //      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// <summary>CalcIt.Protocol - TunnelMessage.cs</summary>
+// <summary>CalcIt.Protocol - ConnectionEndpoint.cs</summary>
 // -----------------------------------------------------------------------
-namespace CalcIt.Protocol.Server
+namespace CalcIt.Protocol.Endpoint
 {
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// The tunnel message.
+    /// The connection endpoint.
     /// </summary>
     [DataContract]
-    public class TunnelMessage : CalcItServerMessage
+    [KnownType(typeof(IpConnectionEndpoint))]
+    [KnownType(typeof(PipeConnectionEndpoint))]
+    public abstract class ConnectionEndpoint
     {
         /// <summary>
-        /// Gets or sets the content.
+        /// Gets or sets the hostname.
         /// </summary>
         /// <value>
-        /// The content.
+        /// The hostname.
         /// </value>
         [DataMember]
-        public CalcItMessage Content { get; set; }
+        public string Hostname { get; set; }
     }
 }

@@ -1,29 +1,27 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="HighscoreResponse.cs" company="FH Wr.Neustadt">
+// <copyright file="PipeConnectionEndpoint.cs" company="FH Wr.Neustadt">
 //      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// <summary>CalcIt.Protocol - HighscoreResponse.cs</summary>
+// <summary>CalcIt.Protocol - PipeConnectionEndpoint.cs</summary>
 // -----------------------------------------------------------------------
-namespace CalcIt.Protocol.Client
+namespace CalcIt.Protocol.Endpoint
 {
-    using System.Collections.Generic;
     using System.Runtime.Serialization;
 
-    using CalcIt.Protocol.Data;
-
     /// <summary>
-    /// The highscore response.
+    /// The pipe connection endpoint.
     /// </summary>
     [DataContract]
-    public class HighscoreResponse : CalcItClientMessage
+    public class PipeConnectionEndpoint : ConnectionEndpoint
     {
         /// <summary>
-        /// Gets or sets the high score list.
+        /// Gets or sets the pipe name.
         /// </summary>
         /// <value>
-        /// The high score list.
+        /// The name of the pipe.
         /// </value>
-        public List<HighScoreItem> HighScoreList { get; set; }
+        [DataMember]
+        public string PipeName { get; set; }
     }
 }

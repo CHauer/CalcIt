@@ -14,7 +14,9 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     using System.Threading;
     using System.Threading.Tasks;
 
-    using CalcIt.Protocol.Session;
+    using CalcIt.Lib.Log;
+    using CalcIt.Protocol.Endpoint;
+    using CalcIt.Protocol.Monitor;
 
     public class UdpClientConnector<T> : INetworkClientConnector<T> where T : class, ICalcItSession, IMessageControl
     {
@@ -144,6 +146,14 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// The connection settings.
         /// </value>
         public ConnectionEndpoint ConnectionSettings { get; set; }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// The connect.
@@ -325,7 +335,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 //todo log ex
             }
 
-            while (this.reconnectRunning)
+            while (this.isRunning)
             {
                 IPEndPoint remoteEp = null;
                 var data = this.reconnectReceiver.Receive(ref remoteEp);
@@ -364,6 +374,19 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             if (this.MessageReceived != null)
             {
                 this.MessageReceived(this, args);
+            }
+        }
+
+        /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="logMessage">The log message.</param>
+        private void LogMessage(LogMessage logMessage)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (Logger != null)
+            {
+                Logger.AddLogMessage(logMessage);
             }
         }
 

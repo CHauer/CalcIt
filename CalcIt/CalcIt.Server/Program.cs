@@ -8,9 +8,15 @@
 namespace CalcIt.Server
 {
     using System;
+    using System.Configuration;
+    using System.IO;
+    using System.Linq;
+    using System.Threading;
 
     using CalcIt.Lib;
     using CalcIt.Lib.CommandExecution;
+    using CalcIt.Lib.Log;
+    using CalcIt.Lib.Monitor;
     using CalcIt.Lib.NetworkAccess;
     using CalcIt.Lib.NetworkAccess.Tcp;
     using CalcIt.Lib.NetworkAccess.Transform;
@@ -21,13 +27,19 @@ namespace CalcIt.Server
     using CalcIt.Protocol.Client;
     using CalcIt.Protocol.Monitor;
     using CalcIt.Protocol.Server;
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Endpoint;
+    using CalcIt.Server.Properties;
 
     /// <summary>
     /// The program.
     /// </summary>
     public class Program
     {
+        /// <summary>
+        /// The configuration file
+        /// </summary>
+        private static string configurationFile;
+
         /// <summary>
         /// The _connection watcher.
         /// </summary>
@@ -36,7 +48,7 @@ namespace CalcIt.Server
         /// <summary>
         /// The _game client commmand executor.
         /// </summary>
-        private static CommandExecutor<CalcItClientMessage> gameClientCommmandExecutor;
+        private static CommandExecutor<CalcItClientMessage> gameCommmandExecutor;
 
         /// <summary>
         /// The _game client connection server.
@@ -46,7 +58,7 @@ namespace CalcIt.Server
         /// <summary>
         /// The _monitor client commmand executor.
         /// </summary>
-        private static CommandExecutor<CalcItMonitorMessage> monitorClientCommmandExecutor;
+        private static CommandExecutor<CalcItMonitorMessage> monitorCommmandExecutor;
 
         /// <summary>
         /// The _monitor client connection server.
@@ -64,6 +76,11 @@ namespace CalcIt.Server
         private static ServerManager serverManager;
 
         /// <summary>
+        /// The logger instance.
+        /// </summary>
+        private static Logger logger;
+
+        /// <summary>
         /// The main.
         /// </summary>
         /// <param name="args">
@@ -71,35 +88,101 @@ namespace CalcIt.Server
         /// </param>
         public static void Main(string[] args)
         {
-            serverManager =
-                new ServerManager(
-                    new XmlConfigurationSerializer<ServerConfiguration>()
-                    {
-                        ConfigurationFile = "ServerConfiguration.xml"
-                    });
+            HandleArguments(args);
 
+            // create server logger
+            InitializeLogger();
+
+            // Create server manager - logic
+            InitializeServerManager();
+
+            // Create servers for monitor and game clients
             InitializeNetworkAccess();
+
+            // Join logger and Listener for Monitors
+            logger.AddListener(new MonitorLogListener()
+            {
+                MonitorNetworkAccess = monitorClientConnectionServer
+            });
+
+            connectionWatcher = new ServerConnectionWatcher(serverManager, logger);
+
+            // Link server manager with send back network access instances
+            serverManager.GameClientNetworkAccess = gameClientConnectionServer;
+            serverManager.MonitorClientNetworkAccess = monitorClientConnectionServer;
+            serverManager.ServerNetworkAccess = connectionWatcher;
+
             InitializeCommandExecutor();
 
-            connectionWatcher = new ServerConnectionWatcher(serverManager.Configuration);
-
             // the command executor for server to server messages
-            connectionWatcher.ServerCommandExecutor = serverCommmandExecutor;
-            connectionWatcher.Start();
+            //connectionWatcher.Start();
 
             // Start Command execution - handling input
-            gameClientCommmandExecutor.StartExecutor();
-            monitorClientCommmandExecutor.StartExecutor();
+            gameCommmandExecutor.StartExecutor();
+            monitorCommmandExecutor.StartExecutor();
 
             // start receiving input
             gameClientConnectionServer.Start();
             monitorClientConnectionServer.Start();
 
+            while (true)
+            {
+                logger.AddLogMessage(new LogMessage("test"));
+                Thread.Sleep(new TimeSpan(0, 0, 0, 5));
+            }
+
             // Server end
-            Console.Write("Enter for Server End");
+            Console.Write(Resources.Enter_for_Server_End);
             Console.ReadLine();
 
             EndServer();
+        }
+
+        /// <summary>
+        /// Handles the arguments.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        private static void HandleArguments(string[] args)
+        {
+            if (args.Any(a => a.Equals("-h") || a.Equals("/h")))
+            {
+                Console.WriteLine(Resources.Help);
+                return;
+            }
+
+            if (args.Length == 1)
+            {
+                if (File.Exists(args[0]))
+                {
+                    configurationFile = args[0];
+                    return;
+                }
+            }
+
+            // load standard config file
+            configurationFile = ConfigurationManager.AppSettings["configuration"];
+        }
+
+        /// <summary>
+        /// Initializes the server manager.
+        /// </summary>
+        private static void InitializeServerManager()
+        {
+            serverManager =
+                new ServerManager(
+                    new XmlConfigurationSerializer<ServerConfiguration>()
+                    {
+                        ConfigurationFile = configurationFile
+                    });
+        }
+
+        /// <summary>
+        /// Initializes the logger.
+        /// </summary>
+        private static void InitializeLogger()
+        {
+            logger = new Logger();
+            logger.AddListener(new ConsoleLogListener());
         }
 
         /// <summary>
@@ -110,8 +193,8 @@ namespace CalcIt.Server
             gameClientConnectionServer.Stop();
             monitorClientConnectionServer.Stop();
 
-            gameClientCommmandExecutor.StopExecutor();
-            monitorClientCommmandExecutor.StopExecutor();
+            gameCommmandExecutor.StopExecutor();
+            monitorCommmandExecutor.StopExecutor();
 
             connectionWatcher.Stop();
         }
@@ -121,21 +204,23 @@ namespace CalcIt.Server
         /// </summary>
         private static void InitializeCommandExecutor()
         {
-            gameClientCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
+            gameCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
             {
-                MethodProvider = serverManager, 
+                MethodProvider = serverManager,
                 NetworkAccess = gameClientConnectionServer
             };
 
-            monitorClientCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
+            monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
             {
-                MethodProvider = serverManager, 
+                MethodProvider = serverManager,
                 NetworkAccess = monitorClientConnectionServer
             };
 
-            // No network access set - gets set by connection watcher 
-            // after inital server active/passive sync
-            serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>() { MethodProvider = serverManager };
+            serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>()
+            {
+                MethodProvider = serverManager,
+                NetworkAccess = connectionWatcher
+            };
         }
 
         /// <summary>
@@ -148,9 +233,9 @@ namespace CalcIt.Server
                 ServerConnector =
                     new UdpServerListener<CalcItClientMessage>()
                     {
-                        MessageTransformer = new DataContractTransformer<CalcItClientMessage>(), 
+                        MessageTransformer = new DataContractTransformer<CalcItClientMessage>(),
                         ConnectionSettings =
-                            new IpConnectionEndpoint() { Port = serverManager.Configuration.GameClientServerPort }
+                            new IpConnectionEndpoint() { Port = serverManager.Configuration.GameServerPort }
                     }
             };
 
@@ -159,9 +244,9 @@ namespace CalcIt.Server
                 ServerConnector =
                     new TcpServerListener<CalcItMonitorMessage>()
                     {
-                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(), 
+                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(),
                         ConnectionSettings =
-                            new IpConnectionEndpoint() { Port = serverManager.Configuration.MonitorClientServerPort }
+                            new IpConnectionEndpoint() { Port = serverManager.Configuration.MonitorServerPort }
                     }
             };
         }

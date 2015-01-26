@@ -1,30 +1,27 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="StatusType.cs" company="FH Wr.Neustadt">
+// <copyright file="IpConnectionEndpoint.cs" company="FH Wr.Neustadt">
 //      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// <summary>CalcIt.Protocol - StatusType.cs</summary>
+// <summary>CalcIt.Protocol - IpConnectionEndpoint.cs</summary>
 // -----------------------------------------------------------------------
-namespace CalcIt.Protocol.Data
+namespace CalcIt.Protocol.Endpoint
 {
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// The status type.
+    /// The ip connection endpoint.
     /// </summary>
     [DataContract]
-    public enum StatusType
+    public class IpConnectionEndpoint : ConnectionEndpoint
     {
         /// <summary>
-        /// The ok.
+        /// Gets or sets the port.
         /// </summary>
-        [EnumMember]
-        Ok, 
-
-        /// <summary>
-        /// The error.
-        /// </summary>
-        [EnumMember]
-        Error, 
+        /// <value>
+        /// The port.
+        /// </value>
+        [DataMember]
+        public int Port { get; set; }
     }
 }

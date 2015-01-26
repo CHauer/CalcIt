@@ -9,15 +9,19 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
     using System.Threading.Tasks;
 
+    using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Protocol;
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Data;
+    using CalcIt.Protocol.Endpoint;
+    using CalcIt.Protocol.Monitor;
 
     /// <summary>
     /// Opens a Tcp Client to the given hostname:port.
@@ -158,6 +162,14 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
+
+        /// <summary>
         /// Closes this instance.
         /// </summary>
         public void Close()
@@ -178,7 +190,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                // Todo log ex
+                LogMessage(new LogMessage(ex));
             }
 
             this.reconnectRunning = true;
@@ -223,17 +235,27 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </param>
         private void HandleIncommingReconnect(IAsyncResult result)
         {
-            var tempClient = this.reconnectListener.EndAcceptTcpClient(result);
+            TcpClient tempClient = null;
+
+            try
+            {
+                tempClient = this.reconnectListener.EndAcceptTcpClient(result);
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+                return;
+            }
 
             T message = null;
 
             try
             {
-               message = this.MessageTransformer.TransformFrom(tempClient.GetStream());
+                message = this.MessageTransformer.TransformFrom(tempClient.GetStream());
             }
             catch (Exception ex)
             {
-                //todo log ex
+                LogMessage(new LogMessage(ex));
             }
 
             if (message != null && message.SessionId != null && message.SessionId.Value.Equals(this.sessionId))
@@ -242,7 +264,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             else
             {
-                // TODO log wrong session id
+                LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
             }
         }
 
@@ -256,7 +278,6 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             this.taskWaitSleepTime = new TimeSpan(0, 0, 0, 0, 100);
             this.messageSendQueue = new Queue<T>();
             this.reconnectPort = this.GetRandomReconnectPort();
-            this.reconnectListener = new TcpListener(IPAddress.Any, this.reconnectPort);
         }
 
         /// <summary>
@@ -264,9 +285,43 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </summary>
         private void RunMessageReceiver()
         {
-            while (this.client.Connected)
+            NetworkStream networkStream = null;
+            T message = null;
+
+            try
             {
-                T message = this.MessageTransformer.TransformFrom(this.client.GetStream());
+                networkStream = client.GetStream();
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+                networkStream = null;
+            }
+
+            while (this.client.Connected && networkStream != null)
+            {
+                // while no data on network stream available and connection not closed
+                while (client.Available == 0 && client.Connected)
+                {
+                    Thread.Sleep(taskWaitSleepTime);
+                }
+
+                try
+                {
+                    //// direct deserializing from networkstream ends in endless loop
+                    //// because networkStream does not support seek/readtoend 
+
+                    var buffer = new byte[client.Available];
+                    networkStream.Read(buffer, 0, client.Available);
+                    var memoryStream = new MemoryStream(buffer);
+
+                    // Receive message
+                    message = this.MessageTransformer.TransformFrom(memoryStream);
+                }
+                catch (Exception ex)
+                {
+                    LogMessage(new LogMessage(ex));
+                }
 
                 if (message != null && message.SessionId != null)
                 {
@@ -283,7 +338,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     }
                     else
                     {
-                        // TODO log wrong session id received
+                        LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
                     }
                 }
             }
@@ -322,7 +377,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    // TODO log ex
+                    LogMessage(new LogMessage(ex));
                 }
             }
         }
@@ -332,6 +387,16 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </summary>
         private void RunReconnectListener()
         {
+            try
+            {
+                this.reconnectListener = new TcpListener(IPAddress.Any, this.reconnectPort);
+                this.reconnectListener.Start();
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+            }
+
             while (this.reconnectRunning)
             {
                 while (!this.reconnectListener.Pending())
@@ -344,7 +409,23 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     }
                 }
 
-                this.reconnectListener.BeginAcceptTcpClient(this.HandleIncommingReconnect, null);
+                try
+                {
+                    this.reconnectListener.BeginAcceptTcpClient(this.HandleIncommingReconnect, null);
+                }
+                catch (Exception ex)
+                {
+                    LogMessage(new LogMessage(ex));
+                }
+            }
+
+            try
+            {
+                this.reconnectListener.Stop();
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
             }
         }
 
@@ -360,6 +441,19 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             if (this.MessageReceived != null)
             {
                 this.MessageReceived(this, args);
+            }
+        }
+
+        /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="logMessage">The log message.</param>
+        private void LogMessage(LogMessage logMessage)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (Logger != null)
+            {
+                Logger.AddLogMessage(logMessage);
             }
         }
     }

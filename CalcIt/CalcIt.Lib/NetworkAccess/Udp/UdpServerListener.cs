@@ -14,10 +14,12 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     using System.Threading;
     using System.Threading.Tasks;
 
+    using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Protocol;
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Endpoint;
+    using CalcIt.Protocol.Monitor;
 
     /// <summary>
     /// The udp server listener.
@@ -121,6 +123,14 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// The sessions.
         /// </value>
         public List<Guid> Sessions { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// The start.
@@ -365,6 +375,19 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             if (this.MessageReceived != null)
             {
                 this.MessageReceived(this, args);
+            }
+        }
+
+        /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="logMessage">The log message.</param>
+        private void LogMessage(LogMessage logMessage)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (Logger != null)
+            {
+                Logger.AddLogMessage(logMessage);
             }
         }
     }

@@ -10,12 +10,16 @@ namespace CalcIt.Protocol
     using System;
     using System.Runtime.Serialization;
 
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Client;
+    using CalcIt.Protocol.Monitor;
+    using CalcIt.Protocol.Endpoint;
 
     /// <summary>
     /// The calc it message.
     /// </summary>
     [DataContract]
+    [KnownType(typeof(CalcItClientMessage))]
+    [KnownType(typeof(CalcItMonitorMessage ))]
     public abstract class CalcItMessage : ICalcItSession, IMessageControl
     {
 
@@ -28,19 +32,19 @@ namespace CalcIt.Protocol
         /// <summary>
         /// Gets or sets the session id.
         /// </summary>
+        /// <value>
+        /// The session identifier.
+        /// </value>
         [DataMember]
         public Guid? SessionId { get; set; }
 
-        public int MessageNr
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Gets or sets the message nr.
+        /// </summary>
+        /// <value>
+        /// The message nr.
+        /// </value>
+        [DataMember]
+        public int MessageNr { get; set; }
     }
 }
