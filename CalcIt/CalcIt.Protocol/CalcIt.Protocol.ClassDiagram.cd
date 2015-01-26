@@ -134,14 +134,14 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAIAAAAAEAAAAAAAABAAAAAABAQAAIAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAABgAAAAABAQAAIAAAAAA=</HashCode>
       <FileName>Monitor\LogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Monitor.LogServerMessage">
     <Position X="5" Y="9.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Monitor\LogServerMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -156,20 +156,20 @@
     <Position X="10.25" Y="6.5" Width="2" />
     <AssociationLine Name="HighScoreList" Type="CalcIt.Protocol.Data.HighScoreItem" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.25" Y="7.117" />
-        <Point X="9.875" Y="7.117" />
+        <Point X="10.25" Y="6.999" />
+        <Point X="9.875" Y="6.999" />
         <Point X="9.875" Y="8.375" />
         <Point X="8.125" Y="8.375" />
         <Point X="8.125" Y="8.75" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <HashCode>AAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Merge.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="HighScoreList" />
       <Property Name="GameClientList" />
+      <Property Name="HighScoreList" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Protocol.Data.HighScoreItem">
@@ -186,32 +186,25 @@
       <FileName>Data\ServerGameClientItem.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.IpConnectionEndpoint">
+  <Class Name="CalcIt.Protocol.Endpoint.IpConnectionEndpoint">
     <Position X="15.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\IpConnectionEndpoint.cs</FileName>
+      <FileName>Endpoint\IpConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.PipeConnectionEndpoint">
+  <Class Name="CalcIt.Protocol.Endpoint.PipeConnectionEndpoint">
     <Position X="17.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\PipeConnectionEndpoint.cs</FileName>
+      <FileName>Endpoint\PipeConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Session.ConnectionEndpoint">
+  <Class Name="CalcIt.Protocol.Endpoint.ConnectionEndpoint">
     <Position X="13.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\ConnectionEndpoint.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CalcIt.Protocol.Session.Session" Collapsed="true">
-    <Position X="10.25" Y="11" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Session\Session.cs</FileName>
+      <FileName>Endpoint\ConnectionEndpoint.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="CalcIt.Protocol.ICalcItSession">
@@ -242,7 +235,7 @@
       <FileName>Client\OperatorType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="CalcIt.Protocol.Data.LogMessageType" Collapsed="true">
+  <Enum Name="CalcIt.Protocol.Data.LogMessageType">
     <Position X="3" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAYAAAAAAABAAAAgAAAAAAAAAAAAAAAA=</HashCode>

@@ -1,87 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CalcIt.Lib
+﻿// -----------------------------------------------------------------------
+// <copyright file="ServerConfiguration.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Lib - ServerConfiguration.cs</summary>
+// -----------------------------------------------------------------------
+namespace CalcIt.Lib.Server.Configuration
 {
+    using System;
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// The server configuration.
+    /// </summary>
+    [Serializable]
     public class ServerConfiguration
     {
-        public int MinimalPoints
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerConfiguration"/> class.
+        /// </summary>
+        public ServerConfiguration()
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
+            this.InitializeStandardConfiguration();
         }
 
-        public int MaximalPoints
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the answer timeout in seconds.
+        /// </summary>
+        public int AnswerTimeout { get; set; }
 
-        public int AnswerTimeout
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the game client server port.
+        /// </summary>
+        public int GameServerPort { get; set; }
 
-        public List<string> ServerConnections
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the maximal points.
+        /// </summary>
+        public int MaximalPoints { get; set; }
 
-        public int InitialHeartbeatRetry
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the minimal points.
+        /// </summary>
+        public int MinimalPoints { get; set; }
 
-        public int GameClientServerPort
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the monitor client server port.
+        /// </summary>
+        public int MonitorServerPort { get; set; }
 
-        public int MonitorClientServerPort
+        /// <summary>
+        /// Gets or sets the server connections.
+        /// </summary>
+        public List<int> ServerListeners { get; set; }
+
+        /// <summary>
+        /// Gets or sets the server connections.
+        /// </summary>
+        /// <value>
+        /// The server connections.
+        /// </value>
+        public List<string> ServerConnections { get; set; }
+
+        /// <summary>
+        /// The initialize standard configuration.
+        /// </summary>
+        private void InitializeStandardConfiguration()
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
+            this.AnswerTimeout = 10;
+            this.GameServerPort = 3105;
+            this.MaximalPoints = 20;
+            this.MinimalPoints = 0;
+            this.MonitorServerPort = 50210;
         }
     }
 }

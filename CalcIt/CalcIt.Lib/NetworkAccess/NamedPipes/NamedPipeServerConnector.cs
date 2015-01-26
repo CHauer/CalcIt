@@ -5,15 +5,17 @@ using System.Text;
 using CalcIt.Lib.NetworkAccess.Events;
 using CalcIt.Lib.NetworkAccess.Transform;
 using CalcIt.Protocol;
-using CalcIt.Protocol.Session;
+using CalcIt.Protocol.Endpoint;
 
 namespace CalcIt.Lib.NetworkAccess.NamedPipes
 {
+    using CalcIt.Lib.Log;
+
     public class NamedPipeServerConnector<T> : INetworkServerConnector<T> where T : class, ICalcItSession
     {
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
-        public event EventHandler IncomingConnectionOccured;
+        public event EventHandler<ConnectionEventArgs> IncomingConnectionOccured;
 
         public IMessageTransformer<T> MessageTransformer
         {
@@ -27,7 +29,7 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
-        public int IsRunning
+        public bool IsRunning
         {
             get
             {
@@ -39,16 +41,7 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
-        public List<Session> Sessions
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public List<Guid> Sessions { get; set; }
 
         public int PipeName
         {
@@ -56,12 +49,17 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             {
                 throw new System.NotImplementedException();
             }
-            set
-            {
-            }
         }
 
-        public bool Send(T message)
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
+
+        public void Send(T message)
         {
             throw new NotImplementedException();
         }
@@ -75,5 +73,8 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
         {
             throw new NotImplementedException();
         }
+
+
+        public ConnectionEndpoint ConnectionSettings { get; set; }
     }
 }

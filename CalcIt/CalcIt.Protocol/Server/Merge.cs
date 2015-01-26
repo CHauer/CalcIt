@@ -1,44 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CalcIt.Protocol.Data;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="Merge.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Protocol - Merge.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Server
 {
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
+
+    using CalcIt.Protocol.Data;
+
+    /// <summary>
+    /// The merge operation.
+    /// </summary>
+    [DataContract]
     public class Merge : CalcItServerMessage
     {
-        public List<HighScoreItem> HighScoreList
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the game client list.
+        /// </summary>
+        [DataMember]
+        public List<ServerGameClientItem> GameClientList { get; set; }
 
-        public List<ServerGameClientItem> GameClientList
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public List<Session> SessionTable
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the high score list.
+        /// </summary>
+        [DataMember]
+        public List<HighScoreItem> HighScoreList { get; set; }
     }
 }

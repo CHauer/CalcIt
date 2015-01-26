@@ -3,6 +3,91 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="5" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="00,0,5,0">Hostname:</TextBlock>
+                <TextBox MinWidth="100"></TextBox>
+                <TextBlock Margin="10,0,5,0">Port:</TextBlock>
+                <TextBox MinWidth="50"></TextBox>
+                <TextBlock Margin="10,0,5,0">Username:</TextBlock>
+                <TextBox MinWidth="100"></TextBox>
+            </StackPanel>
+            <Button Margin="5,0" Grid.Column="2">Start Game</Button>
+        </Grid>
+
+        <Grid Margin="0,25,0,5" Grid.Row="0" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
+            <TextBlock Grid.Column="1" Style="{DynamicResource BigNumberTextBlock}">+</TextBlock>
+            <TextBlock Grid.Column="2" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
+            <TextBlock Grid.Column="3" Style="{DynamicResource BigNumberTextBlock}">=</TextBlock>
+            <TextBox Grid.Column="4" Text="10" Style="{DynamicResource BigNumberTextBox}" ></TextBox>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Width="200">Send Answer</Button>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Width="140" VerticalAlignment="Center">Time left to answer:</TextBlock>
+                <TextBlock Style="{DynamicResource TimeCounterTextBlock}" >00:00:05</TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Grid.ColumnSpan="2" Margin="5">End Game</Button>
+                <TextBlock Grid.Row="1" Style="{DynamicResource DetailTextBlock}">Round:</TextBlock>
+                <TextBlock Grid.Row="2" Style="{DynamicResource DetailTextBlock}">Points:</TextBlock>
+                <TextBlock Grid.Row="3" Style="{DynamicResource DetailTextBlock}">Time Played:</TextBlock>
+            </Grid>
+
+            <!-- Highscore -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Margin="10,0">Highscore</TextBlock>
+                    <Button Margin="10,0">Refresh</Button>
+                </StackPanel>
+                <ListView Grid.Row="1">
+                    
+                </ListView>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

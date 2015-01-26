@@ -26,6 +26,16 @@ namespace CalcIt.Lib.NetworkAccess
         event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
         /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
+        CalcIt.Lib.Log.ILog Logger
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The send.
         /// </summary>
         /// <param name="message">

@@ -8,11 +8,14 @@ using CalcIt.Protocol;
 
 namespace CalcIt.Lib.NetworkAccess.NamedPipes
 {
+    using CalcIt.Lib.Log;
+    using CalcIt.Protocol.Endpoint;
+
     public class NamedPipeClientConnector<T> : INetworkClientConnector<T> where T : class, ICalcItSession
     {
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
-        public int IsConnected
+        public bool IsConnected
         {
             get
             {
@@ -36,12 +39,28 @@ namespace CalcIt.Lib.NetworkAccess.NamedPipes
             }
         }
 
-        public bool Send(T message)
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
+
+        public void Send(T message)
         {
             throw new NotImplementedException();
         }
 
         public void Connect()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public ConnectionEndpoint ConnectionSettings { get; set; }
+
+        public void Close()
         {
             throw new NotImplementedException();
         }

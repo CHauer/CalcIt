@@ -3,18 +3,20 @@
 //      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// <summary>DataSync.Lib - XmlDataManager.cs</summary>
+// <summary>CalcIt.Lib - XmlDataManager.cs</summary>
 // -----------------------------------------------------------------------
-
-using System.IO;
-using System.Xml.Serialization;
-
 namespace CalcIt.Lib.Server.Configuration
 {
+    using System.IO;
+    using System.Xml.Serialization;
+
     /// <summary>
     /// The  XmlSerializer - implements ConfigurationSaver and Loader interface.
     /// </summary>
-    public class XmlConfigurationSerializer<T> : IConfigurationManager<T> where T : class
+    /// <typeparam name="T">
+    /// </typeparam>
+    public class XmlConfigurationSerializer<T> : IConfigurationManager<T>
+        where T : class
     {
         /// <summary>
         /// The serializer.
@@ -22,7 +24,7 @@ namespace CalcIt.Lib.Server.Configuration
         private XmlSerializer serializer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer" /> class.
+        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer{T}" /> class.
         /// </summary>
         public XmlConfigurationSerializer()
         {
@@ -30,9 +32,19 @@ namespace CalcIt.Lib.Server.Configuration
         }
 
         /// <summary>
+        /// Gets or sets the configuration file.
+        /// </summary>
+        /// <value>
+        /// The configuration file.
+        /// </value>
+        public string ConfigurationFile { get; set; }
+
+        /// <summary>
         /// Loads the configuration.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
         public T LoadConfiguration()
         {
             using (var file = File.OpenRead(this.ConfigurationFile))
@@ -44,7 +56,9 @@ namespace CalcIt.Lib.Server.Configuration
         /// <summary>
         /// Saves the configuration.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
+        /// <param name="configuration">
+        /// The configuration.
+        /// </param>
         public void SaveConfiguration(T configuration)
         {
             using (var file = File.Open(this.ConfigurationFile, FileMode.Create, FileAccess.Write))
@@ -53,13 +67,5 @@ namespace CalcIt.Lib.Server.Configuration
                 file.Flush();
             }
         }
-
-        /// <summary>
-        /// Gets or sets the configuration file.
-        /// </summary>
-        /// <value>
-        /// The configuration file.
-        /// </value>
-        public string ConfigurationFile { get; set; }
     }
 }

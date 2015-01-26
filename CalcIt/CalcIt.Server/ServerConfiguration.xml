@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AnswerTimeout>10</AnswerTimeout>
+  <GameServerPort>3105</GameServerPort>
+  <MaximalPoints>20</MaximalPoints>
+  <MinimalPoints>0</MinimalPoints>
+  <MonitorServerPort>50210</MonitorServerPort>
+  <ServerListeners>
+    <int>50893</int>
+  </ServerListeners>
+  <ServerConnections>
+    <string>locahost:60000</string>
+  </ServerConnections>
+</ServerConfiguration>

@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="ConnectClient.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Protocol - ConnectClient.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Client
 {
+    using System;
+    using System.Runtime.Serialization;
+
+    /// <summary>
+    /// The connect client.
+    /// </summary>
+    [DataContract]
     public class ConnectClient : CalcItClientMessage
     {
-        public int Username
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        /// <summary>
+        /// Gets or sets the username.
+        /// </summary>
+        [DataMember]
+        public int Username { get; set; }
     }
 }

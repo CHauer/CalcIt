@@ -9,10 +9,11 @@ namespace CalcIt.Lib.NetworkAccess
 {
     using System;
 
+    using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Protocol;
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Endpoint;
 
     /// <summary>
     /// The NetworkClientConnector interface.
@@ -45,6 +46,16 @@ namespace CalcIt.Lib.NetworkAccess
         /// Gets or sets the message transformer.
         /// </summary>
         IMessageTransformer<T> MessageTransformer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
+        ILog Logger
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The close.

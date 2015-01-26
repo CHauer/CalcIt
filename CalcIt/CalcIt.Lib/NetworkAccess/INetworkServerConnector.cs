@@ -10,10 +10,11 @@ namespace CalcIt.Lib.NetworkAccess
     using System;
     using System.Collections.Generic;
 
+    using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Protocol;
-    using CalcIt.Protocol.Session;
+    using CalcIt.Protocol.Endpoint;
 
     /// <summary>
     /// The NetworkServerConnector interface.
@@ -53,6 +54,12 @@ namespace CalcIt.Lib.NetworkAccess
         /// Gets the sessions.
         /// </summary>
         List<Guid> Sessions { get; }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
+        ILog Logger { get; set; }
 
         /// <summary>
         /// The send.
