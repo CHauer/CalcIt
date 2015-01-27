@@ -50,10 +50,13 @@ namespace CalcIt.Monitor
         /// </summary>
         private static Logger logger;
 
+        /// <summary>
+        /// The exit flag.
+        /// </summary>
+        private static bool exit = false;
+
         public static void Main(string[] args)
         {
-            bool exit = false;
-
             HandleArguments(args);
             PrepareConsoleWindow();
 
@@ -64,13 +67,7 @@ namespace CalcIt.Monitor
                 Logger = logger
             };
 
-            InitializeNetworkAccess();
-            InitializeCommandExecutor();
-
-            monitorCommmandExecutor.StartExecutor();
-
-            monitorManager.NetworkAccess = monitorNetworkClient;
-            monitorManager.ConnectToServer();
+            ConnectMonitor();
 
             while (!exit)
             {
@@ -79,6 +76,25 @@ namespace CalcIt.Monitor
             }
 
             EndMonitor();
+        }
+
+        /// <summary>
+        /// Connects the monitor.
+        /// </summary>
+        private async static void ConnectMonitor()
+        {
+            bool connected = false;
+
+            while(!connected)
+            {
+                InitializeNetworkAccess();
+                InitializeCommandExecutor();
+
+                monitorCommmandExecutor.StartExecutor();
+
+                monitorManager.NetworkAccess = monitorNetworkClient;
+                connected = await monitorManager.ConnectToServer();
+            }
         }
 
         /// <summary>
@@ -131,7 +147,7 @@ namespace CalcIt.Monitor
             serverHostname = "localhost";
             serverPort = 50210;
 
-            if(args.Any(arg => arg.Equals("/h")))
+            if (args.Any(arg => arg.Equals("/h")))
             {
                 Console.WriteLine(Resources.Help);
             }

@@ -24,7 +24,17 @@ namespace CalcIt.Protocol.Client
         /// The message.
         /// </value>
         [DataMember]
-        public string Message { get; set; }
+        public string DetailMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the response to operation.
+        /// </summary>
+        /// <value>
+        /// The response to operation.
+        /// </value>
+
+        [DataMember]
+        public string ResponseToOperation { get; set; }
 
         /// <summary>
         /// Gets or sets the status.

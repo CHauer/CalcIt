@@ -96,16 +96,11 @@ namespace CalcIt.Server
             // Create server manager - logic
             InitializeServerManager();
 
-            // Create servers for monitor and game clients
+            // Create servers for monitor and game clients and server connection watcher
             InitializeNetworkAccess();
 
             // Join logger and Listener for Monitors
-            logger.AddListener(new MonitorLogListener()
-            {
-                MonitorNetworkAccess = monitorClientConnectionServer
-            });
-
-            connectionWatcher = new ServerConnectionWatcher(serverManager, logger);
+            InitializeMonitorLogger();
 
             // Link server manager with send back network access instances
             serverManager.GameClientNetworkAccess = gameClientConnectionServer;
@@ -114,22 +109,34 @@ namespace CalcIt.Server
 
             InitializeCommandExecutor();
 
-            // the connection watcher for server to server messages
-            //connectionWatcher.Start();
-
             // Start Command execution - handling input
             gameCommmandExecutor.StartExecutor();
             monitorCommmandExecutor.StartExecutor();
+            serverCommmandExecutor.StartExecutor();
 
             // start receiving input
             gameClientConnectionServer.Start();
             monitorClientConnectionServer.Start();
 
+            // the connection watcher for server to server messages
+            //connectionWatcher.Start();
+            
             // Server end
-            Console.Write(Resources.Enter_for_Server_End);
+            Console.WriteLine(Resources.Enter_for_Server_End);
             Console.ReadLine();
 
             EndServer();
+        }
+
+        /// <summary>
+        /// Initializes the monitor logger.
+        /// </summary>
+        private static void InitializeMonitorLogger()
+        {
+            logger.AddListener(new MonitorLogListener()
+            {
+                MonitorNetworkAccess = monitorClientConnectionServer
+            });
         }
 
         /// <summary>
@@ -204,6 +211,7 @@ namespace CalcIt.Server
                 MethodProvider = serverManager,
                 NetworkAccess = gameClientConnectionServer
             };
+            serverManager.OnTunneldMessageReceived += (sender, e) => gameCommmandExecutor.HandleTunneldMessage(e.Message);
 
             monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
             {
@@ -216,6 +224,7 @@ namespace CalcIt.Server
                 MethodProvider = serverManager,
                 NetworkAccess = connectionWatcher
             };
+
         }
 
         /// <summary>
@@ -244,6 +253,8 @@ namespace CalcIt.Server
                             new IpConnectionEndpoint() { Port = serverManager.Configuration.MonitorServerPort }
                     }
             };
+
+            connectionWatcher = new ServerConnectionWatcher(serverManager, logger);
         }
     }
 }

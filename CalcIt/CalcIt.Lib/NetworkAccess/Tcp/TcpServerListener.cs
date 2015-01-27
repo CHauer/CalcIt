@@ -154,7 +154,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             if (this.MessageTransformer == null)
             {
-                throw new InvalidOperationException("Message transformer has to be initialized!");
+                throw new InvalidOperationException("DetailMessage transformer has to be initialized!");
             }
 
             this.IsRunning = true;

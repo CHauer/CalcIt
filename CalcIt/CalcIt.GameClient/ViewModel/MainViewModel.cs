@@ -10,11 +10,22 @@ namespace CalcIt.GameClient.ViewModel
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
+    using System.Net;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     using CalcIt.Lib.Client;
+    using CalcIt.Lib.CommandExecution;
     using CalcIt.Lib.Log;
+    using CalcIt.Lib.NetworkAccess;
+    using CalcIt.Lib.NetworkAccess.Events;
+    using CalcIt.Lib.NetworkAccess.Transform;
+    using CalcIt.Lib.NetworkAccess.Udp;
+    using CalcIt.Protocol.Client;
     using CalcIt.Protocol.Data;
+    using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
 
     using GalaSoft.MvvmLight;
@@ -26,6 +37,49 @@ namespace CalcIt.GameClient.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private UdpClientConnector<CalcItClientMessage> udpClient;
+
+        private CalcItNetworkClient<CalcItClientMessage> gameNetworkClient;
+
+        private ConnectionEndpoint connectionEndpoint;
+
+        private NetworkAccessType networkAccessType;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private enum NetworkAccessType
+        {
+            Udp,
+            NamedPipes,
+        }
+
+        /// <summary>
+        /// The is game running
+        /// </summary>
+        private bool isGameRunning;
+
+        /// <summary>
+        /// The connection error message
+        /// </summary>
+        private string connectionErrorMessage;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is game running.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is game running; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsGameRunning
+        {
+            get { return isGameRunning; }
+            set
+            {
+                isGameRunning = value;
+                RaisePropertyChanged(() => IsGameRunning);
+            }
+        }
+
         /// <summary>
         /// The answer time left.
         /// </summary>
@@ -67,6 +121,11 @@ namespace CalcIt.GameClient.ViewModel
         private GameClientManager gameClientManager;
 
         /// <summary>
+        /// The game command executor
+        /// </summary>
+        private CommandExecutor<CalcItClientMessage> gameCommandExecutor;
+
+        /// <summary>
         /// The high score.
         /// </summary>
         private ObservableCollection<HighScoreItem> highScore;
@@ -74,7 +133,7 @@ namespace CalcIt.GameClient.ViewModel
         /// <summary>
         /// The hostname.
         /// </summary>
-        private string hostname;
+        private string connectionString;
 
         /// <summary>
         /// The last log message.
@@ -95,11 +154,6 @@ namespace CalcIt.GameClient.ViewModel
         /// The number b.
         /// </summary>
         private string numberB;
-
-        /// <summary>
-        /// The port.
-        /// </summary>
-        private int port;
 
         /// <summary>
         /// The username.
@@ -209,19 +263,70 @@ namespace CalcIt.GameClient.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the hostname.
+        /// Gets or sets the connection string.
         /// </summary>
-        public string Hostname
+        /// <value>
+        /// The connection string.
+        /// </value>
+        public string ConnectionString
         {
             get
             {
-                return this.hostname;
+                return this.connectionString;
             }
 
             set
             {
-                this.hostname = value;
-                this.RaisePropertyChanged(() => this.Hostname);
+                this.connectionString = value;
+                this.RaisePropertyChanged(() => this.ConnectionString);
+            }
+        }
+
+        /// <summary>
+        /// Gets the color of the log message.
+        /// </summary>
+        /// <value>
+        /// The color of the log message.
+        /// </value>
+        public Color LogMessageColor { get; private set; }
+
+        /// <summary>
+        /// Gets the last log message.
+        /// </summary>
+        /// <value>
+        /// The last log message.
+        /// </value>
+        public string LastLogMessage
+        {
+            get
+            {
+                return lastLogMessage;
+            }
+            private set
+            {
+                this.lastLogMessage = value;
+                RaisePropertyChanged(() => LastLogMessage);
+                RaisePropertyChanged(() => LogMessageColor);
+            }
+        }
+
+        /// <summary>
+        /// Gets the last log message.
+        /// </summary>
+        /// <value>
+        /// The last log message.
+        /// </value>
+        public string ConnectionErrorMessage
+        {
+            get
+            {
+                return connectionErrorMessage;
+            }
+            private set
+            {
+                this.connectionErrorMessage = value;
+                RaisePropertyChanged(() => ConnectionErrorMessage);
+                RaisePropertyChanged(() => ConnectionErrorMessage);
             }
         }
 
@@ -235,7 +340,7 @@ namespace CalcIt.GameClient.ViewModel
                 return this.numberA;
             }
 
-            set
+            private set
             {
                 this.numberA = value;
                 this.RaisePropertyChanged(() => this.NumberA);
@@ -252,27 +357,10 @@ namespace CalcIt.GameClient.ViewModel
                 return this.numberB;
             }
 
-            set
+            private set
             {
                 this.numberB = value;
                 this.RaisePropertyChanged(() => this.NumberB);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the port.
-        /// </summary>
-        public int Port
-        {
-            get
-            {
-                return this.port;
-            }
-
-            set
-            {
-                this.port = value;
-                this.RaisePropertyChanged(() => this.Port);
             }
         }
 
@@ -400,11 +488,188 @@ namespace CalcIt.GameClient.ViewModel
         /// </summary>
         private void InitializeCommands()
         {
+            this.StartGame = new DependentRelayCommand(
+                this.ExecuteConnectAndStartGame,
+                this.CanConnectGame,
+                this,
+                () => this.Username,
+                () => this.ConnectionString,
+                () => this.IsGameRunning);
+
+            this.RefreshHighscore = new DependentRelayCommand(
+                this.ExecuteRefreshHighScore,
+                this.CanRefreshHighScore,
+                this,
+                () => this.IsGameRunning);
+
             this.SendAnswer = new DependentRelayCommand(
-                this.ExecuteSendAnswer, 
-                this.CanSendAnswer, 
-                this, 
+                this.ExecuteSendAnswer,
+                this.CanSendAnswer,
+                this,
                 () => this.Answer);
+        }
+
+        private bool CanRefreshHighScore()
+        {
+            //TODO throw new NotImplementedException();
+            return false;
+        }
+
+        private void ExecuteRefreshHighScore()
+        {
+            //TODO throw new NotImplementedException();
+
+        }
+
+        /// <summary>
+        /// Determines whether this instance [can connect game].
+        /// </summary>
+        /// <returns></returns>
+        private bool CanConnectGame()
+        {
+            if (String.IsNullOrEmpty(this.ConnectionString) || string.IsNullOrEmpty(this.Username))
+            {
+                return false;
+            }
+
+            if (connectionString.Contains(":"))
+            {
+                int port = 0;
+                var parts = connectionString.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length == 2)
+                {
+                    connectionEndpoint = new IpConnectionEndpoint();
+
+                    //try
+                    //{
+                    //    connectionEndpoint.Hostname = Dns.GetHostEntry(parts[0]).AddressList[0].ToString();
+                    //}
+                    //catch
+                    //{
+                        connectionEndpoint.Hostname = parts[0];
+                    //
+
+                    try
+                    {
+                        port = Convert.ToInt32(parts[1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
+                    if (!(port > 0 && port < 65536))
+                    {
+                        return false;
+                    }
+
+                    (connectionEndpoint as IpConnectionEndpoint).Port = port;
+
+                    //this.ConnectionString = connectionEndpoint.Hostname + ":" + port;
+                }
+                else
+                {
+                    return false;
+                }
+                networkAccessType = NetworkAccessType.Udp;
+            }
+            else if (connectionString.Contains("@"))
+            {
+                //namedpipes
+                networkAccessType = NetworkAccessType.NamedPipes;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Executes the connect and start game.
+        /// </summary>
+        private void ExecuteConnectAndStartGame()
+        {
+            if (networkAccessType == NetworkAccessType.Udp)
+            {
+                udpClient = new UdpClientConnector<CalcItClientMessage>()
+                {
+                    ConnectionSettings = connectionEndpoint,
+                    MessageTransformer = new DataContractTransformer<CalcItClientMessage>(),
+                    Logger = logger
+                };
+
+                gameNetworkClient = new CalcItNetworkClient<CalcItClientMessage>()
+                {
+                    ClientConnector = udpClient,
+                    Logger = logger
+                };
+
+                gameClientManager.NetworkAccess = gameNetworkClient;
+
+                this.gameCommandExecutor = new CommandExecutor<CalcItClientMessage>()
+                {
+                    Logger = logger,
+                    MethodProvider = gameClientManager,
+                    NetworkAccess = gameNetworkClient
+                };
+                
+                gameCommandExecutor.StartExecutor();
+                gameNetworkClient.Connect();                
+            }
+            else
+            {
+                // TODO named pipes
+            }
+
+            gameClientManager.ConnectClient(Username);
+        }
+        private void NetworkEndGameReceived(object sender, MessageReceivedEventArgs<EndGame> e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NetworkHighScoreReceived(object sender, MessageReceivedEventArgs<HighscoreResponse> e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Networks the question received.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MessageReceivedEventArgs{Question}"/> instance containing the event data.</param>
+        private void NetworkQuestionReceived(object sender, MessageReceivedEventArgs<Question> e)
+        {
+            var question = e.Message as Question;
+
+            this.NumberA = question.NumberA.ToString();
+            this.NumberB = question.NumberA.ToString();
+            switch (question.Operator)
+            {
+                case OperatorType.Plus:
+                    this.CalcOperator = "+";
+                    break;
+                case OperatorType.Multiply:
+                    this.CalcOperator = "x";
+                    break;
+                case OperatorType.Minus:
+                    this.CalcOperator = "-";
+                    break;
+            }
+
+            Task.Run(() => StartTimeCounter(question.TimeToAnswer));
+        }
+
+        /// <summary>
+        /// Starts the time counter.
+        /// </summary>
+        /// <param name="timeToAnswer">The time to answer.</param>
+        private void StartTimeCounter(int timeToAnswer)
+        {
+            while (timeToAnswer > 0)
+            {
+                Thread.Sleep(new TimeSpan(0, 0, 0, 1));
+                timeToAnswer--;
+                this.AnswerTimeLeft = new TimeSpan(0, 0, 0, timeToAnswer);
+            }
         }
 
         /// <summary>
@@ -413,9 +678,9 @@ namespace CalcIt.GameClient.ViewModel
         private void InitializeGameClient()
         {
             this.gameClientManager = new GameClientManager() { Logger = this.logger };
-
-            // gameClientManager.QuestionReceived
-            // gameClientManager.HighScoreReceived
+            gameClientManager.QuestionReceived += this.NetworkQuestionReceived;
+            gameClientManager.HighScoreReceived += this.NetworkHighScoreReceived;
+            gameClientManager.EndGameReceived += this.NetworkEndGameReceived;
         }
 
         /// <summary>
@@ -424,7 +689,7 @@ namespace CalcIt.GameClient.ViewModel
         private void InitializeLogger()
         {
             this.logger = new Logger();
-            this.logger.MessageLogged += this.Logger_HandleMessageLogged;
+            this.logger.MessageLogged += this.LoggerHandleMessageLogged;
         }
 
         /// <summary>
@@ -436,9 +701,22 @@ namespace CalcIt.GameClient.ViewModel
         /// <param name="e">
         /// The e.
         /// </param>
-        private void Logger_HandleMessageLogged(object sender, LogMessage e)
+        private void LoggerHandleMessageLogged(object sender, LogMessage e)
         {
-            // TODO log somewhere on UI
+            switch (e.Type)
+            {
+                case LogMessageType.Error:
+                    this.LogMessageColor = Colors.Red;
+                    break;
+                case LogMessageType.Warning:
+                    this.LogMessageColor = Colors.Gold;
+                    break;
+                default:
+                    this.LogMessageColor = Colors.Black;
+                    break;
+            }
+
+            LastLogMessage = e.Message;
 
             Debug.WriteLine(e.Message);
         }

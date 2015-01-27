@@ -126,38 +126,44 @@ namespace CalcIt.Lib.Server.Watcher
             this.DisconnectedClients = new List<CalcItNetworkClient<CalcItServerMessage>>();
             this.DisconnectedServers = new List<CalcItNetworkServer<CalcItServerMessage>>();
 
-            foreach (string connection in Configuration.ServerConnections)
+            if (Configuration.ServerConnections != null && Configuration.ServerConnections.Count > 0)
             {
-                ConnectionEndpoint endpoint = this.CreateEndpoint(connection);
-
-                if (endpoint != null)
+                foreach (string connection in Configuration.ServerConnections)
                 {
-                    DisconnectedClients.Add(new CalcItNetworkClient<CalcItServerMessage>()
+                    ConnectionEndpoint endpoint = this.CreateEndpoint(connection);
+
+                    if (endpoint != null)
+                    {
+                        DisconnectedClients.Add(new CalcItNetworkClient<CalcItServerMessage>()
+                        {
+                            Logger = this.Logger,
+                            ClientConnector = new TcpClientConnector<CalcItServerMessage>()
+                            {
+                                ConnectionSettings = endpoint,
+                                Logger = Logger,
+                                MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
+                            },
+                        });
+                    }
+                }
+            }
+
+            if (Configuration.ServerListeners != null && Configuration.ServerListeners.Count > 0)
+            {
+                foreach (int listenerPort in Configuration.ServerListeners)
+                {
+                    DisconnectedServers.Add(new CalcItNetworkServer<CalcItServerMessage>()
                     {
                         Logger = this.Logger,
-                        ClientConnector = new TcpClientConnector<CalcItServerMessage>()
+                        ServerConnector = new TcpServerListener<CalcItServerMessage>()
                         {
-                            ConnectionSettings = endpoint,
+                            // only listener port needed
+                            ConnectionSettings = new IpConnectionEndpoint() { Port = listenerPort },
                             Logger = Logger,
                             MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
                         },
                     });
                 }
-            }
-
-            foreach (int listenerPort in Configuration.ServerListeners)
-            {
-                DisconnectedServers.Add(new CalcItNetworkServer<CalcItServerMessage>()
-                {
-                    Logger = this.Logger,
-                    ServerConnector = new TcpServerListener<CalcItServerMessage>()
-                    {
-                        // only listener port needed
-                        ConnectionSettings = new IpConnectionEndpoint() { Port = listenerPort },
-                        Logger = Logger,
-                        MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
-                    },
-                });
             }
         }
 
@@ -314,7 +320,7 @@ namespace CalcIt.Lib.Server.Watcher
 
             try
             {
-                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.AnswerTimeout));
+                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
 
                 if (receivedMessage != null)
                 {
@@ -360,7 +366,7 @@ namespace CalcIt.Lib.Server.Watcher
 
             try
             {
-                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.AnswerTimeout));
+                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
 
                 if (receivedMessage != null)
                 {
@@ -389,7 +395,7 @@ namespace CalcIt.Lib.Server.Watcher
 
             try
             {
-                syncMessage = (SyncMessage)await client.Receive(typeof(SyncMessage), new TimeSpan(0, 0, 0, this.Configuration.AnswerTimeout));
+                syncMessage = (SyncMessage)await client.Receive(typeof(SyncMessage), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
             }
             catch (Exception ex)
             {

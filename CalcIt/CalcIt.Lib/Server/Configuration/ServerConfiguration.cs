@@ -27,7 +27,15 @@ namespace CalcIt.Lib.Server.Configuration
         /// <summary>
         /// Gets or sets the answer timeout in seconds.
         /// </summary>
-        public int AnswerTimeout { get; set; }
+        public int SyncTimeOut { get; set; }
+
+        /// <summary>
+        /// Gets or sets the answer time out.
+        /// </summary>
+        /// <value>
+        /// The answer time out.
+        /// </value>
+        public int AnswerTimeOut { get; set; }
 
         /// <summary>
         /// Gets or sets the game client server port.
@@ -67,11 +75,12 @@ namespace CalcIt.Lib.Server.Configuration
         /// </summary>
         private void InitializeStandardConfiguration()
         {
-            this.AnswerTimeout = 10;
+            this.SyncTimeOut = 10;
             this.GameServerPort = 3105;
             this.MaximalPoints = 20;
             this.MinimalPoints = 0;
             this.MonitorServerPort = 50210;
+            this.AnswerTimeOut = 60;
         }
     }
 }

@@ -33,10 +33,10 @@ namespace CalcIt.Protocol.Client
         [EnumMember]
         Multiply = 3, 
 
-        /// <summary>
-        /// The divide operator.
-        /// </summary>
-        [EnumMember]
-        Divide = 4, 
+        // /// <summary>
+        // /// The divide operator.
+        // /// </summary>
+        // [EnumMember]
+        // Divide = 4, 
     }
 }

@@ -105,7 +105,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAACAQAAAAIEAQAAAIAAgAAIAIAAAgAAAAAAQAIAAAA=</HashCode>
+      <HashCode>AAACAQAABAIEAQAAAIAAgAAIAIAAAgAAAAAAQAIAAAA=</HashCode>
       <FileName>CommandExecution\CommandExecutor.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -114,25 +114,33 @@
   </Class>
   <Class Name="CalcIt.Lib.Client.GameClientManager">
     <Position X="21.25" Y="1" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>IAAACQAAAiIgAAAAAgACAAAABEYAAAAAAAAAQIAAAAA=</HashCode>
+      <HashCode>YAAACQCAgiIgAIAAAgACAAAABEYAAAAAAAAAQIAAAAA=</HashCode>
       <FileName>Client\GameClientManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.ServerManager">
     <Position X="18.5" Y="2" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <AssociationLine Name="Configuration" Type="CalcIt.Lib.Server.Configuration.ServerConfiguration" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="20.75" Y="7.279" />
-        <Point X="22.375" Y="7.279" />
-        <Point X="22.375" Y="8.75" />
+        <Point X="20.75" Y="8.805" />
+        <Point X="21" Y="8.805" />
+        <Point X="21" Y="9.844" />
+        <Point X="22.375" Y="9.844" />
+        <Point X="22.375" Y="10.5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
         <Position X="0.099" Y="0.55" Height="0.182" Width="1.256" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>CAAAAYQAEAIEAAAAAABAAhAEIQAAAAYEgggACAAADAA=</HashCode>
+      <HashCode>CAgCAYAAEAIEAYAgAABAghAEIQAAAAYEgAgACABADAQ=</HashCode>
       <FileName>Server\ServerManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -143,7 +151,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.XmlConfigurationSerializer&lt;T&gt;">
-    <Position X="18.5" Y="9.25" Width="2.25" />
+    <Position X="18.5" Y="11" Width="2.25" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -154,9 +162,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.ServerConfiguration">
-    <Position X="21.25" Y="8.75" Width="2.25" />
+    <Position X="21.25" Y="10.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAAAAABAAAAAAAABAAAAABAAAAAAEAQAAAAAABAAAA=</HashCode>
+      <HashCode>AQAAAAABAAAAAAAAAAAAAABAAAAAAEAQAABAAABAAEA=</HashCode>
       <FileName>Server\Configuration\ServerConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -175,9 +183,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.GameClient">
-    <Position X="21.5" Y="5" Width="1.75" />
+    <Position X="21.25" Y="6.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>BCAQAAAAAAAAgAAAAAAAAAAIAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>hCAQAAAAAAAAgAAAAAAAAAAIAAACAAAAAQAAAAAACAA=</HashCode>
       <FileName>Server\GameClient.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -254,14 +262,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;">
-    <Position X="18.5" Y="7.5" Width="2.25" />
+    <Position X="18.5" Y="9.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAQAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Configuration\IConfigurationManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.INetworkAccess&lt;T&gt;">
-    <Position X="15.75" Y="1" Width="1.75" />
+    <Position X="15.75" Y="1" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAIAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\INetworkAccess.cs</FileName>

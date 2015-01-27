@@ -20,6 +20,6 @@ namespace CalcIt.Protocol.Client
         /// Gets or sets the username.
         /// </summary>
         [DataMember]
-        public int Username { get; set; }
+        public string Username { get; set; }
     }
 }
