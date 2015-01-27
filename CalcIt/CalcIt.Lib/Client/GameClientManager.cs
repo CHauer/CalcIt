@@ -133,6 +133,17 @@ namespace CalcIt.Lib.Client
         [CommandHandler(typeof(EndGame))]
         public void HandleEndGameMessage(CalcItMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (!(message is EndGame))
+            {
+                throw new ArgumentException("Message type invalid - required message is EndGame.");
+            }
+
+
             this.OnEndGameReceived(new MessageReceivedEventArgs<EndGame>((EndGame)message));
         }
 
@@ -145,6 +156,17 @@ namespace CalcIt.Lib.Client
         [CommandHandler(typeof(HighscoreResponse))]
         public void HandleHighscoreResponse(CalcItMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (!(message is HighscoreResponse))
+            {
+                throw new ArgumentException("Message type invalid - required message is HighscoreResponse.");
+            }
+
+
             this.OnHighScoreReceived(new MessageReceivedEventArgs<HighscoreResponse>((HighscoreResponse)message));
         }
 
@@ -157,6 +179,16 @@ namespace CalcIt.Lib.Client
         [CommandHandler(typeof(Question))]
         public void HandleQuestion(CalcItMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (!(message is Question))
+            {
+                throw new ArgumentException("Message type invalid - required message is Question.");
+            }
+
             this.OnQuestionReceived(new MessageReceivedEventArgs<Question>((Question)message));
         }
 

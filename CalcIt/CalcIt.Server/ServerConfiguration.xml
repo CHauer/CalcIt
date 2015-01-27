@@ -4,7 +4,7 @@
   <AnswerTimeOut>60</AnswerTimeOut>
   <GameServerPort>3105</GameServerPort>
   <MaximalPoints>20</MaximalPoints>
-  <MinimalPoints>0</MinimalPoints>
+  <MinimalPoints>-5</MinimalPoints>
   <MonitorServerPort>50210</MonitorServerPort>
   <ServerListeners>
     <int>50893</int>

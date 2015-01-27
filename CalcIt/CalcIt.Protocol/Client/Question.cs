@@ -48,6 +48,7 @@ namespace CalcIt.Protocol.Client
         /// <value>
         /// The time to answer.
         /// </value>
+        [DataMember]
         public int TimeToAnswer { get; set; }
     }
 }

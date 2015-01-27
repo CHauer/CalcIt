@@ -306,8 +306,7 @@ namespace CalcIt.Lib.Server
             }
 
             // no started game exists
-            var gameclient = GameClients.FirstOrDefault(gl => gl.SessionId.Equals(message.SessionId)
-                && gl.GameEndTime == null);
+            var gameclient = GameClients.FirstOrDefault(gl => gl.SessionId.Equals(message.SessionId) && gl.IsGameRunning);
 
             if (gameclient != null)
             {
@@ -451,8 +450,8 @@ namespace CalcIt.Lib.Server
             if (gameclient != null)
             {
                 gameclient.AnswerQueue.Enqueue(message as Answer);
-            } 
-            
+            }
+
             // else ignore answer message
         }
 
@@ -483,7 +482,7 @@ namespace CalcIt.Lib.Server
             if (gameclient != null)
             {
                 SendHighscoreRespone(gameclient.SessionId);
-            } 
+            }
         }
 
         /// <summary>
@@ -495,7 +494,7 @@ namespace CalcIt.Lib.Server
             GameClientNetworkAccess.Send(new HighscoreResponse()
             {
                 SessionId = sessionId,
-                HighScoreList = HighScores 
+                HighScoreList = HighScores
             });
         }
 

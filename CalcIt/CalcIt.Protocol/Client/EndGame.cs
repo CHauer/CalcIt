@@ -41,5 +41,14 @@ namespace CalcIt.Protocol.Client
         /// </value>
         [DataMember]
         public string Username { get; set; }
+
+        /// <summary>
+        /// Gets or sets the game play seconds.
+        /// </summary>
+        /// <value>
+        /// The game play seconds.
+        /// </value>
+        [DataMember]
+        public int GamePlaySeconds { get; set; }
     }
 }
