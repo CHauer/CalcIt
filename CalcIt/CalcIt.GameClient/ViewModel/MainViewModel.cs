@@ -77,13 +77,35 @@ namespace CalcIt.GameClient.ViewModel
             {
                 isGameRunning = value;
                 RaisePropertyChanged(() => IsGameRunning);
+                RaisePropertyChanged(() => IsChangeConnectionEnabled);
+            }
+        }
+
+        /// <summary>
+        /// The is change connection enabled
+        /// </summary>
+        private bool isChangeConnectionEnabled = true;
+
+        /// <summary>
+        /// Gets a value indicating whether [change connection enabled].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [change connection enabled]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsChangeConnectionEnabled
+        {
+            get { return isChangeConnectionEnabled; }
+            set
+            {
+                this.isChangeConnectionEnabled = value;
+                RaisePropertyChanged(() => IsChangeConnectionEnabled);
             }
         }
 
         /// <summary>
         /// The answer time left.
         /// </summary>
-        private TimeSpan answerTimeLeft;
+        private string answerTimeLeft;
 
         /// <summary>
         /// The calc operator.
@@ -194,7 +216,7 @@ namespace CalcIt.GameClient.ViewModel
         /// <summary>
         /// Gets or sets the answer time left.
         /// </summary>
-        public TimeSpan AnswerTimeLeft
+        public String AnswerTimeLeft
         {
             get
             {
@@ -449,19 +471,19 @@ namespace CalcIt.GameClient.ViewModel
         /// </returns>
         private bool CanSendAnswer()
         {
-            if (string.IsNullOrEmpty(this.currentAnswer))
+            if (!string.IsNullOrEmpty(this.currentAnswer))
             {
                 try
                 {
                     Convert.ToInt32(this.currentAnswer);
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     return false;
                 }
             }
-
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -498,7 +520,7 @@ namespace CalcIt.GameClient.ViewModel
 
             this.RefreshHighscore = new DependentRelayCommand(
                 this.ExecuteRefreshHighScore,
-                this.CanRefreshHighScore,
+                () => this.IsGameRunning,
                 this,
                 () => this.IsGameRunning);
 
@@ -509,16 +531,12 @@ namespace CalcIt.GameClient.ViewModel
                 () => this.Answer);
         }
 
-        private bool CanRefreshHighScore()
-        {
-            //TODO throw new NotImplementedException();
-            return false;
-        }
-
+        /// <summary>
+        /// Executes the refresh high score.
+        /// </summary>
         private void ExecuteRefreshHighScore()
         {
-            //TODO throw new NotImplementedException();
-
+            this.gameNetworkClient.Send(new HighscoreRequest());
         }
 
         /// <summary>
@@ -534,22 +552,16 @@ namespace CalcIt.GameClient.ViewModel
 
             if (connectionString.Contains(":"))
             {
-                int port = 0;
                 var parts = connectionString.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length == 2)
                 {
                     connectionEndpoint = new IpConnectionEndpoint();
 
-                    //try
-                    //{
-                    //    connectionEndpoint.Hostname = Dns.GetHostEntry(parts[0]).AddressList[0].ToString();
-                    //}
-                    //catch
-                    //{
-                        connectionEndpoint.Hostname = parts[0];
-                    //
 
+                    connectionEndpoint.Hostname = parts[0];
+
+                    var port = 0;
                     try
                     {
                         port = Convert.ToInt32(parts[1]);
@@ -565,7 +577,6 @@ namespace CalcIt.GameClient.ViewModel
 
                     (connectionEndpoint as IpConnectionEndpoint).Port = port;
 
-                    //this.ConnectionString = connectionEndpoint.Hostname + ":" + port;
                 }
                 else
                 {
@@ -610,9 +621,9 @@ namespace CalcIt.GameClient.ViewModel
                     MethodProvider = gameClientManager,
                     NetworkAccess = gameNetworkClient
                 };
-                
+
                 gameCommandExecutor.StartExecutor();
-                gameNetworkClient.Connect();                
+                gameNetworkClient.Connect();
             }
             else
             {
@@ -620,15 +631,28 @@ namespace CalcIt.GameClient.ViewModel
             }
 
             gameClientManager.ConnectClient(Username);
+            this.IsChangeConnectionEnabled = false;
         }
+
         private void NetworkEndGameReceived(object sender, MessageReceivedEventArgs<EndGame> e)
         {
-            throw new NotImplementedException();
+            this.IsChangeConnectionEnabled = true;
+
+            //TODO
+            //e.Message.GameCount
+            //e.Message.Points
         }
+
+        private bool newQuestion;
+
 
         private void NetworkHighScoreReceived(object sender, MessageReceivedEventArgs<HighscoreResponse> e)
         {
-            throw new NotImplementedException();
+            HighScoreList.Clear();
+            foreach (var item in e.Message.HighScoreList)
+            {
+                HighScoreList.Add(item);
+            }
         }
 
         /// <summary>
@@ -638,10 +662,13 @@ namespace CalcIt.GameClient.ViewModel
         /// <param name="e">The <see cref="MessageReceivedEventArgs{Question}"/> instance containing the event data.</param>
         private void NetworkQuestionReceived(object sender, MessageReceivedEventArgs<Question> e)
         {
+            newQuestion = true;
             var question = e.Message as Question;
 
             this.NumberA = question.NumberA.ToString();
-            this.NumberB = question.NumberA.ToString();
+            this.NumberB = question.NumberB.ToString();
+            this.Answer = string.Empty;
+
             switch (question.Operator)
             {
                 case OperatorType.Plus:
@@ -655,6 +682,7 @@ namespace CalcIt.GameClient.ViewModel
                     break;
             }
 
+            newQuestion = false;
             Task.Run(() => StartTimeCounter(question.TimeToAnswer));
         }
 
@@ -664,11 +692,11 @@ namespace CalcIt.GameClient.ViewModel
         /// <param name="timeToAnswer">The time to answer.</param>
         private void StartTimeCounter(int timeToAnswer)
         {
-            while (timeToAnswer > 0)
+            while (timeToAnswer > 0 && !newQuestion)
             {
-                Thread.Sleep(new TimeSpan(0, 0, 0, 1));
+                this.AnswerTimeLeft = String.Format("{0} sec", timeToAnswer);
+                Thread.Sleep(new TimeSpan(0, 0, 0, 0, 900));
                 timeToAnswer--;
-                this.AnswerTimeLeft = new TimeSpan(0, 0, 0, timeToAnswer);
             }
         }
 

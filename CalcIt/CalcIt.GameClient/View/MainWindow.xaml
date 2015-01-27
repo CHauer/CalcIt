@@ -18,11 +18,11 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="00,0,5,0">Connection:</TextBlock>
-                <TextBox Text="{Binding ConnectionString, Mode=TwoWay}" MinWidth="100"></TextBox>
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsChangeConnectionEnabled}">
+                <TextBlock Margin="0,-3,5,3">Connection:</TextBlock>
+                <TextBox Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"></TextBox>
                 <TextBlock Margin="10,0,5,0">Username:</TextBlock>
-                <TextBox Text="{Binding Username, Mode=TwoWay}" MinWidth="100"></TextBox>
+                <TextBox Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"></TextBox>
             </StackPanel>
             <Button Margin="5,0" Grid.Column="1" Command="{Binding StartGame}">Start Game</Button>
         </Grid>
@@ -35,11 +35,11 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding NumberA}" Grid.Column="0" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
-            <TextBlock Text="{Binding CalcOperator}" Grid.Column="1" Style="{DynamicResource BigNumberTextBlock}">+</TextBlock>
-            <TextBlock Text="{Binding NumberB}" Grid.Column="2" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
+            <TextBlock Text="{Binding NumberA}" Grid.Column="0" Style="{DynamicResource BigNumberTextBlock}"></TextBlock>
+            <TextBlock Text="{Binding CalcOperator}" Grid.Column="1" Style="{DynamicResource BigNumberTextBlock}"></TextBlock>
+            <TextBlock Text="{Binding NumberB}" Grid.Column="2" Style="{DynamicResource BigNumberTextBlock}"></TextBlock>
             <TextBlock Grid.Column="3" Style="{DynamicResource BigNumberTextBlock}">=</TextBlock>
-            <TextBox Text="{Binding Answer, Mode=TwoWay}" Grid.Column="4" Style="{DynamicResource BigNumberTextBox}" ></TextBox>
+            <TextBox Text="{Binding Answer, Mode=TwoWay}" Grid.Column="4" Style="{DynamicResource BigNumberTextBox}" HorizontalAlignment="Stretch" ></TextBox>
         </Grid>
 
         <Grid Grid.Row="2" Margin="5">
@@ -70,7 +70,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Grid.ColumnSpan="2" Margin="5" Visibility="Collapsed">End Game</Button>
+                <Button Grid.ColumnSpan="2" Margin="5" Command="{Binding EndGame}">End Game</Button>
                 <TextBlock Grid.Row="1" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Round:</TextBlock>
                 <TextBlock Grid.Row="2" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Points:</TextBlock>
                 <TextBlock Grid.Row="3" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Time Played:</TextBlock>

@@ -238,7 +238,6 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 {
                     IPEndPoint remoteEp = new IPEndPoint(IPAddress.Any, this.Port);
                     var data = this.client.Receive(ref remoteEp);
-
                     message = this.MessageTransformer.TransformFrom(data);
                 }
                 catch (Exception ex)
