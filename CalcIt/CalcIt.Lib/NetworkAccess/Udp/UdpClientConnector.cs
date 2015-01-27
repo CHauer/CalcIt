@@ -15,6 +15,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     using System.Threading.Tasks;
 
     using CalcIt.Lib.Log;
+    using CalcIt.Protocol.Data;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
 
@@ -166,7 +167,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                // Todo log ex
+                LogMessage(new LogMessage(ex));
             }
 
             this.isRunning = true;
@@ -205,7 +206,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// </summary>
         private void Initialize()
         {
-            this.currentMessageNumber = 0;
+            this.currentMessageNumber = 1;
             this.firstReceiveHandled = false;
             this.firstSendHandled = false;
             this.taskWaitSleepTime = new TimeSpan(0, 0, 0, 0, 100);
@@ -235,14 +236,14 @@ namespace CalcIt.Lib.NetworkAccess.Udp
 
                 try
                 {
-                    IPEndPoint remoteEp = null;
+                    IPEndPoint remoteEp = new IPEndPoint(IPAddress.Any, this.Port);
                     var data = this.client.Receive(ref remoteEp);
 
                     message = this.MessageTransformer.TransformFrom(data);
                 }
                 catch (Exception ex)
                 {
-                    // Todo Log ex
+                    LogMessage(new LogMessage(ex));
                 }
 
                 if (message != null && message.SessionId != null)
@@ -264,13 +265,12 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                         }
                         else
                         {
-                            //TODO log invalid message control number
-
+                            LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message control number."));
                         }
                     }
                     else
                     {
-                        // TODO log wrong session id received
+                        LogMessage(new LogMessage(LogMessageType.Debug, "Invalid session id received."));
                     }
                 }
             }
@@ -293,7 +293,8 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 if (!this.firstSendHandled)
                 {
                     message.SessionId = null;
-                    message.MessageNr = 0;
+                    message.MessageNr = 1;
+                    this.firstSendHandled = true;
                 }
                 else
                 {
@@ -312,11 +313,10 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 {
                     byte[] buffer = this.MessageTransformer.TransformTo(message);
                     client.Send(buffer, buffer.Length);
-                    client.Close();
                 }
                 catch (Exception ex)
                 {
-                    // TODO log ex
+                    LogMessage(new LogMessage(ex));
                 }
             }
         }
@@ -332,7 +332,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                //todo log ex
+                LogMessage(new LogMessage(ex));
             }
 
             while (this.isRunning)
@@ -348,16 +348,16 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 }
                 catch (Exception ex)
                 {
-                    //todo log ex
+                    LogMessage(new LogMessage(ex));
                 }
-                
+
                 if (message != null && message.SessionId != null && message.SessionId.Value.Equals(this.sessionId))
                 {
                     this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, this.sessionId));
                 }
                 else
                 {
-                    // TODO log wrong session id
+                    LogMessage(new LogMessage(LogMessageType.Debug, "Wrong Session ID"));
                 }
             }
         }

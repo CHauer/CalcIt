@@ -41,5 +41,13 @@ namespace CalcIt.Protocol.Client
         /// </value>
         [DataMember]
         public OperatorType Operator { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time in seconds to answer.
+        /// </summary>
+        /// <value>
+        /// The time to answer.
+        /// </value>
+        public int TimeToAnswer { get; set; }
     }
 }

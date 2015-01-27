@@ -22,7 +22,7 @@ namespace CalcIt.Lib.Log
         {
             if(message.IsDebug && !Debugger.IsAttached)
             {
-                //donst display Debug Message 
+                //donst display Debug DetailMessage 
                 return;
             }
 

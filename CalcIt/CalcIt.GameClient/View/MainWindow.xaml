@@ -1,7 +1,11 @@
 ﻿<Window x:Class="CalcIt.GameClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CalcIt.GameClient.ViewModel" 
         Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,14 +19,12 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="00,0,5,0">Hostname:</TextBlock>
-                <TextBox MinWidth="100"></TextBox>
-                <TextBlock Margin="10,0,5,0">Port:</TextBlock>
-                <TextBox MinWidth="50"></TextBox>
+                <TextBlock Margin="00,0,5,0">Connection:</TextBlock>
+                <TextBox Text="{Binding ConnectionString, Mode=TwoWay}" MinWidth="100"></TextBox>
                 <TextBlock Margin="10,0,5,0">Username:</TextBlock>
-                <TextBox MinWidth="100"></TextBox>
+                <TextBox Text="{Binding Username, Mode=TwoWay}" MinWidth="100"></TextBox>
             </StackPanel>
-            <Button Margin="5,0" Grid.Column="2">Start Game</Button>
+            <Button Margin="5,0" Grid.Column="1" Command="{Binding StartGame}">Start Game</Button>
         </Grid>
 
         <Grid Margin="0,25,0,5" Grid.Row="0" Grid.RowSpan="2">
@@ -33,11 +35,11 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
-            <TextBlock Grid.Column="1" Style="{DynamicResource BigNumberTextBlock}">+</TextBlock>
-            <TextBlock Grid.Column="2" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
+            <TextBlock Text="{Binding NumberA}" Grid.Column="0" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
+            <TextBlock Text="{Binding CalcOperator}" Grid.Column="1" Style="{DynamicResource BigNumberTextBlock}">+</TextBlock>
+            <TextBlock Text="{Binding NumberB}" Grid.Column="2" Style="{DynamicResource BigNumberTextBlock}">1</TextBlock>
             <TextBlock Grid.Column="3" Style="{DynamicResource BigNumberTextBlock}">=</TextBlock>
-            <TextBox Grid.Column="4" Text="10" Style="{DynamicResource BigNumberTextBox}" ></TextBox>
+            <TextBox Text="{Binding Answer, Mode=TwoWay}" Grid.Column="4" Style="{DynamicResource BigNumberTextBox}" ></TextBox>
         </Grid>
 
         <Grid Grid.Row="2" Margin="5">
@@ -45,10 +47,10 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="1" Width="200">Send Answer</Button>
+            <Button Grid.Column="1" Width="200" Command="{Binding SendAnswer}">Send Answer</Button>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <TextBlock Width="140" VerticalAlignment="Center">Time left to answer:</TextBlock>
-                <TextBlock Style="{DynamicResource TimeCounterTextBlock}" >00:00:05</TextBlock>
+                <TextBlock Text="{Binding AnswerTimeLeft}" Style="{DynamicResource TimeCounterTextBlock}" ></TextBlock>
             </StackPanel>
         </Grid>
 
@@ -63,15 +65,15 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Grid.ColumnSpan="2" Margin="5">End Game</Button>
-                <TextBlock Grid.Row="1" Style="{DynamicResource DetailTextBlock}">Round:</TextBlock>
-                <TextBlock Grid.Row="2" Style="{DynamicResource DetailTextBlock}">Points:</TextBlock>
-                <TextBlock Grid.Row="3" Style="{DynamicResource DetailTextBlock}">Time Played:</TextBlock>
+                <Button Grid.ColumnSpan="2" Margin="5" Visibility="Collapsed">End Game</Button>
+                <TextBlock Grid.Row="1" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Round:</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Points:</TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="0" Style="{DynamicResource DetailTextBlock}">Time Played:</TextBlock>
             </Grid>
 
             <!-- Highscore -->
@@ -82,10 +84,10 @@
                 </Grid.RowDefinitions>
                 <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
                     <TextBlock Margin="10,0">Highscore</TextBlock>
-                    <Button Margin="10,0">Refresh</Button>
+                    <Button Margin="10,0" Command="{Binding RefreshHighscore}">Refresh</Button>
                 </StackPanel>
                 <ListView Grid.Row="1">
-                    
+
                 </ListView>
             </Grid>
         </Grid>

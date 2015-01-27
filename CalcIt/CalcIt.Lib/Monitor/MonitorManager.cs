@@ -5,6 +5,9 @@ using System.Text;
 
 namespace CalcIt.Lib.Monitor
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     using CalcIt.Lib.CommandExecution;
     using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess;
@@ -14,6 +17,11 @@ namespace CalcIt.Lib.Monitor
 
     public class MonitorManager
     {
+        /// <summary>
+        /// The ok received
+        /// </summary>
+        private bool okReceived = false;
+
         /// <summary>
         /// Gets or sets the network access.
         /// </summary>
@@ -51,15 +59,32 @@ namespace CalcIt.Lib.Monitor
         /// <summary>
         /// Connects to server.
         /// </summary>
-        public void ConnectToServer()
+        public async Task<bool> ConnectToServer()
         {
             if (NetworkAccess == null)
             {
                 LogMessage(new LogMessage(LogMessageType.Error, "Network Access has to be initialized!"));
-                return;
+                return false;
             }
 
             NetworkAccess.Send(new ConnectMonitor());
+
+            return await Task.Run<bool>(() =>
+            {
+                DateTime start = DateTime.Now;
+                TimeSpan wait = new TimeSpan(0,0, 15);
+
+                while (!okReceived)
+                {
+                    Thread.Sleep(100);
+
+                    if ((DateTime.Now - start) > wait)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            });
         }
 
         /// <summary>
@@ -83,6 +108,11 @@ namespace CalcIt.Lib.Monitor
                 if (status.Status == StatusType.Error)
                 {
                     LogMessage(new LogMessage(LogMessageType.Error, status.Message));
+                }
+                else
+                {
+                    okReceived = true;
+                    LogMessage(new LogMessage(LogMessageType.Log, status.Message));
                 }
             }
         }

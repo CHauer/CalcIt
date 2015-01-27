@@ -18,6 +18,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Protocol;
+    using CalcIt.Protocol.Data;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
 
@@ -135,12 +136,12 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// <summary>
         /// The start.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">Message transformer has to be initialized!</exception>
+        /// <exception cref="System.InvalidOperationException">DetailMessage transformer has to be initialized!</exception>
         public void Start()
         {
             if (this.MessageTransformer == null)
             {
-                throw new InvalidOperationException("Message transformer has to be initialized!");
+                throw new InvalidOperationException("DetailMessage transformer has to be initialized!");
             }
 
             this.IsRunning = true;
@@ -177,7 +178,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                // TODO Log ex
+                LogMessage(new LogMessage(ex));
             }
 
             if (message == null)
@@ -205,7 +206,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             if (!this.Sessions.Contains(message.SessionId.Value))
             {
                 // invalid message - connection close
-                // TODO log invalid message
+                LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message - session id not in session table."));
                 return;
             }
 
@@ -215,7 +216,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             if (message.MessageNr != (clientMessageControlNumbers[currentSessionId] + 1))
             {
                 // invalid message - connection close
-                // TODO log invalid message
+                LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message transport control number."));
                 return;
             }
 
@@ -291,16 +292,15 @@ namespace CalcIt.Lib.NetworkAccess.Udp
 
                     try
                     {
-                        using (var client = new UdpClient(this.clientConnections[message.SessionId.Value]))
-                        {
-                            byte[] buffer = this.MessageTransformer.TransformTo(message);
-                            client.Send(buffer, buffer.Length);
-                            client.Close();
-                        }
+                        //var client = new UdpClient(this.clientConnections[message.SessionId.Value]);
+
+                        byte[] buffer = this.MessageTransformer.TransformTo(message);
+                        receiver.Send(buffer, buffer.Length, this.clientConnections[message.SessionId.Value]);
+                        //client.Close();
                     }
                     catch (Exception ex)
                     {
-                        // Todo Log ex
+                        LogMessage(new LogMessage(ex));
                     }
                 }
                 else
@@ -312,16 +312,16 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                         var reconEp = message.ReconnectEndpoint as IpConnectionEndpoint;
                         try
                         {
-                            using (var client = new UdpClient(reconEp.Hostname, reconEp.Port))
-                            {
-                                byte[] buffer = this.MessageTransformer.TransformTo(message);
-                                client.Send(buffer, buffer.Length);
-                                client.Close();
-                            }
+                            var client = new UdpClient(reconEp.Hostname, reconEp.Port);
+
+                            byte[] buffer = this.MessageTransformer.TransformTo(message);
+                            client.Send(buffer, buffer.Length);
+                            client.Close();
+
                         }
                         catch (Exception ex)
                         {
-                            // Todo Log ex
+                            LogMessage(new LogMessage(ex));
                         }
                     }
                 }

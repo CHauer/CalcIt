@@ -7,9 +7,9 @@
   <MinimalPoints>0</MinimalPoints>
   <MonitorServerPort>50210</MonitorServerPort>
   <ServerListeners>
-    <int>50893</int>
+    <int>60000</int>
   </ServerListeners>
   <ServerConnections>
-    <string>locahost:60000</string>
+    <string>locahost:50893</string>
   </ServerConnections>
 </ServerConfiguration>

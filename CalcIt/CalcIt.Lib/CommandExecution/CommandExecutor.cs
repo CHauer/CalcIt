@@ -177,5 +177,14 @@ namespace CalcIt.Lib.CommandExecution
                 Logger.AddLogMessage(logMessage);
             }
         }
+
+        /// <summary>
+        /// Handles the tunneld message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void HandleTunneldMessage(T message)
+        {
+            commandQueue.Enqueue(message);
+        }
     }
 }
