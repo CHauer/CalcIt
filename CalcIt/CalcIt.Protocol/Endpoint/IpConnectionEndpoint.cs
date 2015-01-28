@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Endpoint
 {
+    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -23,5 +24,21 @@ namespace CalcIt.Protocol.Endpoint
         /// </value>
         [DataMember]
         public int Port { get; set; }
+
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(this.Hostname))
+            {
+                return "Listened Port: " + this.Port.ToString();
+            }
+
+            return string.Format("{0}:{1}", this.Hostname, this.Port);
+        }
     }
 }

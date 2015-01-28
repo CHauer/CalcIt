@@ -63,6 +63,14 @@ namespace CalcIt.Lib.Server.Configuration
         public List<int> ServerListeners { get; set; }
 
         /// <summary>
+        /// Gets or sets the reconnect server connection time in minutes.
+        /// </summary>
+        /// <value>
+        /// The reconnect server connection time.
+        /// </value>
+        public int ReconnectServerConnectionTime { get; set; }
+
+        /// <summary>
         /// Gets or sets the server connections.
         /// </summary>
         /// <value>
@@ -81,6 +89,10 @@ namespace CalcIt.Lib.Server.Configuration
             this.MinimalPoints = 0;
             this.MonitorServerPort = 50210;
             this.AnswerTimeOut = 60;
+            this.ReconnectServerConnectionTime = 5;
+            this.HeartbeatTime = 30;
         }
+
+        public int HeartbeatTime { get; set; }
     }
 }

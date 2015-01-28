@@ -15,7 +15,7 @@ namespace CalcIt.Protocol.Monitor
     [DataContract]
     [KnownType(typeof(ConnectMonitor))]
     [KnownType(typeof(LogMessage))]
-    [KnownType(typeof(LogServerMessage))]
+    [KnownType(typeof(LogProtocolMessage))]
     [KnownType(typeof(MonitorOperationStatus))]
     public abstract class CalcItMonitorMessage : CalcItMessage
     {

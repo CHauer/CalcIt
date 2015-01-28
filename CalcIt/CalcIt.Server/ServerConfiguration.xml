@@ -6,10 +6,12 @@
   <MaximalPoints>20</MaximalPoints>
   <MinimalPoints>-5</MinimalPoints>
   <MonitorServerPort>50210</MonitorServerPort>
+  <HeartbeatTime>30</HeartbeatTime>
+  <ReconnectServerConnectionTime>1</ReconnectServerConnectionTime>
   <ServerListeners>
     <int>50893</int>
   </ServerListeners>
   <ServerConnections>
-    <string>locahost:60000</string>
+    <string>127.0.0.1:60000</string>
   </ServerConnections>
 </ServerConfiguration>

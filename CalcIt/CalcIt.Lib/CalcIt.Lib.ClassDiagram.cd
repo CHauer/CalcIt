@@ -4,7 +4,7 @@
     <Position X="10.061" Y="11.363" Height="0.365" Width="0.887" />
   </Comment>
   <Comment CommentText="Handels Heartbeat and SyncMessage">
-    <Position X="15.845" Y="14.393" Height="0.546" Width="1.7" />
+    <Position X="15.876" Y="15.028" Height="0.546" Width="1.7" />
   </Comment>
   <Class Name="CalcIt.Lib.NetworkAccess.CalcItNetworkClient&lt;T&gt;">
     <Position X="13" Y="1" Width="2" />
@@ -164,14 +164,14 @@
   <Class Name="CalcIt.Lib.Server.Configuration.ServerConfiguration">
     <Position X="21.25" Y="10.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAAAAABAAAAAAAAAAAAAABAAAAAAEAQAABAAABAAEA=</HashCode>
+      <HashCode>AQAAAAABAAAAAAAAAAAAAABAACAAAEAQAABAAABAAEA=</HashCode>
       <FileName>Server\Configuration\ServerConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Monitor.MonitorManager">
     <Position X="23.75" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAIAQAAAAIAAAAAAAAAAAAgAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AQAIAQAAAAIAAAAAAACAAAAgAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Monitor\MonitorManager.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -190,12 +190,12 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Server.Watcher.ServerConnectionWatcher">
-    <Position X="15.75" Y="7.25" Width="2.25" />
+    <Position X="15.75" Y="7.5" Width="2.25" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>CIAAQQBAQCIAACAAIHBAQAAAAAAAIAQioAUkAAAEAgA=</HashCode>
+      <HashCode>CIACAQBAQCIAACAAIHBAQAAAAABAIAEioAUkAAAEAgQ=</HashCode>
       <FileName>Server\Watcher\ServerConnectionWatcher.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -219,8 +219,8 @@
   <Class Name="CalcIt.Lib.Log.ConsoleLogListener" BaseTypeListCollapsed="true">
     <Position X="26.25" Y="6.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
-      <FileName>Log\ConsoleLogger.cs</FileName>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Log\ConsoleLogListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>

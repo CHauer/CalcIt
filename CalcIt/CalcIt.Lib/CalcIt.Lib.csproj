@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="CommandExecution\CommandExecutor.cs" />
     <Compile Include="CommandExecution\CommandHandlerAttribute.cs" />
-    <Compile Include="Log\ConsoleLogger.cs" />
+    <Compile Include="Log\ConsoleLogListener.cs" />
     <Compile Include="Log\ILog.cs" />
     <Compile Include="Log\ILogListener.cs" />
     <Compile Include="Log\Logger.cs" />

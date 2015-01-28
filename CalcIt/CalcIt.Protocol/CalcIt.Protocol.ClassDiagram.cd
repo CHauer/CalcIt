@@ -59,7 +59,7 @@
   <Class Name="CalcIt.Protocol.Client.Question">
     <Position X="15.25" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAIAA=</HashCode>
       <FileName>Client\Question.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -83,7 +83,7 @@
   <Class Name="CalcIt.Protocol.Client.ClientOperationStatus">
     <Position X="15.25" Y="8.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <HashCode>QAAAAAAEAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\ClientOperationStatus.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -93,7 +93,7 @@
   <Class Name="CalcIt.Protocol.Client.EndGame">
     <Position X="12.75" Y="8.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAAAAQAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAgACAAQAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Client\EndGame.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -138,11 +138,11 @@
       <FileName>Monitor\LogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CalcIt.Protocol.Monitor.LogServerMessage">
+  <Class Name="CalcIt.Protocol.Monitor.LogProtocolMessage">
     <Position X="5" Y="9.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Monitor\LogServerMessage.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Monitor\LogProtocolMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Protocol.Server.SyncMessage">
@@ -231,7 +231,7 @@
   <Enum Name="CalcIt.Protocol.Client.OperatorType">
     <Position X="18.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAAAAAAAAABAAABAAAAAAAAACAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAABAAAAAAAAACAAAAAAAAA=</HashCode>
       <FileName>Client\OperatorType.cs</FileName>
     </TypeIdentifier>
   </Enum>

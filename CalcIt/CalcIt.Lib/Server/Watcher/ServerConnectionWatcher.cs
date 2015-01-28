@@ -23,11 +23,10 @@ namespace CalcIt.Lib.Server.Watcher
     /// <summary>
     /// The Server Connection watcher.
     /// Server are used to receive messages.
-    /// Clients are used to send mesages to servers.
+    /// Clients are used to send messages to servers.
     /// </summary>
     public class ServerConnectionWatcher : INetworkAccess<CalcItServerMessage>
     {
-
         /// <summary>
         /// The message forward queue
         /// </summary>
@@ -44,8 +43,9 @@ namespace CalcIt.Lib.Server.Watcher
             this.Configuration = server.Configuration;
             this.Logger = logger;
             this.messageForwardQueue = new Queue<CalcItServerMessage>();
+            this.IsLogReceivedMessages = true;
 
-            IntializeServerConnections();
+            this.InitializeServerConnections();
         }
 
         /// <summary>
@@ -73,20 +73,12 @@ namespace CalcIt.Lib.Server.Watcher
         public List<CalcItNetworkClient<CalcItServerMessage>> OpenClients { get; private set; }
 
         /// <summary>
-        /// Gets the server connections.
+        /// Gets or sets a value indicating whether this instance is logging received messages.
         /// </summary>
         /// <value>
-        /// The server connections.
+        /// <c>true</c> if this instance is log received messages; otherwise, <c>false</c>.
         /// </value>
-        public List<CalcItNetworkServer<CalcItServerMessage>> DisconnectedServers { get; private set; }
-
-        /// <summary>
-        /// Gets the server client connections.
-        /// </summary>
-        /// <value>
-        /// The server client connections.
-        /// </value>
-        public List<CalcItNetworkClient<CalcItServerMessage>> DisconnectedClients { get; private set; }
+        public bool IsLogReceivedMessages { get; set; }
 
         /// <summary>
         /// Gets the configuration.
@@ -116,55 +108,15 @@ namespace CalcIt.Lib.Server.Watcher
         public event EventHandler AllConnectionsLost;
 
         /// <summary>
-        /// Intializes the server connections.
+        /// Initializes the server connections.
         /// </summary>
-        private void IntializeServerConnections()
+        private void InitializeServerConnections()
         {
             this.OpenClients = new List<CalcItNetworkClient<CalcItServerMessage>>();
             this.OpenServers = new List<CalcItNetworkServer<CalcItServerMessage>>();
 
-            this.DisconnectedClients = new List<CalcItNetworkClient<CalcItServerMessage>>();
-            this.DisconnectedServers = new List<CalcItNetworkServer<CalcItServerMessage>>();
-
-            if (Configuration.ServerConnections != null && Configuration.ServerConnections.Count > 0)
-            {
-                foreach (string connection in Configuration.ServerConnections)
-                {
-                    ConnectionEndpoint endpoint = this.CreateEndpoint(connection);
-
-                    if (endpoint != null)
-                    {
-                        DisconnectedClients.Add(new CalcItNetworkClient<CalcItServerMessage>()
-                        {
-                            Logger = this.Logger,
-                            ClientConnector = new TcpClientConnector<CalcItServerMessage>()
-                            {
-                                ConnectionSettings = endpoint,
-                                Logger = Logger,
-                                MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
-                            },
-                        });
-                    }
-                }
-            }
-
-            if (Configuration.ServerListeners != null && Configuration.ServerListeners.Count > 0)
-            {
-                foreach (int listenerPort in Configuration.ServerListeners)
-                {
-                    DisconnectedServers.Add(new CalcItNetworkServer<CalcItServerMessage>()
-                    {
-                        Logger = this.Logger,
-                        ServerConnector = new TcpServerListener<CalcItServerMessage>()
-                        {
-                            // only listener port needed
-                            ConnectionSettings = new IpConnectionEndpoint() { Port = listenerPort },
-                            Logger = Logger,
-                            MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
-                        },
-                    });
-                }
-            }
+            // this.DisconnectedClients = new List<CalcItNetworkClient<CalcItServerMessage>>();
+            // this.DisconnectedServers = new List<CalcItNetworkServer<CalcItServerMessage>>();
         }
 
         /// <summary>
@@ -222,7 +174,7 @@ namespace CalcIt.Lib.Server.Watcher
         {
             IsRunning = true;
 
-            Task.Run(() => RunWatcher());
+            Task.Run(() => this.RunWatcher());
         }
 
         /// <summary>
@@ -241,49 +193,66 @@ namespace CalcIt.Lib.Server.Watcher
         private void RunWatcher()
         {
             //Start all servers
-            DisconnectedServers.ForEach(server =>
+            if (Configuration.ServerListeners != null && Configuration.ServerListeners.Count > 0)
             {
-                Task.Run(() => this.RunHandleServer(server));
-            });
+                foreach (int listenerPort in Configuration.ServerListeners)
+                {
+                    ConnectionEndpoint endpoint = new IpConnectionEndpoint() { Port = listenerPort };
+
+                    Task.Run(() => this.RunHandleServer(endpoint));
+                }
+            }
 
             // run client to server connections
-            DisconnectedClients.ForEach(client =>
+            if (Configuration.ServerConnections != null && Configuration.ServerConnections.Count > 0)
             {
-                Task.Run(() => this.RunHandleClient(client));
-            });
+                foreach (string connection in Configuration.ServerConnections)
+                {
+                    ConnectionEndpoint endpoint = this.CreateEndpoint(connection);
+
+                    if (endpoint != null)
+                    {
+                        Task.Run(() => this.RunHandleClient(endpoint));
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// Handles the client side.
         /// </summary>
-        /// <param name="client">The client.</param>
-        private async void RunHandleClient(CalcItNetworkClient<CalcItServerMessage> client)
+        /// <param name="endpoint">The endpoint.</param>
+        private async void RunHandleClient(ConnectionEndpoint endpoint)
         {
-            bool connectionOpen = true;
+            bool connectionSynced = false;
+            CalcItNetworkClient<CalcItServerMessage> client = null;
 
-            while (IsRunning)
+            while (this.IsRunning)
             {
-                while (!await this.InitialClientSync(client))
+                while (!connectionSynced)
                 {
-                    Thread.Sleep(new TimeSpan(0, 0, 5, 0));
+                    client = CreateClient(endpoint);
+                    connectionSynced = await this.InitialClientSync(client);
+                    Thread.Sleep(new TimeSpan(0, 0, Configuration.ReconnectServerConnectionTime, 0));
                 }
 
                 // Connection synced and open
-                DisconnectedClients.Remove(client);
                 OpenClients.Add(client);
+                LogMessage(new LogMessage(LogMessageType.Log, String.Format("Connection {0} is now open.", endpoint.ToString())));
 
                 // forward received messages - except heartbeat and sync
                 client.MessageReceived += HandleMessageReceived;
 
                 // heartbeat keep alive
-                while (connectionOpen)
+                while (connectionSynced)
                 {
-                    connectionOpen = await ExchangeHeartbeat(client);
+                    Thread.Sleep(new TimeSpan(0, 0, 0, Configuration.HeartbeatTime));
+                    connectionSynced = await ExchangeHeartbeat(client);
                 }
 
                 // Connection broken
                 OpenClients.Remove(client);
-                DisconnectedClients.Add(client);
+                LogMessage(new LogMessage(LogMessageType.Warning, String.Format("Connection {0} is now closed.", endpoint.ToString())));
 
                 CheckConnectionLost();
 
@@ -293,16 +262,35 @@ namespace CalcIt.Lib.Server.Watcher
         }
 
         /// <summary>
+        /// Creates the network client.
+        /// </summary>
+        /// <param name="endpoint">The endpoint.</param>
+        /// <returns>The new generated CalcItNetworkClient</returns>
+        private CalcItNetworkClient<CalcItServerMessage> CreateClient(ConnectionEndpoint endpoint)
+        {
+            return new CalcItNetworkClient<CalcItServerMessage>()
+            {
+                Logger = this.Logger,
+                ClientConnector = new TcpClientConnector<CalcItServerMessage>()
+                {
+                    ConnectionSettings = endpoint,
+                    Logger = this.Logger,
+                    MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
+                },
+            };
+        }
+
+        /// <summary>
         /// Checks the connection lost.
         /// </summary>
         private void CheckConnectionLost()
         {
             if (this.OpenServers.Count == 0 && this.OpenClients.Count == 0)
             {
-                //connection lost
-                OnAllConnectionsLost();
+                // connection lost
+                this.OnAllConnectionsLost();
 
-                ServerManagerInstance.UpdateServerConnectionLost();
+                this.ServerManagerInstance.UpdateServerConnectionLost();
             }
         }
 
@@ -314,13 +302,13 @@ namespace CalcIt.Lib.Server.Watcher
         private async Task<bool> ExchangeHeartbeat(CalcItNetworkClient<CalcItServerMessage> client)
         {
             Heartbeat returnHeartbeat;
-            int token = GenerateCheckToken();
+            int token = this.GenerateCheckToken();
 
             client.Send(new Heartbeat() { CheckToken = token });
 
             try
             {
-                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
+                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut * 3));
 
                 if (receivedMessage != null)
                 {
@@ -330,6 +318,7 @@ namespace CalcIt.Lib.Server.Watcher
                 {
                     LogMessage(new LogMessage(LogMessageType.Debug, "Heartbeat Exchange - Heartbeat Timeout reached!"));
                     client.Close();
+
                     return false;
                 }
             }
@@ -337,12 +326,14 @@ namespace CalcIt.Lib.Server.Watcher
             {
                 LogMessage(new LogMessage(ex));
                 client.Close();
+
                 return false;
             }
 
             if (returnHeartbeat.CheckToken != token)
             {
                 client.Close();
+
                 return false;
             }
 
@@ -360,8 +351,10 @@ namespace CalcIt.Lib.Server.Watcher
             SyncMessage syncMessage;
             int token = GenerateCheckToken();
 
+            // client connect
             client.Connect();
 
+            // heartbeat exchange
             client.Send(new Heartbeat() { CheckToken = token });
 
             try
@@ -376,34 +369,59 @@ namespace CalcIt.Lib.Server.Watcher
                 {
                     LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - Heartbeat Timeout reached!"));
                     client.Close();
+
                     return false;
                 }
             }
             catch (Exception ex)
             {
+                LogMessage(new LogMessage(ex));
                 client.Close();
+
                 return false;
             }
 
             if (returnHeartbeat.CheckToken != token)
             {
+                LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - Heartbeat Checktoken invalid!"));
                 client.Close();
+
                 return false;
             }
 
-            client.Send(new SyncMessage() { RandomNumber = ServerManagerInstance.RandomToken, ServerStartTime = ServerManagerInstance.StartTime });
+            // Sync message exchange
+            client.Send(new SyncMessage()
+            {
+                RandomNumber = ServerManagerInstance.RandomToken,
+                ServerStartTime = ServerManagerInstance.StartTime,
+                SessionId = returnHeartbeat.SessionId
+            });
 
             try
             {
-                syncMessage = (SyncMessage)await client.Receive(typeof(SyncMessage), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
+                var receivedMessage = await client.Receive(typeof(SyncMessage), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
+
+                if (receivedMessage != null)
+                {
+                    syncMessage = (SyncMessage)receivedMessage;
+                }
+                else
+                {
+                    LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - SyncMessage Timeout reached!"));
+                    client.Close();
+
+                    return false;
+                }
             }
             catch (Exception ex)
             {
+                LogMessage(new LogMessage(ex));
                 client.Close();
+
                 return false;
             }
 
-            ServerManagerInstance.UpdateServerState(syncMessage);
+            this.ServerManagerInstance.UpdateServerState(syncMessage);
 
             return true;
         }
@@ -411,22 +429,26 @@ namespace CalcIt.Lib.Server.Watcher
         /// <summary>
         /// Runs the handle server.
         /// </summary>
-        /// <param name="server">The server.</param>
-        private async void RunHandleServer(CalcItNetworkServer<CalcItServerMessage> server)
+        /// <param name="endpoint">The endpoint.</param>
+        private async void RunHandleServer(ConnectionEndpoint endpoint)
         {
-            Guid sessionId;
+            Guid? clientSessionId = null;
             bool connectionOpen = true;
+            CalcItNetworkServer<CalcItServerMessage> server = null;
 
             while (IsRunning)
             {
-                while (!await this.InitialServerSync(server))
+                while (clientSessionId == null)
                 {
-                    Thread.Sleep(new TimeSpan(0, 0, 5));
+                    CheckConnectionLost();
+                    server = CreateServer(endpoint);
+                    clientSessionId = await this.InitialServerSync(server);
+                    Thread.Sleep(new TimeSpan(0, 0, Configuration.ReconnectServerConnectionTime, 0));
                 }
 
-                //Connection synced and open
-                DisconnectedServers.Remove(server);
+                //Connection synced and open - session id present
                 OpenServers.Add(server);
+                LogMessage(new LogMessage(LogMessageType.Log, String.Format("Connection {0} is now open.", endpoint.ToString())));
 
                 // forward received messages - except heartbeat and sync
                 server.MessageReceived += HandleMessageReceived;
@@ -434,33 +456,66 @@ namespace CalcIt.Lib.Server.Watcher
                 //heartbeat keep alive
                 while (connectionOpen)
                 {
-                    connectionOpen = await ExchangeHeartbeat(server);
+                    connectionOpen = await ExchangeHeartbeat(server, clientSessionId.Value);
                 }
 
-                //Connection broken
-                DisconnectedServers.Remove(server);
-                DisconnectedServers.Add(server);
+                // Connection broken
+                OpenServers.Remove(server);
+                LogMessage(new LogMessage(LogMessageType.Warning, String.Format("Connection {0} is now closed.", endpoint.ToString())));
 
                 CheckConnectionLost();
 
                 // forward received messages - except heartbeat and sync
                 server.MessageReceived -= HandleMessageReceived;
+
+                clientSessionId = null;
             }
 
+        }
+
+        /// <summary>
+        /// Creates a new server network listener with the given endpoint.
+        /// </summary>
+        /// <param name="endpoint">The endpoint.</param>
+        /// <returns>The new generated network server.</returns>
+        private CalcItNetworkServer<CalcItServerMessage> CreateServer(ConnectionEndpoint endpoint)
+        {
+            return new CalcItNetworkServer<CalcItServerMessage>()
+            {
+                Logger = this.Logger,
+                ServerConnector = new TcpServerListener<CalcItServerMessage>()
+                {
+                    // only listener port needed
+                    ConnectionSettings = endpoint,
+                    Logger = Logger,
+                    MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
+                },
+            };
         }
 
         /// <summary>
         /// Exchanges the heartbeat.
         /// </summary>
         /// <param name="server">The server.</param>
-        /// <returns></returns>
-        private async Task<bool> ExchangeHeartbeat(CalcItNetworkServer<CalcItServerMessage> server)
+        /// <param name="sessionId">The session identifier.</param>
+        /// <returns>The status of the hreatbeat exchange.</returns>
+        private async Task<bool> ExchangeHeartbeat(CalcItNetworkServer<CalcItServerMessage> server, Guid sessionId)
         {
-            Heartbeat heartbeat;
+            var receive = await server.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, Configuration.HeartbeatTime * 2));
 
-            heartbeat = (Heartbeat)await server.Receive(typeof(Heartbeat));
+            if (receive == null)
+            {
+                return false;
+            }
 
-            server.Send(heartbeat);
+            if (receive is Heartbeat && receive.SessionId == sessionId)
+            {
+                server.Send(receive);
+            }
+            else
+            {
+                return false;
+            }
 
             return true;
         }
@@ -470,17 +525,29 @@ namespace CalcIt.Lib.Server.Watcher
         /// </summary>
         /// <param name="server">The server.</param>
         /// <returns></returns>
-        private async Task<bool> InitialServerSync(CalcItNetworkServer<CalcItServerMessage> server)
+        private async Task<Guid?> InitialServerSync(CalcItNetworkServer<CalcItServerMessage> server)
         {
+            Guid sessionId;
             Heartbeat heartbeat;
             SyncMessage syncMessage;
             int token = GenerateCheckToken();
 
+            // connection start
             server.Start();
 
+            // heartbeat exchange
             try
             {
                 heartbeat = (Heartbeat)await server.Receive(typeof(Heartbeat));
+
+                if (heartbeat.SessionId != null)
+                {
+                    sessionId = heartbeat.SessionId.Value;
+                }
+                else
+                {
+                    return null;
+                }
 
                 server.Send(heartbeat);
             }
@@ -489,32 +556,34 @@ namespace CalcIt.Lib.Server.Watcher
                 LogMessage(new LogMessage(ex));
                 server.Stop();
 
-                return false;
+                return null;
             }
 
+            // sync message exchange
             try
             {
                 syncMessage = (SyncMessage)await server.Receive(typeof(SyncMessage));
 
-                // server state update not here - time between received and send important
+                //// server state update not here - time between received and send important
 
                 server.Send(new SyncMessage()
                 {
                     RandomNumber = ServerManagerInstance.RandomToken,
                     ServerStartTime = ServerManagerInstance.StartTime,
-                    SessionId = syncMessage.SessionId
+                    SessionId = sessionId
                 });
             }
             catch (Exception ex)
             {
                 LogMessage(new LogMessage(ex));
+
                 server.Stop();
-                return false;
+                return null;
             }
 
-            ServerManagerInstance.UpdateServerState(syncMessage);
+            this.ServerManagerInstance.UpdateServerState(syncMessage);
 
-            return true;
+            return sessionId;
         }
 
         /// <summary>
@@ -563,8 +632,14 @@ namespace CalcIt.Lib.Server.Watcher
         /// <param name="e">The <see cref="MessageReceivedEventArgs{CalcItServerMessage}"/> instance containing the event data.</param>
         private void HandleMessageReceived(object sender, MessageReceivedEventArgs<CalcItServerMessage> e)
         {
+            // log protocol message 
+            LogMessage(new LogProtocolMessage(e.Message));
+
+            // do not forward heartbeat and syncmessage
             if (e.Message is SyncMessage || e.Message is Heartbeat)
+            {
                 return;
+            }
 
             OnMessageReceived(sender, e);
         }

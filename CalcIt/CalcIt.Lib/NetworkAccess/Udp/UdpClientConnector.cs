@@ -168,6 +168,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             catch (Exception ex)
             {
                 LogMessage(new LogMessage(ex));
+                return;
             }
 
             this.isRunning = true;
@@ -183,7 +184,10 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         public void Close()
         {
             this.isRunning = false;
-            this.client.Close();
+            if (client != null)
+            {
+                this.client.Close();
+            }
         }
 
         /// <summary>

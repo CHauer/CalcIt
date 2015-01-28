@@ -56,7 +56,7 @@
     <Compile Include="Client\HighscoreResponse.cs" />
     <Compile Include="ICalcItSession.cs" />
     <Compile Include="Data\LogMessageType.cs" />
-    <Compile Include="Monitor\LogServerMessage.cs" />
+    <Compile Include="Monitor\LogProtocolMessage.cs" />
     <Compile Include="Server\Merge.cs" />
     <Compile Include="Monitor\MonitorOperationStatus.cs" />
     <Compile Include="Monitor\CalcItMonitorMessage.cs" />

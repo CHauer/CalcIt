@@ -18,6 +18,7 @@ namespace CalcIt.Server
     using CalcIt.Lib.Log;
     using CalcIt.Lib.Monitor;
     using CalcIt.Lib.NetworkAccess;
+    using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Lib.NetworkAccess.Tcp;
     using CalcIt.Lib.NetworkAccess.Transform;
     using CalcIt.Lib.NetworkAccess.Udp;
@@ -88,6 +89,8 @@ namespace CalcIt.Server
         /// </param>
         public static void Main(string[] args)
         {
+            bool exit = false; 
+
             HandleArguments(args);
 
             // create server logger
@@ -119,13 +122,23 @@ namespace CalcIt.Server
             monitorClientConnectionServer.Start();
 
             // the connection watcher for server to server messages
-            //connectionWatcher.Start();
-            
+             connectionWatcher.Start();
+
             // Server end
-            Console.WriteLine(Resources.Enter_for_Server_End);
-            Console.ReadLine();
+            PrepareConsoleWindow();
+            while (!exit)
+            {
+                string input = Console.ReadLine();
+                exit = input != null && input.ToLower().Trim().Equals("exit");
+            }
 
             EndServer();
+        }
+
+        private static void PrepareConsoleWindow()
+        {
+            Console.Title = Resources.ConsoleHeader;
+            Console.WriteLine(Resources.Enter_for_Server_End);
         }
 
         /// <summary>
@@ -254,7 +267,41 @@ namespace CalcIt.Server
                     }
             };
 
+            gameClientConnectionServer.MessageReceived += LogMessageFromGameClientServer;
+            gameClientConnectionServer.MessageSend += LogMessageSendFromGameClientServer;
+
             connectionWatcher = new ServerConnectionWatcher(serverManager, logger);
         }
+
+        /// <summary>
+        /// Logs the message from game client server.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.</param>
+        private static void LogMessageFromGameClientServer(object sender, MessageReceivedEventArgs<CalcItClientMessage> e)
+        {
+            if (logger == null)
+            {
+                return;
+            }
+
+            logger.AddLogMessage(new LogProtocolMessage(e.Message, "Message received from GameClient."));
+        }
+
+        /// <summary>
+        /// Logs the message send from game client server.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.</param>
+        private static void LogMessageSendFromGameClientServer(object sender, MessageReceivedEventArgs<CalcItClientMessage> e)
+        {
+            if (logger == null)
+            {
+                return;
+            }
+
+            logger.AddLogMessage(new LogProtocolMessage(e.Message, "Message sent to GameClient.") { IsOutgoing = true });
+        }
+
     }
 }

@@ -49,6 +49,6 @@ namespace CalcIt.Protocol.Data
         /// The username.
         /// </value>
         [DataMember]
-        public int Username { get; set; }
+        public string Username { get; set; }
     }
 }

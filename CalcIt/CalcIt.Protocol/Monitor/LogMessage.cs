@@ -16,7 +16,7 @@ namespace CalcIt.Protocol.Monitor
     /// The log message.
     /// </summary>
     [DataContract]
-    [KnownType(typeof(LogServerMessage))]
+    [KnownType(typeof(LogProtocolMessage))]
     public class LogMessage : CalcItMonitorMessage
     {
         /// <summary>
