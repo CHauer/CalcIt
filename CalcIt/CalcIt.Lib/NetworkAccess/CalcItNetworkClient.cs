@@ -161,6 +161,7 @@ namespace CalcIt.Lib.NetworkAccess
         /// Receives this instance.
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
         public async Task<T> Receive(Type messageType, TimeSpan timeout)
         {
             DateTime start = DateTime.Now;

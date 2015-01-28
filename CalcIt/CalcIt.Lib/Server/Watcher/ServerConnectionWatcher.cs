@@ -224,6 +224,8 @@ namespace CalcIt.Lib.Server.Watcher
         /// <param name="endpoint">The endpoint.</param>
         private async void RunHandleClient(ConnectionEndpoint endpoint)
         {
+            int heartbeatCounter;
+
             bool connectionSynced = false;
             CalcItNetworkClient<CalcItServerMessage> client = null;
 
@@ -243,11 +245,25 @@ namespace CalcIt.Lib.Server.Watcher
                 // forward received messages - except heartbeat and sync
                 client.MessageReceived += HandleMessageReceived;
 
+                heartbeatCounter = Configuration.HeartbeatRetryCounter;
+
                 // heartbeat keep alive
                 while (connectionSynced)
                 {
-                    Thread.Sleep(new TimeSpan(0, 0, 0, Configuration.HeartbeatTime));
-                    connectionSynced = await ExchangeHeartbeat(client);
+                    if (!await ExchangeHeartbeat(client))
+                    {
+                        heartbeatCounter--;
+                    }
+                    else
+                    {
+                        heartbeatCounter = Configuration.HeartbeatRetryCounter;
+                        Thread.Sleep(new TimeSpan(0, 0, 0, Configuration.HeartbeatTime));
+                    }
+
+                    if (heartbeatCounter == 0)
+                    {
+                        connectionSynced = false;
+                    }
                 }
 
                 // Connection broken
@@ -295,79 +311,33 @@ namespace CalcIt.Lib.Server.Watcher
         }
 
         /// <summary>
-        /// Exchanges the heartbeat.
-        /// </summary>
-        /// <param name="client">The client.</param>
-        /// <returns>The status of the send and receive or the heartbeat message.</returns>
-        private async Task<bool> ExchangeHeartbeat(CalcItNetworkClient<CalcItServerMessage> client)
-        {
-            Heartbeat returnHeartbeat;
-            int token = this.GenerateCheckToken();
-
-            client.Send(new Heartbeat() { CheckToken = token });
-
-            try
-            {
-                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut * 3));
-
-                if (receivedMessage != null)
-                {
-                    returnHeartbeat = (Heartbeat)receivedMessage;
-                }
-                else
-                {
-                    LogMessage(new LogMessage(LogMessageType.Debug, "Heartbeat Exchange - Heartbeat Timeout reached!"));
-                    client.Close();
-
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage(new LogMessage(ex));
-                client.Close();
-
-                return false;
-            }
-
-            if (returnHeartbeat.CheckToken != token)
-            {
-                client.Close();
-
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Initials the client synchronize.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <returns></returns>
         private async Task<bool> InitialClientSync(CalcItNetworkClient<CalcItServerMessage> client)
         {
-            Heartbeat returnHeartbeat;
+            ConnectServer returnedConnect;
             SyncMessage syncMessage;
             int token = GenerateCheckToken();
 
             // client connect
             client.Connect();
 
-            // heartbeat exchange
-            client.Send(new Heartbeat() { CheckToken = token });
+            // send connect server
+            client.Send(new ConnectServer());
 
             try
             {
-                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut));
+                var receivedMessage = await client.Receive(typeof(ConnectServer), new TimeSpan(0, 0, 0, this.Configuration.SyncTimeOut * 2));
 
                 if (receivedMessage != null)
                 {
-                    returnHeartbeat = (Heartbeat)receivedMessage;
+                    returnedConnect = (ConnectServer)receivedMessage;
                 }
                 else
                 {
-                    LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - Heartbeat Timeout reached!"));
+                    LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - Connect Server Timeout reached!"));
                     client.Close();
 
                     return false;
@@ -381,20 +351,21 @@ namespace CalcIt.Lib.Server.Watcher
                 return false;
             }
 
-            if (returnHeartbeat.CheckToken != token)
+            if (returnedConnect.SessionId == null)
             {
-                LogMessage(new LogMessage(LogMessageType.Debug, "Initial Sync - Heartbeat Checktoken invalid!"));
+                LogMessage(new LogMessage(LogMessageType.Debug, "Intial Sync - Connect Server SendBack - Session ID invalid."));
                 client.Close();
 
                 return false;
             }
+
 
             // Sync message exchange
             client.Send(new SyncMessage()
             {
                 RandomNumber = ServerManagerInstance.RandomToken,
                 ServerStartTime = ServerManagerInstance.StartTime,
-                SessionId = returnHeartbeat.SessionId
+                SessionId = returnedConnect.SessionId
             });
 
             try
@@ -430,47 +401,162 @@ namespace CalcIt.Lib.Server.Watcher
         /// Runs the handle server.
         /// </summary>
         /// <param name="endpoint">The endpoint.</param>
-        private async void RunHandleServer(ConnectionEndpoint endpoint)
+        private void RunHandleServer(ConnectionEndpoint endpoint)
         {
-            Guid? clientSessionId = null;
-            bool connectionOpen = true;
+            Queue<CalcItServerMessage> messageInputQueue = new Queue<CalcItServerMessage>();
             CalcItNetworkServer<CalcItServerMessage> server = null;
 
-            while (IsRunning)
+            server = CreateServer(endpoint);
+
+            server.MessageReceived += (sender, e) =>
             {
-                while (clientSessionId == null)
+                if (e.Message is ConnectServer)
                 {
-                    CheckConnectionLost();
-                    server = CreateServer(endpoint);
-                    clientSessionId = await this.InitialServerSync(server);
-                    Thread.Sleep(new TimeSpan(0, 0, Configuration.ReconnectServerConnectionTime, 0));
+                    messageInputQueue.Enqueue(e.Message);
+                }
+            };
+
+            server.Start();
+
+            while (this.IsRunning)
+            {
+                while (messageInputQueue.Count == 0)
+                {
+                    Thread.Sleep(100);
                 }
 
-                //Connection synced and open - session id present
-                OpenServers.Add(server);
-                LogMessage(new LogMessage(LogMessageType.Log, String.Format("Connection {0} is now open.", endpoint.ToString())));
-
-                // forward received messages - except heartbeat and sync
-                server.MessageReceived += HandleMessageReceived;
-
-                //heartbeat keep alive
-                while (connectionOpen)
-                {
-                    connectionOpen = await ExchangeHeartbeat(server, clientSessionId.Value);
-                }
-
-                // Connection broken
-                OpenServers.Remove(server);
-                LogMessage(new LogMessage(LogMessageType.Warning, String.Format("Connection {0} is now closed.", endpoint.ToString())));
-
-                CheckConnectionLost();
-
-                // forward received messages - except heartbeat and sync
-                server.MessageReceived -= HandleMessageReceived;
-
-                clientSessionId = null;
+                Task.Run(() => HandleServerConnection(server, (ConnectServer)messageInputQueue.Dequeue()));
             }
 
+            server.Stop();
+        }
+
+        /// <summary>
+        /// Handles the server connection.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="message">The message.</param>
+        private async void HandleServerConnection(CalcItNetworkServer<CalcItServerMessage> server, ConnectServer message)
+        {
+            int heartbeatCounter;
+
+            if (message.SessionId == null)
+            {
+                LogMessage(new LogMessage(LogMessageType.Debug, "Server Connect - SessionId invalid!"));
+                return;
+            }
+
+            var clientSessionId = message.SessionId.Value;
+            bool connectionOpen = false;
+
+            connectionOpen = await this.InitialServerSync(server, clientSessionId);
+
+            if (!connectionOpen)
+            {
+                LogMessage(new LogMessage(LogMessageType.Log, String.Format("Connection {0} inital sync failed.",
+                    server.ServerConnector.ConnectionSettings.ToString())));
+                return;
+
+            }
+
+            //Connection synced and open - session id present
+            OpenServers.Add(server);
+
+            LogMessage(new LogMessage(LogMessageType.Log, String.Format("Connection {0} is now open.",
+                server.ServerConnector.ConnectionSettings.ToString())));
+
+            // forward received messages - except heartbeat and sync
+            server.MessageReceived += HandleMessageReceived;
+
+            heartbeatCounter = Configuration.HeartbeatRetryCounter;
+
+            //heartbeat keep alive
+            while (connectionOpen)
+            {
+                if (!await ExchangeHeartbeat(server, clientSessionId))
+                {
+                    heartbeatCounter--;
+                }
+                else
+                {
+                    //reset counter
+                    heartbeatCounter = Configuration.HeartbeatRetryCounter;
+                    Thread.Sleep(new TimeSpan(0, 0, 0, Configuration.HeartbeatTime));
+                }
+
+                if (heartbeatCounter == 0)
+                {
+                    connectionOpen = false;
+                }
+            }
+
+            // Connection broken
+            OpenServers.Remove(server);
+
+            LogMessage(new LogMessage(LogMessageType.Warning, String.Format("Connection {0} is now closed.",
+                server.ServerConnector.ConnectionSettings.ToString())));
+
+            CheckConnectionLost();
+
+            // forward received messages - except heartbeat and sync
+            server.MessageReceived -= HandleMessageReceived;
+        }
+
+        /// <summary>
+        /// Initials the server synchronize.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="sessionId">The session identifier.</param>
+        /// <returns>The status of the inital sync.</returns>
+        private async Task<bool> InitialServerSync(CalcItNetworkServer<CalcItServerMessage> server, Guid sessionId)
+        {
+            SyncMessage syncMessage;
+            int token = GenerateCheckToken();
+
+            // heartbeat exchange
+            try
+            {
+                server.Send(new ConnectServer()
+                {
+                    SessionId = sessionId,
+                });
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+
+                return false;
+            }
+
+            // sync message exchange
+            try
+            {
+                syncMessage = (SyncMessage)await server.Receive(typeof(SyncMessage), new TimeSpan(0, 0, 0, Configuration.SyncTimeOut * 2));
+
+                if (syncMessage == null)
+                {
+                    return false;
+                }
+
+                //// server state update not here - time between received and send important
+
+                server.Send(new SyncMessage()
+                {
+                    RandomNumber = ServerManagerInstance.RandomToken,
+                    ServerStartTime = ServerManagerInstance.StartTime,
+                    SessionId = sessionId
+                });
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+
+                return false;
+            }
+
+            this.ServerManagerInstance.UpdateServerState(syncMessage);
+
+            return true;
         }
 
         /// <summary>
@@ -492,6 +578,53 @@ namespace CalcIt.Lib.Server.Watcher
                 },
             };
         }
+
+        /// <summary>
+        /// Exchanges the heartbeat.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <returns>The status of the send and receive or the heartbeat message.</returns>
+        private async Task<bool> ExchangeHeartbeat(CalcItNetworkClient<CalcItServerMessage> client)
+        {
+            Heartbeat returnHeartbeat;
+            int token = this.GenerateCheckToken();
+
+            client.Send(new Heartbeat() { CheckToken = token });
+
+            try
+            {
+                var receivedMessage = await client.Receive(typeof(Heartbeat), new TimeSpan(0, 0, 0, this.Configuration.HeartbeatTime * 2));
+
+                if (receivedMessage != null)
+                {
+                    returnHeartbeat = (Heartbeat)receivedMessage;
+                }
+                else
+                {
+                    LogMessage(new LogMessage(LogMessageType.Debug, "Heartbeat Exchange - Heartbeat Timeout reached!"));
+                    client.Close();
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage(new LogMessage(ex));
+                client.Close();
+
+                return false;
+            }
+
+            if (returnHeartbeat.CheckToken != token)
+            {
+                client.Close();
+
+                return false;
+            }
+
+            return true;
+        }
+
 
         /// <summary>
         /// Exchanges the heartbeat.
@@ -518,72 +651,6 @@ namespace CalcIt.Lib.Server.Watcher
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Initials the server synchronize.
-        /// </summary>
-        /// <param name="server">The server.</param>
-        /// <returns></returns>
-        private async Task<Guid?> InitialServerSync(CalcItNetworkServer<CalcItServerMessage> server)
-        {
-            Guid sessionId;
-            Heartbeat heartbeat;
-            SyncMessage syncMessage;
-            int token = GenerateCheckToken();
-
-            // connection start
-            server.Start();
-
-            // heartbeat exchange
-            try
-            {
-                heartbeat = (Heartbeat)await server.Receive(typeof(Heartbeat));
-
-                if (heartbeat.SessionId != null)
-                {
-                    sessionId = heartbeat.SessionId.Value;
-                }
-                else
-                {
-                    return null;
-                }
-
-                server.Send(heartbeat);
-            }
-            catch (Exception ex)
-            {
-                LogMessage(new LogMessage(ex));
-                server.Stop();
-
-                return null;
-            }
-
-            // sync message exchange
-            try
-            {
-                syncMessage = (SyncMessage)await server.Receive(typeof(SyncMessage));
-
-                //// server state update not here - time between received and send important
-
-                server.Send(new SyncMessage()
-                {
-                    RandomNumber = ServerManagerInstance.RandomToken,
-                    ServerStartTime = ServerManagerInstance.StartTime,
-                    SessionId = sessionId
-                });
-            }
-            catch (Exception ex)
-            {
-                LogMessage(new LogMessage(ex));
-
-                server.Stop();
-                return null;
-            }
-
-            this.ServerManagerInstance.UpdateServerState(syncMessage);
-
-            return sessionId;
         }
 
         /// <summary>

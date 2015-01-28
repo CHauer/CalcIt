@@ -90,9 +90,24 @@ namespace CalcIt.Lib.Server.Configuration
             this.MonitorServerPort = 50210;
             this.AnswerTimeOut = 60;
             this.ReconnectServerConnectionTime = 5;
-            this.HeartbeatTime = 30;
+            this.HeartbeatTime = 60;
+            this.HeartbeatRetryCounter = 3;
         }
 
+        /// <summary>
+        /// Gets or sets the heartbeat time.
+        /// </summary>
+        /// <value>
+        /// The heartbeat time.
+        /// </value>
         public int HeartbeatTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the heartbeat retry counter.
+        /// </summary>
+        /// <value>
+        /// The heartbeat retry counter.
+        /// </value>
+        public int HeartbeatRetryCounter { get; set; }
     }
 }

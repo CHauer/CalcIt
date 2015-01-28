@@ -640,7 +640,7 @@ namespace CalcIt.Lib.Server
                 this.IsActiveServer = true;
             }
 
-            LogMessage(new LogMessage(string.Format("Sync DetailMessage received - server state is {0}.\nReceived StartTime:{1:g}\nThis Server StartTime: {2:g}",
+            LogMessage(new LogMessage(string.Format("SyncMessage received - server state is {0}.\nReceived StartTime:{1:g}\nThis Server StartTime: {2:g}",
                 this.IsActiveServer ? "Active" : "Passiv", syncMessage.ServerStartTime, this.StartTime)));
 
         }

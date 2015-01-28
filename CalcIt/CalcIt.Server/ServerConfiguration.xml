@@ -7,11 +7,12 @@
   <MinimalPoints>-5</MinimalPoints>
   <MonitorServerPort>50210</MonitorServerPort>
   <HeartbeatTime>30</HeartbeatTime>
+  <HeartbeatRetryCounter>3</HeartbeatRetryCounter>
   <ReconnectServerConnectionTime>1</ReconnectServerConnectionTime>
   <ServerListeners>
     <int>50893</int>
+    <int>60000</int>
   </ServerListeners>
   <ServerConnections>
-    <string>127.0.0.1:60000</string>
   </ServerConnections>
 </ServerConfiguration>
