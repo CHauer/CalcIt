@@ -10,7 +10,7 @@ namespace CalcIt.Protocol.Client
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// The highscore request.
+    /// The high score request.
     /// </summary>
     [DataContract]
     public class HighscoreRequest : CalcItClientMessage

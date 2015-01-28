@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="XmlDataManager.cs" company="FH Wr.Neustadt">
+// <copyright file="XmlConfigurationSerializer.cs" company="FH Wr.Neustadt">
 //      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
@@ -14,6 +14,7 @@ namespace CalcIt.Lib.Server.Configuration
     /// The  XmlSerializer - implements ConfigurationSaver and Loader interface.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class.
     /// </typeparam>
     public class XmlConfigurationSerializer<T> : IConfigurationManager<T>
         where T : class
@@ -24,7 +25,7 @@ namespace CalcIt.Lib.Server.Configuration
         private XmlSerializer serializer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer{T}" /> class.
+        /// Initializes a new instance of the <see cref="XmlConfigurationSerializer{T}"/> class.
         /// </summary>
         public XmlConfigurationSerializer()
         {
@@ -43,7 +44,7 @@ namespace CalcIt.Lib.Server.Configuration
         /// Loads the configuration.
         /// </summary>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> configuration.
         /// </returns>
         public T LoadConfiguration()
         {

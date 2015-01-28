@@ -1,9 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="CalcItClientMessage.cs" company="FH Wr.Neustadt">
-//   Copyright Christoph Hauer. All rights reserved.
+//      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// --------------------------------------------------------------------------------------------------------------------
+// <summary>CalcIt.Protocol - CalcItClientMessage.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Client
 {
     using System;
@@ -34,6 +35,9 @@ namespace CalcIt.Protocol.Client
         /// <summary>
         /// Gets or sets the date.
         /// </summary>
+        /// <value>
+        /// The date value.
+        /// </value>
         [DataMember]
         public DateTime Date { get; set; }
     }

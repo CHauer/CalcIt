@@ -9,6 +9,7 @@ namespace CalcIt.Lib.NetworkAccess
 {
     using System;
 
+    using CalcIt.Lib.Log;
     using CalcIt.Lib.NetworkAccess.Events;
     using CalcIt.Protocol;
 
@@ -16,6 +17,7 @@ namespace CalcIt.Lib.NetworkAccess
     /// The NetworkAccess interface.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public interface INetworkAccess<T>
         where T : class, ICalcItSession
@@ -28,15 +30,13 @@ namespace CalcIt.Lib.NetworkAccess
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
-        /// <value>The logger.</value>
-        CalcIt.Lib.Log.ILog Logger
-        {
-            get;
-            set;
-        }
+        /// <value>
+        /// The logger.
+        /// </value>
+        ILog Logger { get; set; }
 
         /// <summary>
-        /// The send.
+        /// The send method.
         /// </summary>
         /// <param name="message">
         /// The message.

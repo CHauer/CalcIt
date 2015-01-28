@@ -7,11 +7,10 @@
 // -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Endpoint
 {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// The ip connection endpoint.
+    /// The connection endpoint.
     /// </summary>
     [DataContract]
     public class IpConnectionEndpoint : ConnectionEndpoint
@@ -20,16 +19,16 @@ namespace CalcIt.Protocol.Endpoint
         /// Gets or sets the port.
         /// </summary>
         /// <value>
-        /// The port.
+        /// The port value.
         /// </value>
         [DataMember]
         public int Port { get; set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {

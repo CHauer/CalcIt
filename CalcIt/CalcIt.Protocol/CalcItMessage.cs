@@ -11,21 +11,32 @@ namespace CalcIt.Protocol
     using System.Runtime.Serialization;
 
     using CalcIt.Protocol.Client;
-    using CalcIt.Protocol.Monitor;
     using CalcIt.Protocol.Endpoint;
+    using CalcIt.Protocol.Monitor;
 
     /// <summary>
     /// The calc it message.
     /// </summary>
     [DataContract]
     [KnownType(typeof(CalcItClientMessage))]
-    [KnownType(typeof(CalcItMonitorMessage ))]
+    [KnownType(typeof(CalcItMonitorMessage))]
     public abstract class CalcItMessage : ICalcItSession, IMessageControl
     {
+        /// <summary>
+        /// Gets or sets the message nr.
+        /// </summary>
+        /// <value>
+        /// The message nr.
+        /// </value>
+        [DataMember]
+        public int MessageNr { get; set; }
 
         /// <summary>
         /// Gets or sets the session endpoint.
         /// </summary>
+        /// <value>
+        /// The reconnect endpoint.
+        /// </value>
         [DataMember]
         public ConnectionEndpoint ReconnectEndpoint { get; set; }
 
@@ -37,14 +48,5 @@ namespace CalcIt.Protocol
         /// </value>
         [DataMember]
         public Guid? SessionId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the message nr.
-        /// </summary>
-        /// <value>
-        /// The message nr.
-        /// </value>
-        [DataMember]
-        public int MessageNr { get; set; }
     }
 }

@@ -29,6 +29,9 @@ namespace CalcIt.Lib.CommandExecution
         /// <summary>
         /// Gets or sets the message type.
         /// </summary>
+        /// <value>
+        /// The message type.
+        /// </value>
         public Type MessageType { get; set; }
     }
 }

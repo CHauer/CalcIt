@@ -21,6 +21,9 @@ namespace CalcIt.Lib.Monitor
         /// <summary>
         /// Gets or sets the monitor network access.
         /// </summary>
+        /// <value>
+        /// The monitor network access.
+        /// </value>
         public CalcItNetworkServer<CalcItMonitorMessage> MonitorNetworkAccess { get; set; }
 
         /// <summary>

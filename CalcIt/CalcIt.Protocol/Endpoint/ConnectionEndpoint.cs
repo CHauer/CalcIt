@@ -27,12 +27,11 @@ namespace CalcIt.Protocol.Endpoint
         public string Hostname { get; set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public abstract override string ToString();
-
     }
 }

@@ -15,6 +15,9 @@ namespace CalcIt.Protocol
         /// <summary>
         /// Gets or sets the message nr.
         /// </summary>
+        /// <value>
+        /// The message nr.
+        /// </value>
         int MessageNr { get; set; }
     }
 }

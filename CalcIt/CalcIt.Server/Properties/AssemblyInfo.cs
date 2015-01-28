@@ -1,5 +1,12 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// -----------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Server - AssemblyInfo.cs</summary>
+// -----------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
@@ -23,12 +30,10 @@ using System.Runtime.InteropServices;
 [assembly: Guid("bcfa8744-ec8b-48e8-97ed-78a750cd0cab")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
-//
 //      Hauptversion
 //      Nebenversion 
 //      Buildnummer
 //      Revision
-//
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]

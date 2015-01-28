@@ -23,7 +23,9 @@ namespace CalcIt.Lib.NetworkAccess.Events
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageReceivedEventArgs{T}"/> class.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public MessageReceivedEventArgs(T message)
         {
             this.Message = message;

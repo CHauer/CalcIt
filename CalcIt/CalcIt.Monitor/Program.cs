@@ -1,34 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="Program.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Monitor - Program.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Monitor
 {
+    using System;
+    using System.Linq;
+
     using CalcIt.Lib.CommandExecution;
     using CalcIt.Lib.Log;
     using CalcIt.Lib.Monitor;
     using CalcIt.Lib.NetworkAccess;
     using CalcIt.Lib.NetworkAccess.Tcp;
     using CalcIt.Lib.NetworkAccess.Transform;
-    using CalcIt.Lib.NetworkAccess.Udp;
     using CalcIt.Monitor.Properties;
-    using CalcIt.Protocol.Client;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
 
+    /// <summary>
+    /// The program.
+    /// </summary>
     public class Program
     {
         /// <summary>
-        /// The monitor commmand executor.
+        /// The exit flag.
         /// </summary>
-        private static CommandExecutor<CalcItMonitorMessage> monitorCommmandExecutor;
+        private static bool exit = false;
 
         /// <summary>
-        /// The monitor client
+        /// The logger.
         /// </summary>
-        private static CalcItNetworkClient<CalcItMonitorMessage> monitorNetworkClient;
+        private static Logger logger;
+
+        /// <summary>
+        /// The monitor command executor.
+        /// </summary>
+        private static CommandExecutor<CalcItMonitorMessage> monitorCommmandExecutor;
 
         /// <summary>
         /// The monitor manager.
@@ -36,25 +46,26 @@ namespace CalcIt.Monitor
         private static MonitorManager monitorManager;
 
         /// <summary>
-        /// The server hostname
+        /// The monitor client.
+        /// </summary>
+        private static CalcItNetworkClient<CalcItMonitorMessage> monitorNetworkClient;
+
+        /// <summary>
+        /// The server hostname.
         /// </summary>
         private static string serverHostname;
 
         /// <summary>
-        /// The server port
+        /// The server port.
         /// </summary>
         private static int serverPort;
 
         /// <summary>
-        /// The logger
+        /// The main method.
         /// </summary>
-        private static Logger logger;
-
-        /// <summary>
-        /// The exit flag.
-        /// </summary>
-        private static bool exit = false;
-
+        /// <param name="args">
+        /// The args array.
+        /// </param>
         public static void Main(string[] args)
         {
             HandleArguments(args);
@@ -62,10 +73,7 @@ namespace CalcIt.Monitor
 
             InitializeLogger();
 
-            monitorManager = new MonitorManager()
-            {
-                Logger = logger
-            };
+            monitorManager = new MonitorManager() { Logger = logger };
 
             ConnectMonitor();
 
@@ -81,11 +89,11 @@ namespace CalcIt.Monitor
         /// <summary>
         /// Connects the monitor.
         /// </summary>
-        private async static void ConnectMonitor()
+        private static async void ConnectMonitor()
         {
             bool connected = false;
 
-            while(!connected)
+            while (!connected)
             {
                 InitializeNetworkAccess();
                 InitializeCommandExecutor();
@@ -98,15 +106,6 @@ namespace CalcIt.Monitor
         }
 
         /// <summary>
-        /// Prepares the console window.
-        /// </summary>
-        private static void PrepareConsoleWindow()
-        {
-            Console.Title = Resources.ConsoleHeader;
-            Console.WriteLine(Resources.StartUpText);
-        }
-
-        /// <summary>
         /// Ends the monitor.
         /// </summary>
         private static void EndMonitor()
@@ -116,34 +115,14 @@ namespace CalcIt.Monitor
         }
 
         /// <summary>
-        /// Initializes the logger.
-        /// </summary>
-        private static void InitializeLogger()
-        {
-            logger = new Logger();
-            logger.AddListener(new ConsoleLogListener());
-        }
-
-        /// <summary>
-        /// Initializes the command executor.
-        /// </summary>
-        private static void InitializeCommandExecutor()
-        {
-            monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
-            {
-                Logger = logger,
-                MethodProvider = monitorManager,
-                NetworkAccess = monitorNetworkClient
-            };
-        }
-
-        /// <summary>
         /// Handles the arguments.
         /// </summary>
-        /// <param name="args">The arguments.</param>
+        /// <param name="args">
+        /// The arguments.
+        /// </param>
         private static void HandleArguments(string[] args)
         {
-            //Standard settings
+            // Standard settings
             serverHostname = "localhost";
             serverPort = 50210;
 
@@ -169,6 +148,28 @@ namespace CalcIt.Monitor
         }
 
         /// <summary>
+        /// Initializes the command executor.
+        /// </summary>
+        private static void InitializeCommandExecutor()
+        {
+            monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
+            {
+                Logger = logger, 
+                MethodProvider = monitorManager, 
+                NetworkAccess = monitorNetworkClient
+            };
+        }
+
+        /// <summary>
+        /// Initializes the logger.
+        /// </summary>
+        private static void InitializeLogger()
+        {
+            logger = new Logger();
+            logger.AddListener(new ConsoleLogListener());
+        }
+
+        /// <summary>
         /// Initializes the network access.
         /// </summary>
         private static void InitializeNetworkAccess()
@@ -176,19 +177,23 @@ namespace CalcIt.Monitor
             monitorNetworkClient = new CalcItNetworkClient<CalcItMonitorMessage>()
             {
                 ClientConnector =
-                     new TcpClientConnector<CalcItMonitorMessage>()
-                     {
-                         MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(),
-                         ConnectionSettings =
-                             new IpConnectionEndpoint()
-                             {
-                                 Hostname = serverHostname,
-                                 Port = serverPort
-                             }
-                     }
+                    new TcpClientConnector<CalcItMonitorMessage>()
+                    {
+                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(), 
+                        ConnectionSettings = new IpConnectionEndpoint() { Hostname = serverHostname, Port = serverPort }
+                    }
             };
 
             monitorNetworkClient.Connect();
+        }
+
+        /// <summary>
+        /// Prepares the console window.
+        /// </summary>
+        private static void PrepareConsoleWindow()
+        {
+            Console.Title = Resources.ConsoleHeader;
+            Console.WriteLine(Resources.StartUpText);
         }
     }
 }

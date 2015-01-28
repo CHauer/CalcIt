@@ -19,6 +19,9 @@ namespace CalcIt.Protocol
         /// <summary>
         /// Gets or sets the reconnect endpoint.
         /// </summary>
+        /// <value>
+        /// The reconnect endpoint.
+        /// </value>
         ConnectionEndpoint ReconnectEndpoint { get; set; }
 
         /// <summary>

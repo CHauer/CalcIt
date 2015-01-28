@@ -1,21 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using CalcIt.Lib.NetworkAccess;
-using CalcIt.Protocol;
-using CalcIt.Protocol.Server;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="CommandExecutor.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Lib - CommandExecutor.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Lib.CommandExecution
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
 
     using CalcIt.Lib.Log;
+    using CalcIt.Lib.NetworkAccess;
+    using CalcIt.Protocol;
     using CalcIt.Protocol.Monitor;
 
-    public class CommandExecutor<T> where T : class, ICalcItSession
+    /// <summary>
+    /// The command executor.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
+    /// </typeparam>
+    public class CommandExecutor<T>
+        where T : class, ICalcItSession
     {
         /// <summary>
         /// The command queue.
@@ -41,21 +52,12 @@ namespace CalcIt.Lib.CommandExecution
         }
 
         /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        private void Initialize()
-        {
-            this.commandQueue = new Queue<T>();
-            this.taskWaitSleepTime = new TimeSpan(0, 0, 0, 0, 100);
-        }
-
-        /// <summary>
-        /// Gets or sets the network access.
+        /// Gets or sets the logger.
         /// </summary>
         /// <value>
-        /// The network access.
+        /// The logger.
         /// </value>
-        public INetworkAccess<T> NetworkAccess { get; set; }
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// Gets or sets the method provider.
@@ -66,51 +68,33 @@ namespace CalcIt.Lib.CommandExecution
         public object MethodProvider { get; set; }
 
         /// <summary>
-        /// Finds the executor method.
+        /// Gets or sets the network access.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">message</exception>
-        /// <exception cref="System.InvalidOperationException">MethodProvider has to be initialized!</exception>
-        private MethodInfo FindExecutorMethod(T message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-
-            if (MethodProvider == null)
-            {
-                throw new InvalidOperationException("MethodProvider has to be initialized!");
-            }
-
-            MethodInfo executerMethod = MethodProvider.GetType().GetMethods()
-                                       .FirstOrDefault(method => method.GetCustomAttributes(typeof(CommandHandlerAttribute), false)
-                                                                       .Any(attr => ((CommandHandlerAttribute)attr).MessageType == message.GetType()));
-
-            return executerMethod;
-        }
+        /// <value>
+        /// The network access.
+        /// </value>
+        public INetworkAccess<T> NetworkAccess { get; set; }
 
         /// <summary>
         /// Starts the executor.
         /// </summary>
         public void StartExecutor()
         {
-            if (MethodProvider == null)
+            if (this.MethodProvider == null)
             {
                 throw new InvalidOperationException("MethodProvider has to be initialized!");
             }
 
-            if (NetworkAccess == null)
+            if (this.NetworkAccess == null)
             {
                 throw new InvalidOperationException("NetworkAccess has to be initialized!");
             }
 
-            NetworkAccess.MessageReceived += (sender, e) => { commandQueue.Enqueue(e.Message); };
+            this.NetworkAccess.MessageReceived += (sender, e) => { this.commandQueue.Enqueue(e.Message); };
 
-            isExecuting = true;
+            this.isExecuting = true;
 
-            Task.Run(() => RunExecutor());
+            Task.Run(() => this.RunExecutor());
         }
 
         /// <summary>
@@ -118,7 +102,65 @@ namespace CalcIt.Lib.CommandExecution
         /// </summary>
         public void StopExecutor()
         {
-            isExecuting = false;
+            this.isExecuting = false;
+        }
+
+        /// <summary>
+        /// Handles the tunnel message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        public void HandleTunneldMessage(T message)
+        {
+            this.commandQueue.Enqueue(message);
+        }
+
+        /// <summary>
+        /// Finds the executor method.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MethodInfo"/> found method.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Message Finder exception.
+        /// </exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// MethodProvider has to be initialized!.
+        /// </exception>
+        private MethodInfo FindExecutorMethod(T message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (this.MethodProvider == null)
+            {
+                throw new InvalidOperationException("MethodProvider has to be initialized!");
+            }
+
+            MethodInfo executerMethod =
+                this.MethodProvider.GetType()
+                    .GetMethods()
+                    .FirstOrDefault(
+                        method =>
+                        method.GetCustomAttributes(typeof(CommandHandlerAttribute), false)
+                            .Any(attr => ((CommandHandlerAttribute)attr).MessageType == message.GetType()));
+
+            return executerMethod;
+        }
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        private void Initialize()
+        {
+            this.commandQueue = new Queue<T>();
+            this.taskWaitSleepTime = new TimeSpan(0, 0, 0, 0, 100);
         }
 
         /// <summary>
@@ -126,65 +168,50 @@ namespace CalcIt.Lib.CommandExecution
         /// </summary>
         private void RunExecutor()
         {
-            while (isExecuting)
+            while (this.isExecuting)
             {
-                while (commandQueue.Count == 0)
+                while (this.commandQueue.Count == 0)
                 {
-                    Thread.Sleep(taskWaitSleepTime);
+                    Thread.Sleep(this.taskWaitSleepTime);
 
-                    if (!isExecuting)
+                    if (!this.isExecuting)
                     {
                         return;
                     }
                 }
 
-                T message = commandQueue.Dequeue();
+                T message = this.commandQueue.Dequeue();
 
-                MethodInfo executerMethod = FindExecutorMethod(message);
+                MethodInfo executerMethod = this.FindExecutorMethod(message);
 
                 // ReSharper disable once UseNullPropagation
                 if (executerMethod != null)
                 {
                     try
                     {
-                        executerMethod.Invoke(MethodProvider, new object[] { message });
+                        executerMethod.Invoke(this.MethodProvider, new object[] { message });
                     }
                     catch (Exception ex)
                     {
-                        LogMessage(new LogMessage(ex));
+                        this.LogMessage(new LogMessage(ex));
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Gets or sets the logger.
-        /// </summary>
-        /// <value>
-        /// The logger.
-        /// </value>
-        public ILog Logger { get; set; }
-
-        /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
-        }
-
-        /// <summary>
-        /// Handles the tunneld message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void HandleTunneldMessage(T message)
-        {
-            commandQueue.Enqueue(message);
         }
     }
 }

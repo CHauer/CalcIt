@@ -75,7 +75,7 @@
     <Compile Include="Server\Watcher\ServerConnectionWatcher.cs" />
     <Compile Include="Server\ServerManager.cs" />
     <Compile Include="Server\Configuration\IConfigurationManager.cs" />
-    <Compile Include="Server\Configuration\XmlDataManager.cs" />
+    <Compile Include="Server\Configuration\XmlConfigurationSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CalcIt.Lib.ClassDiagram.cd" />

@@ -18,6 +18,9 @@ namespace CalcIt.Protocol.Server
         /// <summary>
         /// Gets or sets the check token.
         /// </summary>
+        /// <value>
+        /// The check token.
+        /// </value>
         [DataMember]
         public int CheckToken { get; set; }
     }

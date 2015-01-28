@@ -26,20 +26,21 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
     using CalcIt.Protocol.Monitor;
 
     /// <summary>
-    /// The tcp server listener.
+    /// The server listener.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public class TcpServerListener<T> : INetworkServerConnector<T>
         where T : class, ICalcItSession
     {
         /// <summary>
-        /// The TCP sockets.
+        /// The sockets.
         /// </summary>
         private Dictionary<Guid, TcpClient> clientConnections;
 
         /// <summary>
-        /// The tcp listener.
+        /// The listener.
         /// </summary>
         private TcpListener listener;
 
@@ -62,7 +63,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
-        /// Occurs when incoming connection occured.
+        /// Occurs when incoming connection.
         /// </summary>
         public event EventHandler<ConnectionEventArgs> IncomingConnectionOccured;
 
@@ -70,34 +71,6 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// Occurs when message received.
         /// </summary>
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is running.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is running; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsRunning { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the listen port.
-        /// </summary>
-        /// <value>
-        /// The listen port.
-        /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
-        public int ListenPort
-        {
-            get
-            {
-                if (ConnectionSettings == null || !(ConnectionSettings is IpConnectionEndpoint))
-                {
-                    throw new InvalidOperationException("Connection Settings are invalid or missing.");
-                }
-
-                return (ConnectionSettings as IpConnectionEndpoint).Port;
-            }
-        }
 
         /// <summary>
         /// Gets or sets the connection settings.
@@ -108,20 +81,34 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         public ConnectionEndpoint ConnectionSettings { get; set; }
 
         /// <summary>
-        /// Gets or sets the message transformer.
+        /// Gets a value indicating whether this instance is running.
         /// </summary>
         /// <value>
-        /// The message transformer.
+        /// <c>true</c> if this instance is running; otherwise, <c>false</c>.
         /// </value>
-        public IMessageTransformer<T> MessageTransformer { get; set; }
+        public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Gets or sets the sessions.
+        /// Gets the listen port.
         /// </summary>
         /// <value>
-        /// The sessions.
+        /// The listen port.
         /// </value>
-        public List<Guid> Sessions { get; private set; }
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
+        public int ListenPort
+        {
+            get
+            {
+                if (this.ConnectionSettings == null || !(this.ConnectionSettings is IpConnectionEndpoint))
+                {
+                    throw new InvalidOperationException("Connection Settings are invalid or missing.");
+                }
+
+                return (this.ConnectionSettings as IpConnectionEndpoint).Port;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the logger.
@@ -132,10 +119,30 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         public ILog Logger { get; set; }
 
         /// <summary>
+        /// Gets or sets the message transformer.
+        /// </summary>
+        /// <value>
+        /// The message transformer.
+        /// </value>
+        public IMessageTransformer<T> MessageTransformer { get; set; }
+
+        /// <summary>
+        /// Gets the sessions.
+        /// </summary>
+        /// <value>
+        /// The sessions.
+        /// </value>
+        public List<Guid> Sessions { get; private set; }
+
+        /// <summary>
         /// Sends the specified message.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <exception cref="System.ArgumentNullException">message</exception>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Message exception.
+        /// </exception>
         public void Send(T message)
         {
             // ReSharper disable once MergeSequentialChecks
@@ -170,18 +177,52 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             this.IsRunning = false;
 
-            this.clientConnections.Values.ToList().ForEach(client =>
+            this.clientConnections.Values.ToList().ForEach(
+                client =>
+                    {
+                        if (client != null)
+                        {
+                            client.Close();
+                        }
+                    });
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:IncomingConnectionOccured"/> event.
+        /// </summary>
+        /// <param name="sessionId">
+        /// The session identifier.
+        /// </param>
+        protected virtual void OnIncomingConnectionOccured(Guid sessionId)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.IncomingConnectionOccured != null)
             {
-                if (client != null)
-                {
-                    client.Close();
-                }
-            });
+                this.IncomingConnectionOccured(this, new ConnectionEventArgs(sessionId));
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:MessageReceived"/> event.
+        /// </summary>
+        /// <param name="args">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.MessageReceived != null)
+            {
+                this.MessageReceived(this, args);
+            }
         }
 
         /// <summary>
         /// Initializes the listener.
         /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/> status.
+        /// </returns>
         private bool InitializeListener()
         {
             try
@@ -192,7 +233,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 Debug.WriteLine(ex.Message);
                 return false;
             }
@@ -219,34 +260,6 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             this.Sessions = new List<Guid>();
             this.clientConnections = new Dictionary<Guid, TcpClient>();
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:IncomingConnectionOccured" /> event.
-        /// </summary>
-        /// <param name="sessionId">The session identifier.</param>
-        protected virtual void OnIncomingConnectionOccured(Guid sessionId)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.IncomingConnectionOccured != null)
-            {
-                this.IncomingConnectionOccured(this, new ConnectionEventArgs(sessionId));
-            }
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:MessageReceived"/> event.
-        /// </summary>
-        /// <param name="args">
-        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
-        /// </param>
-        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, args);
-            }
         }
 
         /// <summary>
@@ -277,7 +290,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
             }
 
@@ -287,12 +300,12 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
         }
 
         /// <summary>
-        /// Handles the incomming connection.
+        /// Handles the in coming connection.
         /// </summary>
         /// <param name="result">
         /// The result.
@@ -307,7 +320,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
 
             if (client != null)
@@ -319,7 +332,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <summary>
         /// Runs the handle client.
         /// </summary>
-        /// <param name="client">The client.</param>
+        /// <param name="client">
+        /// The client.
+        /// </param>
         private void RunHandleClient(TcpClient client)
         {
             // ReSharper disable once TooWideLocalVariableScope
@@ -333,7 +348,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 networkStream = null;
                 client.Close();
                 return;
@@ -344,7 +359,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 // while no data on network stream available and connection not closed
                 while (client.Available == 0 && client.Connected)
                 {
-                    Thread.Sleep(taskWaitSleepTime);
+                    Thread.Sleep(this.taskWaitSleepTime);
                 }
 
                 try
@@ -362,14 +377,14 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
 
                 if (message != null)
                 {
                     if (message.SessionId == null)
                     {
-                        //create new session id
+                        // create new session id
                         Guid newSessionId = Guid.NewGuid();
 
                         currentSessionId = newSessionId;
@@ -386,9 +401,10 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     // if session does not exists in session table
                     if (!this.Sessions.Contains(message.SessionId.Value))
                     {
-                        //invalid message - connection close
+                        // invalid message - connection close
                         client.Close();
-                        LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided - connection closed."));
+                        this.LogMessage(
+                            new LogMessage(LogMessageType.Error, "Invalid Session Id provided - connection closed."));
                         return;
                     }
 
@@ -423,9 +439,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     continue;
                 }
 
-                if (Sessions.Contains(message.SessionId.Value))
+                if (this.Sessions.Contains(message.SessionId.Value))
                 {
-                    //session is in table - use cached tcp client
+                    // session is in table - use cached tcp client
                     try
                     {
                         var networkStream = this.clientConnections[message.SessionId.Value].GetStream();
@@ -433,15 +449,19 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     }
                     catch (Exception ex)
                     {
-                        LogMessage(new LogMessage(ex));
+                        this.LogMessage(new LogMessage(ex));
                     }
                 }
                 else
                 {
-                    //session is not in table - open tcp client
+                    // session is not in table - open tcp client
                     if (message.ReconnectEndpoint != null && message.ReconnectEndpoint is IpConnectionEndpoint)
                     {
-                        Task.Run(() => SendMessageToReconnectClient(message, message.ReconnectEndpoint as IpConnectionEndpoint));
+                        Task.Run(
+                            () =>
+                            this.SendMessageToReconnectClient(
+                                message, 
+                                message.ReconnectEndpoint as IpConnectionEndpoint));
                     }
                 }
             }
@@ -450,8 +470,12 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <summary>
         /// Sends the message to new client.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="endpoint">The endpoint.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <param name="endpoint">
+        /// The endpoint.
+        /// </param>
         private void SendMessageToReconnectClient(T message, IpConnectionEndpoint endpoint)
         {
             try
@@ -462,25 +486,28 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     {
                         this.MessageTransformer.TransformTo(stream, message);
                     }
+
                     client.Close();
                 }
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
         }
 
         /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
         }
     }

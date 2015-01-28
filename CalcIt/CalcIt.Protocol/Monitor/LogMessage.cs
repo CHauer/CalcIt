@@ -42,7 +42,7 @@ namespace CalcIt.Protocol.Monitor
         /// Initializes a new instance of the <see cref="LogMessage"/> class.
         /// </summary>
         /// <param name="ex">
-        /// The ex.
+        /// The exception.
         /// </param>
         public LogMessage(Exception ex)
             : this(LogMessageType.Error, ex.Message)
@@ -69,7 +69,7 @@ namespace CalcIt.Protocol.Monitor
         /// Gets or sets the date.
         /// </summary>
         /// <value>
-        /// The date.
+        /// The date value.
         /// </value>
         [DataMember]
         public DateTime Date { get; set; }
@@ -78,7 +78,7 @@ namespace CalcIt.Protocol.Monitor
         /// Gets a value indicating whether this instance is debug.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is debug; otherwise, <c>false</c>.
+        /// <c>true</c> if this instance is debug; otherwise, <c>false</c>.
         /// </value>
         [IgnoreDataMember]
         public bool IsDebug
@@ -102,16 +102,34 @@ namespace CalcIt.Protocol.Monitor
         /// Gets or sets the type.
         /// </summary>
         /// <value>
-        /// The type.
+        /// The type value.
         /// </value>
         [DataMember]
         public LogMessageType Type { get; set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Copies this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// The <see cref="LogMessage"/>.
+        /// </returns>
+        public virtual LogMessage Copy()
+        {
+            return new LogMessage()
+            {
+                SessionId = this.SessionId, 
+                Message = this.Message, 
+                MessageNr = this.MessageNr, 
+                ReconnectEndpoint = this.ReconnectEndpoint, 
+                Type = this.Type
+            };
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -121,22 +139,6 @@ namespace CalcIt.Protocol.Monitor
             }
 
             return string.Format("{0:G} - {1}", this.Date, this.Message);
-        }
-
-        /// <summary>
-        /// Copies this instance.
-        /// </summary>
-        /// <returns></returns>
-        public virtual LogMessage Copy()
-        {
-            return new LogMessage()
-            {
-                SessionId = this.SessionId,
-                Message = this.Message,
-                MessageNr = this.MessageNr,
-                ReconnectEndpoint = this.ReconnectEndpoint,
-                Type = this.Type
-            };
         }
     }
 }

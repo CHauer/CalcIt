@@ -23,12 +23,12 @@ namespace CalcIt.Lib.Client
     public class GameClientManager
     {
         /// <summary>
-        /// The client session identifier
+        /// The client session identifier.
         /// </summary>
         private Guid clientSessionId;
 
         /// <summary>
-        /// The connect sent
+        /// The connect sent.
         /// </summary>
         private bool connectSent;
 
@@ -58,7 +58,9 @@ namespace CalcIt.Lib.Client
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
-        /// <value>The logger.</value>
+        /// <value>
+        /// The logger.
+        /// </value>
         public ILog Logger { get; set; }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace CalcIt.Lib.Client
         /// </param>
         public void ConnectClient(string username)
         {
-            if (NetworkAccess == null)
+            if (this.NetworkAccess == null)
             {
                 throw new InvalidOperationException();
             }
@@ -93,8 +95,10 @@ namespace CalcIt.Lib.Client
         /// The message.
         /// </param>
         /// <exception cref="ArgumentNullException">
+        /// Argument null exception.
         /// </exception>
         /// <exception cref="ArgumentException">
+        /// Argument exception.
         /// </exception>
         [CommandHandler(typeof(ClientOperationStatus))]
         public void HandleClientOperationStatus(CalcItMessage message)
@@ -143,12 +147,11 @@ namespace CalcIt.Lib.Client
                 throw new ArgumentException("Message type invalid - required message is EndGame.");
             }
 
-
             this.OnEndGameReceived(new MessageReceivedEventArgs<EndGame>((EndGame)message));
         }
 
         /// <summary>
-        /// The handle highscore response.
+        /// The handle high score response.
         /// </summary>
         /// <param name="message">
         /// The message.
@@ -165,7 +168,6 @@ namespace CalcIt.Lib.Client
             {
                 throw new ArgumentException("Message type invalid - required message is HighscoreResponse.");
             }
-
 
             this.OnHighScoreReceived(new MessageReceivedEventArgs<HighscoreResponse>((HighscoreResponse)message));
         }
@@ -200,7 +202,7 @@ namespace CalcIt.Lib.Client
         /// </param>
         public void SendAnswer(int answerValue)
         {
-            if (NetworkAccess == null)
+            if (this.NetworkAccess == null)
             {
                 throw new InvalidOperationException();
             }
@@ -209,11 +211,11 @@ namespace CalcIt.Lib.Client
         }
 
         /// <summary>
-        /// Sends the highscore request.
+        /// Sends the high score request.
         /// </summary>
         public void SendHighscoreRequest()
         {
-            if (NetworkAccess == null)
+            if (this.NetworkAccess == null)
             {
                 throw new InvalidOperationException();
             }
@@ -226,7 +228,7 @@ namespace CalcIt.Lib.Client
         /// </summary>
         public void SendStartGame()
         {
-            if (NetworkAccess == null)
+            if (this.NetworkAccess == null)
             {
                 throw new InvalidOperationException();
             }
@@ -238,7 +240,7 @@ namespace CalcIt.Lib.Client
         /// The on high score received.
         /// </summary>
         /// <param name="e">
-        /// The e.
+        /// The e parameter.
         /// </param>
         protected virtual void OnHighScoreReceived(MessageReceivedEventArgs<HighscoreResponse> e)
         {
@@ -253,7 +255,7 @@ namespace CalcIt.Lib.Client
         /// The on question received.
         /// </summary>
         /// <param name="e">
-        /// The e.
+        /// The e parameter.
         /// </param>
         protected virtual void OnQuestionReceived(MessageReceivedEventArgs<Question> e)
         {
@@ -263,21 +265,6 @@ namespace CalcIt.Lib.Client
             if (onQuestionReceived != null)
             {
                 onQuestionReceived(this, e);
-            }
-        }
-
-        /// <summary>
-        /// Logs the message.
-        /// </summary>
-        /// <param name="logMessage">
-        /// The log message.
-        /// </param>
-        private void LogMessage(LogMessage logMessage)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.Logger != null)
-            {
-                this.Logger.AddLogMessage(logMessage);
             }
         }
 
@@ -294,6 +281,21 @@ namespace CalcIt.Lib.Client
             if (onEndGameReceived != null)
             {
                 onEndGameReceived(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
+        private void LogMessage(LogMessage logMessage)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.Logger != null)
+            {
+                this.Logger.AddLogMessage(logMessage);
             }
         }
     }

@@ -13,7 +13,7 @@ namespace CalcIt.Protocol.Client
     using CalcIt.Protocol.Data;
 
     /// <summary>
-    /// The highscore response.
+    /// The high score response.
     /// </summary>
     [DataContract]
     public class HighscoreResponse : CalcItClientMessage
@@ -24,6 +24,7 @@ namespace CalcIt.Protocol.Client
         /// <value>
         /// The high score list.
         /// </value>
+        [DataMember]
         public List<HighScoreItem> HighScoreList { get; set; }
     }
 }

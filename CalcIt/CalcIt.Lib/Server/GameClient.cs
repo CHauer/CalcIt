@@ -20,6 +20,12 @@ namespace CalcIt.Lib.Server
         /// <summary>
         /// Initializes a new instance of the <see cref="GameClient"/> class.
         /// </summary>
+        /// <param name="username">
+        /// The username.
+        /// </param>
+        /// <param name="sessionId">
+        /// The session Id.
+        /// </param>
         public GameClient(string username, Guid sessionId)
         {
             this.AnswerQueue = new Queue<Answer>();
@@ -32,7 +38,7 @@ namespace CalcIt.Lib.Server
         }
 
         /// <summary>
-        /// Gets or sets the answer queue.
+        /// Gets the answer queue.
         /// </summary>
         /// <value>
         /// The answer queue.
@@ -66,7 +72,7 @@ namespace CalcIt.Lib.Server
             get
             {
                 // ReSharper disable once ConvertPropertyToExpressionBody
-                return (GameEndTime == null);
+                return this.GameEndTime == null;
             }
         }
 
@@ -79,7 +85,7 @@ namespace CalcIt.Lib.Server
         public DateTime GameStartTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the join date.
+        /// Gets the join date.
         /// </summary>
         /// <value>
         /// The join date.
@@ -95,7 +101,7 @@ namespace CalcIt.Lib.Server
         public int Points { get; set; }
 
         /// <summary>
-        /// Gets or sets the session id.
+        /// Gets the session id.
         /// </summary>
         /// <value>
         /// The session identifier.
@@ -103,7 +109,7 @@ namespace CalcIt.Lib.Server
         public Guid SessionId { get; private set; }
 
         /// <summary>
-        /// Gets or sets the user name.
+        /// Gets the user name.
         /// </summary>
         /// <value>
         /// The name of the user.

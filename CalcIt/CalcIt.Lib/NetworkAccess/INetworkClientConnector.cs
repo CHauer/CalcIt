@@ -19,7 +19,7 @@ namespace CalcIt.Lib.NetworkAccess
     /// The NetworkClientConnector interface.
     /// </summary>
     /// <typeparam name="T">
-    /// Parameter is Class which implements ICalcItSession
+    /// Parameter is Class which implements ICalcItSession.
     /// </typeparam>
     public interface INetworkClientConnector<T>
         where T : class, ICalcItSession
@@ -40,22 +40,26 @@ namespace CalcIt.Lib.NetworkAccess
         /// <summary>
         /// Gets a value indicating whether is connected.
         /// </summary>
+        /// <value>
+        /// The is connected.
+        /// </value>
         bool IsConnected { get; }
-
-        /// <summary>
-        /// Gets or sets the message transformer.
-        /// </summary>
-        IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
-        /// <value>The logger.</value>
-        ILog Logger
-        {
-            get;
-            set;
-        }
+        /// <value>
+        /// The logger.
+        /// </value>
+        ILog Logger { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message transformer.
+        /// </summary>
+        /// <value>
+        /// The message transformer.
+        /// </value>
+        IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
         /// The close.
@@ -68,7 +72,7 @@ namespace CalcIt.Lib.NetworkAccess
         void Connect();
 
         /// <summary>
-        /// The send.
+        /// The send method.
         /// </summary>
         /// <param name="message">
         /// The message.

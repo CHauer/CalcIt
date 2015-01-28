@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Endpoint
 {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -26,10 +25,10 @@ namespace CalcIt.Protocol.Endpoint
         public string PipeName { get; set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -40,6 +39,5 @@ namespace CalcIt.Protocol.Endpoint
 
             return string.Format("{0}@{1}", this.PipeName, this.Hostname);
         }
-
     }
 }
