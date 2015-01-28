@@ -38,6 +38,8 @@ namespace CalcIt.Lib.NetworkAccess
         /// </summary>
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
+        public event EventHandler<MessageReceivedEventArgs<T>> MessageSend;
+
         /// <summary>
         /// Gets or sets the server connector.
         /// </summary>
@@ -118,15 +120,56 @@ namespace CalcIt.Lib.NetworkAccess
             }
 
             this.ServerConnector.Send(message);
+
+            OnMessageSend(new MessageReceivedEventArgs<T>(message));
         }
 
         /// <summary>
         /// Receives this instance.
         /// </summary>
+        /// <param name="messageType">Type of the message.</param>
         /// <returns></returns>
         public async Task<T> Receive(Type messageType)
         {
-            // DateTime start = DateTime.Now;
+            Queue<T> input = new Queue<T>();
+
+            EventHandler<MessageReceivedEventArgs<T>> handler = (sender, e) =>
+            {
+                if (e.Message.GetType() == messageType)
+                {
+                    input.Enqueue(e.Message);
+                }
+            };
+
+            this.MessageReceived += handler;
+
+            await Task.Run(() =>
+            {
+                while (input.Count == 0)
+                {
+                    Thread.Sleep(100);
+                }
+            });
+
+            this.MessageReceived -= handler;
+
+            if (input.Count == 0)
+            {
+                return null;
+            }
+
+            return input.Dequeue();
+        }
+
+        /// <summary>
+        /// Receives this instance.
+        /// </summary>
+        /// <param name="messageType">Type of the message.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
+        public async Task<T> Receive(Type messageType, TimeSpan timeout)
+        {
+            DateTime start = DateTime.Now;
             Queue<T> input = new Queue<T>();
 
             EventHandler<MessageReceivedEventArgs<T>> handler = (sender, e) =>
@@ -145,15 +188,20 @@ namespace CalcIt.Lib.NetworkAccess
                 {
                     Thread.Sleep(100);
 
-                    // if ((DateTime.Now - start) >= timeout)
-                    // {
-                    //    this.MessageReceived -= handler;
-                    //    throw new TimeoutException();
-                    // }
+                    if ((DateTime.Now - start) >= timeout)
+                    {
+                        this.MessageReceived -= handler;
+                        return;
+                    }
                 }
             });
 
             this.MessageReceived -= handler;
+
+            if (input.Count == 0)
+            {
+                return null;
+            }
 
             return input.Dequeue();
         }
@@ -176,6 +224,21 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         /// <summary>
+        /// Raises the <see cref="E:MessageSend" /> event.
+        /// </summary>
+        /// <param name="e">The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.</param>
+        protected virtual void OnMessageSend(MessageReceivedEventArgs<T> e)
+        {
+            var onMessageSend = this.MessageSend;
+
+            // ReSharper disable once UseNullPropagation
+            if (onMessageSend != null)
+            {
+                onMessageSend(this, e);
+            }
+        }
+
+        /// <summary>
         /// Logs the message.
         /// </summary>
         /// <param name="logMessage">The log message.</param>
@@ -187,5 +250,6 @@ namespace CalcIt.Lib.NetworkAccess
                 Logger.AddLogMessage(logMessage);
             }
         }
+
     }
 }

@@ -61,7 +61,17 @@ namespace CalcIt.Server.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Enter for Server End ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die CalcIt Server ähnelt.
+        /// </summary>
+        internal static string ConsoleHeader {
+            get {
+                return ResourceManager.GetString("ConsoleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CalcIt Server (Enter &quot;exit&quot; for end)
+        ///------------------------------------ ähnelt.
         /// </summary>
         internal static string Enter_for_Server_End {
             get {

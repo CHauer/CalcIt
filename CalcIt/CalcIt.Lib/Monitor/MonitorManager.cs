@@ -56,6 +56,22 @@ namespace CalcIt.Lib.Monitor
             }
         }
 
+        [CommandHandler(typeof(LogProtocolMessage))]
+        public void HandleLogProtocolMessage(CalcItMessage message)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (message == null)
+            {
+                return;
+            }
+
+            if (message is LogMessage)
+            {
+                // ReSharper disable once TryCastAlwaysSucceeds
+                LogMessage(message as LogMessage);
+            }
+        }
+
         /// <summary>
         /// Connects to server.
         /// </summary>
@@ -72,7 +88,7 @@ namespace CalcIt.Lib.Monitor
             return await Task.Run<bool>(() =>
             {
                 DateTime start = DateTime.Now;
-                TimeSpan wait = new TimeSpan(0,0, 15);
+                TimeSpan wait = new TimeSpan(0, 0, 15);
 
                 while (!okReceived)
                 {

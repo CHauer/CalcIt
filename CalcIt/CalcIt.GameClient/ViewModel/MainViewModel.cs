@@ -13,6 +13,7 @@ namespace CalcIt.GameClient.ViewModel
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
 
@@ -42,6 +43,8 @@ namespace CalcIt.GameClient.ViewModel
         private CalcItNetworkClient<CalcItClientMessage> gameNetworkClient;
 
         private ConnectionEndpoint connectionEndpoint;
+
+        private CancellationTokenSource cancelCounterToken;
 
         private NetworkAccessType networkAccessType;
 
@@ -77,28 +80,28 @@ namespace CalcIt.GameClient.ViewModel
             {
                 isGameRunning = value;
                 RaisePropertyChanged(() => IsGameRunning);
-                RaisePropertyChanged(() => IsChangeConnectionEnabled);
+                RaisePropertyChanged(() => IsGameEnd);
             }
         }
 
         /// <summary>
-        /// The is change connection enabled
+        /// The is game end
         /// </summary>
-        private bool isChangeConnectionEnabled = true;
+        private bool isGameEnd;
 
         /// <summary>
-        /// Gets a value indicating whether [change connection enabled].
+        /// Gets a value indicating whether this instance is game end.
         /// </summary>
         /// <value>
-        /// <c>true</c> if [change connection enabled]; otherwise, <c>false</c>.
+        /// <c>true</c> if this instance is game end; otherwise, <c>false</c>.
         /// </value>
-        public bool IsChangeConnectionEnabled
+        public bool IsGameEnd
         {
-            get { return isChangeConnectionEnabled; }
+            get { return isGameEnd; }
             set
             {
-                this.isChangeConnectionEnabled = value;
-                RaisePropertyChanged(() => IsChangeConnectionEnabled);
+                this.isGameEnd = value;
+                RaisePropertyChanged(() => IsGameEnd);
             }
         }
 
@@ -187,10 +190,14 @@ namespace CalcIt.GameClient.ViewModel
         /// </summary>
         public MainViewModel()
         {
+
             this.InitializeLogger();
             this.InitializeCommands();
 
             this.InitializeGameClient();
+
+            this.IsGameRunning = false;
+            this.IsGameEnd = false;
         }
 
         /// <summary>
@@ -209,7 +216,7 @@ namespace CalcIt.GameClient.ViewModel
             set
             {
                 this.currentAnswer = value;
-                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(() => Answer);
             }
         }
 
@@ -631,20 +638,87 @@ namespace CalcIt.GameClient.ViewModel
             }
 
             gameClientManager.ConnectClient(Username);
-            this.IsChangeConnectionEnabled = false;
         }
 
+        /// <summary>
+        /// Networks the end game received.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MessageReceivedEventArgs{EndGame}"/> instance containing the event data.</param>
         private void NetworkEndGameReceived(object sender, MessageReceivedEventArgs<EndGame> e)
         {
-            this.IsChangeConnectionEnabled = true;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.IsGameRunning = false;
+                this.IsGameEnd = true;
+            });
 
-            //TODO
-            //e.Message.GameCount
-            //e.Message.Points
+            if (cancelCounterToken != null)
+            {
+                try
+                {
+                    cancelCounterToken.Cancel();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.GameCount = e.Message.GameCount;
+                this.Points = e.Message.Points;
+                this.GamePlayTime = e.Message.GamePlaySeconds;
+            });
+        }
+
+        public int GameCount
+        {
+            get
+            {
+                return gameCount;
+            }
+            set
+            {
+                gameCount = value;
+                RaisePropertyChanged(() => GameCount);
+            }
+        }
+
+        public int GamePlayTime
+        {
+            get
+            {
+                return gamePlayTime;
+            }
+            set
+            {
+                gamePlayTime = value;
+                RaisePropertyChanged(() => GamePlayTime);
+            }
+        }
+
+        public int Points
+        {
+            get
+            {
+                return points;
+            }
+            set
+            {
+                points = value;
+                RaisePropertyChanged(() => Points);
+            }
         }
 
         private bool newQuestion;
 
+        private int points;
+
+        private int gamePlayTime;
+
+        private int gameCount;
 
         private void NetworkHighScoreReceived(object sender, MessageReceivedEventArgs<HighscoreResponse> e)
         {
@@ -662,12 +736,30 @@ namespace CalcIt.GameClient.ViewModel
         /// <param name="e">The <see cref="MessageReceivedEventArgs{Question}"/> instance containing the event data.</param>
         private void NetworkQuestionReceived(object sender, MessageReceivedEventArgs<Question> e)
         {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.IsGameRunning = true;
+                this.IsGameEnd = false;
+            });
+
             newQuestion = true;
             var question = e.Message as Question;
 
+            if (cancelCounterToken != null)
+            {
+                try
+                {
+                    cancelCounterToken.Cancel();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
             this.NumberA = question.NumberA.ToString();
             this.NumberB = question.NumberB.ToString();
-            this.Answer = string.Empty;
+            Application.Current.Dispatcher.Invoke(() => this.Answer = string.Empty);
 
             switch (question.Operator)
             {
@@ -683,20 +775,29 @@ namespace CalcIt.GameClient.ViewModel
             }
 
             newQuestion = false;
-            Task.Run(() => StartTimeCounter(question.TimeToAnswer));
+
+            cancelCounterToken = new CancellationTokenSource();
+
+            Task.Run(() => StartTimeCounter(question.TimeToAnswer, cancelCounterToken.Token), cancelCounterToken.Token);
         }
 
         /// <summary>
         /// Starts the time counter.
         /// </summary>
         /// <param name="timeToAnswer">The time to answer.</param>
-        private void StartTimeCounter(int timeToAnswer)
+        private void StartTimeCounter(int timeToAnswer, CancellationToken token)
         {
             while (timeToAnswer > 0 && !newQuestion)
             {
                 this.AnswerTimeLeft = String.Format("{0} sec", timeToAnswer);
                 Thread.Sleep(new TimeSpan(0, 0, 0, 0, 900));
                 timeToAnswer--;
+
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
             }
         }
 
@@ -748,5 +849,7 @@ namespace CalcIt.GameClient.ViewModel
 
             Debug.WriteLine(e.Message);
         }
+
+
     }
 }

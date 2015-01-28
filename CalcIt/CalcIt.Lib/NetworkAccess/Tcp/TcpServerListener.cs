@@ -170,13 +170,19 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         {
             this.IsRunning = false;
 
-            this.clientConnections.Values.ToList().ForEach(client => client.Close());
+            this.clientConnections.Values.ToList().ForEach(client =>
+            {
+                if (client != null)
+                {
+                    client.Close();
+                }
+            });
         }
 
         /// <summary>
         /// Initializes the listener.
         /// </summary>
-        private void InitializeListener()
+        private bool InitializeListener()
         {
             try
             {
@@ -188,7 +194,10 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             {
                 LogMessage(new LogMessage(ex));
                 Debug.WriteLine(ex.Message);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -245,7 +254,10 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// </summary>
         private void RunListener()
         {
-            this.InitializeListener();
+            if (!this.InitializeListener())
+            {
+                return;
+            }
 
             while (this.IsRunning)
             {

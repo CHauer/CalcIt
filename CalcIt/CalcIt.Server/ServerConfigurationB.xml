@@ -2,14 +2,16 @@
 <ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SyncTimeOut>10</SyncTimeOut>
   <AnswerTimeOut>60</AnswerTimeOut>
-  <GameServerPort>3105</GameServerPort>
+  <GameServerPort>3104</GameServerPort>
   <MaximalPoints>20</MaximalPoints>
   <MinimalPoints>-5</MinimalPoints>
-  <MonitorServerPort>50210</MonitorServerPort>
+  <ReconnectServerConnectionTime>1</ReconnectServerConnectionTime>
+  <MonitorServerPort>50211</MonitorServerPort>
+  <HeartbeatTime>30</HeartbeatTime>
   <ServerListeners>
     <int>60000</int>
   </ServerListeners>
   <ServerConnections>
-    <string>locahost:50893</string>
+    <string>127.0.0.1:50893</string>
   </ServerConnections>
 </ServerConfiguration>

@@ -125,6 +125,10 @@ CalcIt.Server.exe {ConfigurationFile} [/h]
 /h - Shows this help</value>
   </data>
   <data name="Enter_for_Server_End" xml:space="preserve">
-    <value>Enter for Server End</value>
+    <value>CalcIt Server (Enter "exit" for end)
+------------------------------------</value>
+  </data>
+  <data name="ConsoleHeader" xml:space="preserve">
+    <value>CalcIt Server</value>
   </data>
 </root>

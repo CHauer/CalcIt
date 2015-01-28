@@ -7,6 +7,7 @@ using CalcIt.Lib.Server.Watcher;
 
 namespace CalcIt.Lib.Server
 {
+    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -233,6 +234,8 @@ namespace CalcIt.Lib.Server
                             Status = StatusType.Error
                         });
 
+                        LogMessage(new LogMessage(LogMessageType.Warning, String.Format("Game for Username {0} already running.", gameclient.UserName)));
+
                     }
                     else
                     {
@@ -267,6 +270,8 @@ namespace CalcIt.Lib.Server
             }
 
             this.GameClients.Add(new GameClient(message.Username, message.SessionId.Value));
+
+            LogMessage(new LogMessage(String.Format("{0} Game started.", message.Username)));
 
             this.GameClientNetworkAccess.Send(new ClientOperationStatus()
                 {
@@ -353,10 +358,10 @@ namespace CalcIt.Lib.Server
                 if (gameClient.AnswerQueue.Count > 0)
                 {
                     var receivedAnswer = gameClient.AnswerQueue.Dequeue();
-                    //clear all other answers
+                    // clear all other answers
                     gameClient.AnswerQueue.Clear();
 
-                    //check answer input
+                    // check answer input
                     if (GetAnswer(currentQuestion) == receivedAnswer.AnswerContent)
                     {
                         gameClient.Points++;
@@ -373,12 +378,34 @@ namespace CalcIt.Lib.Server
                 }
             }
 
+            gameClient.GameEndTime = DateTime.Now;
+
+            int gameplaySeconds = 0;
+
+            try
+            {
+                gameplaySeconds = (int)(gameClient.GameEndTime.Value - gameClient.GameStartTime).TotalSeconds;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
             //Send endgame message
             GameClientNetworkAccess.Send(new EndGame()
             {
                 GameCount = gameClient.GameCount,
+                GamePlaySeconds = gameplaySeconds,
                 Points = gameClient.Points,
                 SessionId = gameClient.SessionId,
+                Username = gameClient.UserName
+            });
+
+            HighScores.Add(new HighScoreItem()
+            {
+                GameCount = gameClient.GameCount,
+                GamePlaySeconds = gameplaySeconds,
+                Score = gameplaySeconds * gameplaySeconds,
                 Username = gameClient.UserName
             });
         }
@@ -415,7 +442,7 @@ namespace CalcIt.Lib.Server
             {
                 NumberA = number.Next(1, 100),
                 NumberB = number.Next(1, 100),
-                //TODO check if works
+
                 Operator = (OperatorType)number.Next(1, (int)Enum.GetValues(typeof(OperatorType))
                                                                  .Cast<OperatorType>().Max()),
                 SessionId = gameClient.SessionId,
@@ -592,7 +619,7 @@ namespace CalcIt.Lib.Server
                 return;
             }
 
-            if (syncMessage.ServerStartTime > this.StartTime)
+            if (syncMessage.ServerStartTime < this.StartTime)
             {
                 this.IsActiveServer = false;
             }
@@ -609,10 +636,11 @@ namespace CalcIt.Lib.Server
             }
             else
             {
+                // syncMessage.ServerStartTime > this.StartTime - later started
                 this.IsActiveServer = true;
             }
 
-            LogMessage(new LogMessage(string.Format("Sync DetailMessage received - server state is {0}. Received StartTime:{1:g} This Server StartTime: {2:g}",
+            LogMessage(new LogMessage(string.Format("Sync DetailMessage received - server state is {0}.\nReceived StartTime:{1:g}\nThis Server StartTime: {2:g}",
                 this.IsActiveServer ? "Active" : "Passiv", syncMessage.ServerStartTime, this.StartTime)));
 
         }

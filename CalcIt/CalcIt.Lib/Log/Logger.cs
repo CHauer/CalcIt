@@ -13,6 +13,8 @@ using CalcIt.Protocol.Monitor;
 
 namespace CalcIt.Lib.Log
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// 
     /// </summary>
@@ -76,7 +78,7 @@ namespace CalcIt.Lib.Log
 
             if (this.logListeners != null)
             {
-                this.logListeners.ForEach(listener => listener.WriteLogMessage(message));
+                Parallel.ForEach(this.logListeners, listener => listener.WriteLogMessage(message));
             }
         }
 

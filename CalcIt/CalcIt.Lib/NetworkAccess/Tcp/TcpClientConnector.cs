@@ -175,7 +175,10 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         public void Close()
         {
             this.reconnectRunning = false;
-            this.client.Close();
+            if (client != null)
+            {
+                this.client.Close();
+            }
         }
 
         /// <summary>
@@ -191,6 +194,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             catch (Exception ex)
             {
                 LogMessage(new LogMessage(ex));
+                return;
             }
 
             this.reconnectRunning = true;
