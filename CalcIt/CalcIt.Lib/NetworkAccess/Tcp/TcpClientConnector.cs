@@ -365,6 +365,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 if (!this.firstSendHandled)
                 {
                     message.SessionId = null;
+                    this.firstSendHandled = true;
                 }
 
                 // reconnect endpoint

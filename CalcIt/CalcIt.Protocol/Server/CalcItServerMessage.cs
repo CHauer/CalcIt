@@ -17,6 +17,7 @@ namespace CalcIt.Protocol.Server
     [KnownType(typeof(Merge))]
     [KnownType(typeof(SyncMessage))]
     [KnownType(typeof(TunnelMessage))]
+    [KnownType(typeof(ConnectServer))]
     public abstract class CalcItServerMessage : CalcItMessage
     {
     }

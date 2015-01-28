@@ -50,6 +50,7 @@
     <Compile Include="Endpoint\IpConnectionEndpoint.cs" />
     <Compile Include="Endpoint\PipeConnectionEndpoint.cs" />
     <Compile Include="Endpoint\ConnectionEndpoint.cs" />
+    <Compile Include="Server\ConnectServer.cs" />
     <Compile Include="Server\Heartbeat.cs" />
     <Compile Include="Data\HighScoreItem.cs" />
     <Compile Include="Client\HighscoreRequest.cs" />
