@@ -16,6 +16,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
     /// The data contract transformer.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public class DataContractTransformer<T> : IMessageTransformer<T>
         where T : class
@@ -24,10 +25,10 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The transform from.
         /// </summary>
         /// <param name="data">
-        /// The data.
+        /// The data parameter.
         /// </param>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> message of type T.
         /// </returns>
         public T TransformFrom(byte[] data)
         {
@@ -55,7 +56,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The stream from.
         /// </param>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> message of type T.
         /// </returns>
         public T TransformFrom(Stream streamFrom)
         {
@@ -112,7 +113,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The transform object.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        /// The <see cref="bool"/> status.
         /// </returns>
         public bool TransformTo(Stream streamTo, T transformObject)
         {

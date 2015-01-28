@@ -21,12 +21,18 @@ namespace CalcIt.Protocol.Server
         /// <summary>
         /// Gets or sets the game client list.
         /// </summary>
+        /// <value>
+        /// The game client list.
+        /// </value>
         [DataMember]
         public List<ServerGameClientItem> GameClientList { get; set; }
 
         /// <summary>
         /// Gets or sets the high score list.
         /// </summary>
+        /// <value>
+        /// The high score list.
+        /// </value>
         [DataMember]
         public List<HighScoreItem> HighScoreList { get; set; }
     }

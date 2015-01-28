@@ -21,10 +21,10 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The transform from.
         /// </summary>
         /// <param name="data">
-        /// The data.
+        /// The data parameter.
         /// </param>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> type T.
         /// </returns>
         T TransformFrom(byte[] data);
 
@@ -35,7 +35,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The stream from.
         /// </param>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> type T.
         /// </returns>
         T TransformFrom(Stream streamFrom);
 
@@ -46,7 +46,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The transform object.
         /// </param>
         /// <returns>
-        /// The <see cref="byte[]"/>.
+        /// The <see cref="byte[]"/> data.
         /// </returns>
         byte[] TransformTo(T transformObject);
 
@@ -60,7 +60,7 @@ namespace CalcIt.Lib.NetworkAccess.Transform
         /// The transform object.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        /// The <see cref="bool"/> data.
         /// </returns>
         bool TransformTo(Stream streamTo, T transformObject);
     }

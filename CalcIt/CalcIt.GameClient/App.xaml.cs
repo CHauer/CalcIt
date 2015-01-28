@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.GameClient - App.xaml.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.GameClient
 {
+    using System.Windows;
+
     /// <summary>
-    /// Interaktionslogik für "App.xaml"
+    /// The Application class.
     /// </summary>
     public partial class App : Application
     {

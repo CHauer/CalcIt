@@ -16,25 +16,25 @@ namespace CalcIt.Protocol.Data
     public enum LogMessageType
     {
         /// <summary>
-        /// The error.
+        /// The error value.
         /// </summary>
         [EnumMember]
         Error, 
 
         /// <summary>
-        /// The warning.
+        /// The warning value.
         /// </summary>
         [EnumMember]
         Warning, 
 
         /// <summary>
-        /// The log.
+        /// The log value.
         /// </summary>
         [EnumMember]
         Log, 
 
         /// <summary>
-        /// The debug.
+        /// The debug value.
         /// </summary>
         [EnumMember]
         Debug, 

@@ -11,6 +11,7 @@ namespace CalcIt.Lib.Server.Configuration
     /// The Configuration loader interface.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public interface IConfigurationManager<T>
     {
@@ -18,7 +19,7 @@ namespace CalcIt.Lib.Server.Configuration
         /// Loads the configuration.
         /// </summary>
         /// <returns>
-        /// The <see cref="T"/>.
+        /// The <see cref="T"/> type.
         /// </returns>
         T LoadConfiguration();
 

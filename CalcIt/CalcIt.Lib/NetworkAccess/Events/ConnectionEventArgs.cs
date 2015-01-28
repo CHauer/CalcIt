@@ -9,8 +9,6 @@ namespace CalcIt.Lib.NetworkAccess.Events
 {
     using System;
 
-    using CalcIt.Protocol.Endpoint;
-
     /// <summary>
     /// The connection event args.
     /// </summary>

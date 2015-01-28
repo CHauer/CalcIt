@@ -1,6 +1,12 @@
-﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
+﻿// -----------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.GameClient - AssemblyInfo.cs</summary>
+// -----------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -29,25 +35,19 @@ using System.Windows;
 //sodass es mit der UICulture-Einstellung in der Projektdatei übereinstimmt.
 
 //[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
-
-
-[assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, //Speicherort der designspezifischen Ressourcenwörterbücher
-    //(wird verwendet, wenn eine Ressource auf der Seite
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, // Speicherort der designspezifischen Ressourcenwörterbücher
+    // (wird verwendet, wenn eine Ressource auf der Seite
     // oder in den Anwendungsressourcen-Wörterbüchern nicht gefunden werden kann.)
-    ResourceDictionaryLocation.SourceAssembly //Speicherort des generischen Ressourcenwörterbuchs
-    //(wird verwendet, wenn eine Ressource auf der Seite, in der Anwendung oder einem 
+    ResourceDictionaryLocation.SourceAssembly // Speicherort des generischen Ressourcenwörterbuchs
+    // (wird verwendet, wenn eine Ressource auf der Seite, in der Anwendung oder einem 
     // designspezifischen Ressourcenwörterbuch nicht gefunden werden kann.)
-)]
-
+    )]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
-//
 //      Hauptversion
 //      Nebenversion 
 //      Buildnummer
 //      Revision
-//
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]

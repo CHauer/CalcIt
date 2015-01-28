@@ -25,11 +25,6 @@ namespace CalcIt.Lib.Server.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the answer timeout in seconds.
-        /// </summary>
-        public int SyncTimeOut { get; set; }
-
-        /// <summary>
         /// Gets or sets the answer time out.
         /// </summary>
         /// <value>
@@ -40,27 +35,50 @@ namespace CalcIt.Lib.Server.Configuration
         /// <summary>
         /// Gets or sets the game client server port.
         /// </summary>
+        /// <value>
+        /// The game server port.
+        /// </value>
         public int GameServerPort { get; set; }
+
+        /// <summary>
+        /// Gets or sets the heartbeat retry counter.
+        /// </summary>
+        /// <value>
+        /// The heartbeat retry counter.
+        /// </value>
+        public int HeartbeatRetryCounter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the heartbeat time.
+        /// </summary>
+        /// <value>
+        /// The heartbeat time.
+        /// </value>
+        public int HeartbeatTime { get; set; }
 
         /// <summary>
         /// Gets or sets the maximal points.
         /// </summary>
+        /// <value>
+        /// The maximal points.
+        /// </value>
         public int MaximalPoints { get; set; }
 
         /// <summary>
         /// Gets or sets the minimal points.
         /// </summary>
+        /// <value>
+        /// The minimal points.
+        /// </value>
         public int MinimalPoints { get; set; }
 
         /// <summary>
         /// Gets or sets the monitor client server port.
         /// </summary>
+        /// <value>
+        /// The monitor server port.
+        /// </value>
         public int MonitorServerPort { get; set; }
-
-        /// <summary>
-        /// Gets or sets the server connections.
-        /// </summary>
-        public List<int> ServerListeners { get; set; }
 
         /// <summary>
         /// Gets or sets the reconnect server connection time in minutes.
@@ -79,6 +97,22 @@ namespace CalcIt.Lib.Server.Configuration
         public List<string> ServerConnections { get; set; }
 
         /// <summary>
+        /// Gets or sets the server connections.
+        /// </summary>
+        /// <value>
+        /// The server listeners.
+        /// </value>
+        public List<int> ServerListeners { get; set; }
+
+        /// <summary>
+        /// Gets or sets the answer timeout in seconds.
+        /// </summary>
+        /// <value>
+        /// The sync time out.
+        /// </value>
+        public int SyncTimeOut { get; set; }
+
+        /// <summary>
         /// The initialize standard configuration.
         /// </summary>
         private void InitializeStandardConfiguration()
@@ -93,21 +127,5 @@ namespace CalcIt.Lib.Server.Configuration
             this.HeartbeatTime = 60;
             this.HeartbeatRetryCounter = 3;
         }
-
-        /// <summary>
-        /// Gets or sets the heartbeat time.
-        /// </summary>
-        /// <value>
-        /// The heartbeat time.
-        /// </value>
-        public int HeartbeatTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the heartbeat retry counter.
-        /// </summary>
-        /// <value>
-        /// The heartbeat retry counter.
-        /// </value>
-        public int HeartbeatRetryCounter { get; set; }
     }
 }

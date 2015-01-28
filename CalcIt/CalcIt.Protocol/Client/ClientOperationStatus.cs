@@ -32,7 +32,6 @@ namespace CalcIt.Protocol.Client
         /// <value>
         /// The response to operation.
         /// </value>
-
         [DataMember]
         public string ResponseToOperation { get; set; }
 

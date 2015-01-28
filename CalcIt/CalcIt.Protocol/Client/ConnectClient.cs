@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Client
 {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -19,6 +18,9 @@ namespace CalcIt.Protocol.Client
         /// <summary>
         /// Gets or sets the username.
         /// </summary>
+        /// <value>
+        /// The username.
+        /// </value>
         [DataMember]
         public string Username { get; set; }
     }

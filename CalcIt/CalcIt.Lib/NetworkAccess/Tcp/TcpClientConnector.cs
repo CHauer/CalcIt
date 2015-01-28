@@ -24,11 +24,12 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
     using CalcIt.Protocol.Monitor;
 
     /// <summary>
-    /// Opens a Tcp Client to the given hostname:port.
-    /// Creates a tcp listener with a random port between 10000-65535 on localhost address. (ipadress.any)
-    /// The tcp listener is for reconnect purposes when communicating with the passive game server.
+    /// Opens a Client to the given hostname:port.
+    /// Creates a listener with a random port between 10000-65535 on local host address.
+    /// The listener is for reconnect purposes when communicating with the passive game server.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public class TcpClientConnector<T> : INetworkClientConnector<T>
         where T : class, ICalcItSession
@@ -49,7 +50,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         private bool firstSendHandled;
 
         /// <summary>
-        /// The message send queue
+        /// The message send queue.
         /// </summary>
         private Queue<T> messageSendQueue;
 
@@ -59,7 +60,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         private TcpListener reconnectListener;
 
         /// <summary>
-        /// The reconnect port
+        /// The reconnect port.
         /// </summary>
         private int reconnectPort;
 
@@ -69,7 +70,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         private bool reconnectRunning;
 
         /// <summary>
-        /// The session identifier
+        /// The session identifier.
         /// </summary>
         private Guid sessionId;
 
@@ -105,7 +106,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <value>
         /// The hostname.
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
         public string Hostname
         {
             get
@@ -123,6 +126,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <summary>
         /// Gets a value indicating whether is connected.
         /// </summary>
+        /// <value>
+        /// The is connected.
+        /// </value>
         public bool IsConnected
         {
             get
@@ -139,15 +145,20 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <summary>
         /// Gets or sets the message transformer.
         /// </summary>
+        /// <value>
+        /// The message transformer.
+        /// </value>
         public IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
         /// Gets the port.
         /// </summary>
         /// <value>
-        /// The port.
+        /// The port value.
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
         public int Port
         {
             get
@@ -175,7 +186,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         public void Close()
         {
             this.reconnectRunning = false;
-            if (client != null)
+            if (this.client != null)
             {
                 this.client.Close();
             }
@@ -184,7 +195,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         /// <summary>
         /// The connect.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">Connection Settings missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings missing.
+        /// </exception>
         public void Connect()
         {
             try
@@ -193,7 +206,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 return;
             }
 
@@ -221,10 +234,25 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
+        /// Raises the <see cref="E:MessageReceived"/> event.
+        /// </summary>
+        /// <param name="args">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.MessageReceived != null)
+            {
+                this.MessageReceived(this, args);
+            }
+        }
+
+        /// <summary>
         /// Gets the random reconnect port between 10000 and 65535.
         /// </summary>
         /// <returns>
-        /// The <see cref="int"/>.
+        /// The <see cref="int"/> port.
         /// </returns>
         private int GetRandomReconnectPort()
         {
@@ -232,7 +260,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
         }
 
         /// <summary>
-        /// Handles the incomming reconnect.
+        /// Handles the in coming reconnect.
         /// </summary>
         /// <param name="result">
         /// The result.
@@ -247,7 +275,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 return;
             }
 
@@ -259,7 +287,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
 
             if (message != null && message.SessionId != null && message.SessionId.Value.Equals(this.sessionId))
@@ -268,7 +296,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             else
             {
-                LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
+                this.LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
             }
         }
 
@@ -294,29 +322,28 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
 
             try
             {
-                networkStream = client.GetStream();
+                networkStream = this.client.GetStream();
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 networkStream = null;
             }
 
             while (this.client.Connected && networkStream != null)
             {
                 // while no data on network stream available and connection not closed
-                while (client.Available == 0 && client.Connected)
+                while (this.client.Available == 0 && this.client.Connected)
                 {
-                    Thread.Sleep(taskWaitSleepTime);
+                    Thread.Sleep(this.taskWaitSleepTime);
                 }
 
                 try
                 {
                     //// direct deserializing from networkstream ends in endless loop
                     //// because networkStream does not support seek/readtoend 
-
-                    var buffer = new byte[client.Available];
-                    networkStream.Read(buffer, 0, client.Available);
+                    var buffer = new byte[this.client.Available];
+                    networkStream.Read(buffer, 0, this.client.Available);
                     var memoryStream = new MemoryStream(buffer);
 
                     // Receive message
@@ -324,7 +351,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
 
                 if (message != null && message.SessionId != null)
@@ -342,7 +369,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                     }
                     else
                     {
-                        LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
+                        this.LogMessage(new LogMessage(LogMessageType.Error, "Invalid Session Id provided."));
                     }
                 }
             }
@@ -371,10 +398,9 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 // reconnect endpoint
                 message.ReconnectEndpoint = new IpConnectionEndpoint()
                 {
-                    Hostname = Dns.GetHostName(),
+                    Hostname = Dns.GetHostName(), 
                     Port = this.reconnectPort
                 };
-
 
                 try
                 {
@@ -382,7 +408,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
             }
         }
@@ -399,7 +425,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
 
             while (this.reconnectRunning)
@@ -420,7 +446,7 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
             }
 
@@ -430,35 +456,22 @@ namespace CalcIt.Lib.NetworkAccess.Tcp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
-            }
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:MessageReceived"/> event.
-        /// </summary>
-        /// <param name="args">
-        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
-        /// </param>
-        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, args);
+                this.LogMessage(new LogMessage(ex));
             }
         }
 
         /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
         }
     }

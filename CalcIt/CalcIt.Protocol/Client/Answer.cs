@@ -1,15 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="Answer.cs" company="FH Wr.Neustadt">
-//   Copyright Christoph Hauer. All rights reserved.
+//      Copyright Christoph Hauer. All rights reserved.
 // </copyright>
 // <author>Christoph Hauer</author>
-// <summary>
-//   CalcIt.Protocol - Answer.cs
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+// <summary>CalcIt.Protocol - Answer.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Protocol.Client
 {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>

@@ -23,20 +23,21 @@ namespace CalcIt.Lib.NetworkAccess.Udp
     using CalcIt.Protocol.Monitor;
 
     /// <summary>
-    /// The udp server listener.
+    /// The server listener.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public class UdpServerListener<T> : INetworkServerConnector<T>
         where T : class, ICalcItSession, IMessageControl
     {
         /// <summary>
-        /// The client connections
+        /// The client connections.
         /// </summary>
         private Dictionary<Guid, IPEndPoint> clientConnections;
 
         /// <summary>
-        /// The client message control numbers
+        /// The client message control numbers.
         /// </summary>
         private Dictionary<Guid, int> clientMessageControlNumbers;
 
@@ -46,7 +47,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         private Queue<T> messageSendQueue;
 
         /// <summary>
-        /// The receiver
+        /// The receiver.
         /// </summary>
         private UdpClient receiver;
 
@@ -95,7 +96,9 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// <value>
         /// The listen port.
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
         public int ListenPort
         {
             get
@@ -108,6 +111,14 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 return (this.ConnectionSettings as IpConnectionEndpoint).Port;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        public ILog Logger { get; set; }
 
         /// <summary>
         /// Gets or sets the message transformer.
@@ -126,17 +137,11 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         public List<Guid> Sessions { get; private set; }
 
         /// <summary>
-        /// Gets or sets the logger.
-        /// </summary>
-        /// <value>
-        /// The logger.
-        /// </value>
-        public ILog Logger { get; set; }
-
-        /// <summary>
         /// The start.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">DetailMessage transformer has to be initialized!</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// DetailMessage transformer has to be initialized!.
+        /// </exception>
         public void Start()
         {
             if (this.MessageTransformer == null)
@@ -151,7 +156,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         }
 
         /// <summary>
-        /// The stop.
+        /// The stop method.
         /// </summary>
         public void Stop()
         {
@@ -159,10 +164,60 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         }
 
         /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Message is null.
+        /// </exception>
+        public void Send(T message)
+        {
+            // ReSharper disable once MergeSequentialChecks
+            if (message == null || message.SessionId == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            this.messageSendQueue.Enqueue(message);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:IncomingConnectionOccured"/> event.
+        /// </summary>
+        /// <param name="sessionId">
+        /// The session identifier.
+        /// </param>
+        protected virtual void OnIncomingConnectionOccured(Guid sessionId)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.IncomingConnectionOccured != null)
+            {
+                this.IncomingConnectionOccured(this, new ConnectionEventArgs(sessionId));
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:MessageReceived"/> event.
+        /// </summary>
+        /// <param name="args">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.MessageReceived != null)
+            {
+                this.MessageReceived(this, args);
+            }
+        }
+
+        /// <summary>
         /// Handles the received message.
         /// </summary>
         /// <param name="data">
-        /// The data.
+        /// The data parameter.
         /// </param>
         /// <param name="receivedEndpoint">
         /// The received endpoint.
@@ -178,7 +233,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
 
             if (message == null)
@@ -206,22 +261,23 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             if (!this.Sessions.Contains(message.SessionId.Value))
             {
                 // invalid message - connection close
-                LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message - session id not in session table."));
+                this.LogMessage(
+                    new LogMessage(LogMessageType.Debug, "Invalid message - session id not in session table."));
                 return;
             }
 
             currentSessionId = message.SessionId.Value;
 
-            //message tranmition control
-            if (message.MessageNr != (clientMessageControlNumbers[currentSessionId] + 1))
+            // message tranmition control
+            if (message.MessageNr != (this.clientMessageControlNumbers[currentSessionId] + 1))
             {
                 // invalid message - connection close
-                LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message transport control number."));
+                this.LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message transport control number."));
                 return;
             }
 
-            //if valid message - messagenr increment
-            clientMessageControlNumbers[currentSessionId]++;
+            // if valid message - messagenr increment
+            this.clientMessageControlNumbers[currentSessionId]++;
 
             this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, currentSessionId));
         }
@@ -286,21 +342,20 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 if (this.Sessions.Contains(message.SessionId.Value))
                 {
                     // session is in table - use cached ipendpoint connection
-
-                    clientMessageControlNumbers[message.SessionId.Value]++;
-                    message.MessageNr = clientMessageControlNumbers[message.SessionId.Value];
+                    this.clientMessageControlNumbers[message.SessionId.Value]++;
+                    message.MessageNr = this.clientMessageControlNumbers[message.SessionId.Value];
 
                     try
                     {
-                        //var client = new UdpClient(this.clientConnections[message.SessionId.Value]);
-
+                        // var client = new UdpClient(this.clientConnections[message.SessionId.Value]);
                         byte[] buffer = this.MessageTransformer.TransformTo(message);
-                        receiver.Send(buffer, buffer.Length, this.clientConnections[message.SessionId.Value]);
-                        //client.Close();
+                        this.receiver.Send(buffer, buffer.Length, this.clientConnections[message.SessionId.Value]);
+
+                        // client.Close();
                     }
                     catch (Exception ex)
                     {
-                        LogMessage(new LogMessage(ex));
+                        this.LogMessage(new LogMessage(ex));
                     }
                 }
                 else
@@ -317,11 +372,10 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                             byte[] buffer = this.MessageTransformer.TransformTo(message);
                             client.Send(buffer, buffer.Length);
                             client.Close();
-
                         }
                         catch (Exception ex)
                         {
-                            LogMessage(new LogMessage(ex));
+                            this.LogMessage(new LogMessage(ex));
                         }
                     }
                 }
@@ -329,65 +383,17 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         }
 
         /// <summary>
-        /// Sends the specified message.
-        /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        /// <exception cref="System.ArgumentNullException">
-        /// message
-        /// </exception>
-        public void Send(T message)
-        {
-            // ReSharper disable once MergeSequentialChecks
-            if (message == null || message.SessionId == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-
-            this.messageSendQueue.Enqueue(message);
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:IncomingConnectionOccured"/> event.
-        /// </summary>
-        /// <param name="sessionId">
-        /// The session identifier.
-        /// </param>
-        protected virtual void OnIncomingConnectionOccured(Guid sessionId)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.IncomingConnectionOccured != null)
-            {
-                this.IncomingConnectionOccured(this, new ConnectionEventArgs(sessionId));
-            }
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:MessageReceived"/> event.
-        /// </summary>
-        /// <param name="args">
-        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
-        /// </param>
-        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, args);
-            }
-        }
-
-        /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
         }
     }

@@ -1,25 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CalcIt.Lib.NetworkAccess;
-using CalcIt.Lib.NetworkAccess.Events;
-using CalcIt.Lib.NetworkAccess.Transform;
-using CalcIt.Protocol;
-
+﻿// -----------------------------------------------------------------------
+// <copyright file="UdpClientConnector.cs" company="FH Wr.Neustadt">
+//      Copyright Christoph Hauer. All rights reserved.
+// </copyright>
+// <author>Christoph Hauer</author>
+// <summary>CalcIt.Lib - UdpClientConnector.cs</summary>
+// -----------------------------------------------------------------------
 namespace CalcIt.Lib.NetworkAccess.Udp
 {
+    using System;
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
     using System.Threading.Tasks;
 
     using CalcIt.Lib.Log;
+    using CalcIt.Lib.NetworkAccess.Events;
+    using CalcIt.Lib.NetworkAccess.Transform;
+    using CalcIt.Protocol;
     using CalcIt.Protocol.Data;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
 
-    public class UdpClientConnector<T> : INetworkClientConnector<T> where T : class, ICalcItSession, IMessageControl
+    /// <summary>
+    /// The client connector.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
+    /// </typeparam>
+    public class UdpClientConnector<T> : INetworkClientConnector<T>
+        where T : class, ICalcItSession, IMessageControl
     {
         /// <summary>
         /// The client.
@@ -27,14 +37,9 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         private UdpClient client;
 
         /// <summary>
-        /// The reconnect receiver
+        /// The current message number.
         /// </summary>
-        private UdpClient reconnectReceiver;
-
-        /// <summary>
-        /// Indicates if the  connector is receiving and sending.
-        /// </summary>
-        private bool isRunning;
+        private int currentMessageNumber;
 
         /// <summary>
         /// The first receive.
@@ -47,22 +52,27 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         private bool firstSendHandled;
 
         /// <summary>
-        /// The current message number
+        /// Indicates if the  connector is receiving and sending.
         /// </summary>
-        private int currentMessageNumber;
+        private bool isRunning;
 
         /// <summary>
-        /// The message send queue
+        /// The message send queue.
         /// </summary>
         private Queue<T> messageSendQueue;
 
         /// <summary>
-        /// The reconnect port
+        /// The reconnect port.
         /// </summary>
         private int reconnectPort;
 
         /// <summary>
-        /// The session identifier
+        /// The reconnect receiver.
+        /// </summary>
+        private UdpClient reconnectReceiver;
+
+        /// <summary>
+        /// The session identifier.
         /// </summary>
         private Guid sessionId;
 
@@ -90,7 +100,9 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// <value>
         /// The hostname.
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
         public string Hostname
         {
             get
@@ -109,9 +121,11 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// Gets the port.
         /// </summary>
         /// <value>
-        /// The port.
+        /// The port value.
         /// </value>
-        /// <exception cref="System.InvalidOperationException">Connection Settings are invalid or missing.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Connection Settings are invalid or missing.
+        /// </exception>
         public int Port
         {
             get
@@ -128,16 +142,24 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// <summary>
         /// Gets or sets the message transformer.
         /// </summary>
+        /// <value>
+        /// The message transformer.
+        /// </value>
         public IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether is connected.
         /// </summary>
-        // ReSharper disable once ConvertToAutoProperty
+        /// <value>
+        /// The is connected.
+        /// </value>
         public bool IsConnected
         {
             // ReSharper disable once ConvertPropertyToExpressionBody
-            get { return isRunning; }
+            get
+            {
+                return this.isRunning;
+            }
         }
 
         /// <summary>
@@ -167,7 +189,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
                 return;
             }
 
@@ -184,17 +206,21 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         public void Close()
         {
             this.isRunning = false;
-            if (client != null)
+            if (this.client != null)
             {
                 this.client.Close();
             }
         }
 
         /// <summary>
-        /// The send.
+        /// The send method.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <exception cref="System.ArgumentNullException">message</exception>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Message is null.
+        /// </exception>
         public void Send(T message)
         {
             if (message == null)
@@ -203,6 +229,21 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
 
             this.messageSendQueue.Enqueue(message);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:MessageReceived"/> event.
+        /// </summary>
+        /// <param name="args">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
+        {
+            // ReSharper disable once UseNullPropagation
+            if (this.MessageReceived != null)
+            {
+                this.MessageReceived(this, args);
+            }
         }
 
         /// <summary>
@@ -222,7 +263,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// Gets the random reconnect port between 10000 and 65535.
         /// </summary>
         /// <returns>
-        /// The <see cref="int"/>.
+        /// The <see cref="int"/> port.
         /// </returns>
         private int GetRandomReconnectPort()
         {
@@ -246,7 +287,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
 
                 if (message != null && message.SessionId != null)
@@ -260,20 +301,20 @@ namespace CalcIt.Lib.NetworkAccess.Udp
 
                     if (message.SessionId.Value.Equals(this.sessionId))
                     {
-                        //message transmittion control
-                        if (message.MessageNr == currentMessageNumber + 1)
+                        // message transmittion control
+                        if (message.MessageNr == this.currentMessageNumber + 1)
                         {
-                            currentMessageNumber++;
+                            this.currentMessageNumber++;
                             this.OnMessageReceived(new MessageReceivedEventArgs<T>(message, this.sessionId));
                         }
                         else
                         {
-                            LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message control number."));
+                            this.LogMessage(new LogMessage(LogMessageType.Debug, "Invalid message control number."));
                         }
                     }
                     else
                     {
-                        LogMessage(new LogMessage(LogMessageType.Debug, "Invalid session id received."));
+                        this.LogMessage(new LogMessage(LogMessageType.Debug, "Invalid session id received."));
                     }
                 }
             }
@@ -284,7 +325,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
         /// </summary>
         private void RunMessageSender()
         {
-            while (isRunning)
+            while (this.isRunning)
             {
                 while (this.messageSendQueue.Count == 0)
                 {
@@ -301,25 +342,25 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 }
                 else
                 {
-                    message.MessageNr = currentMessageNumber + 1;
-                    currentMessageNumber++;
+                    message.MessageNr = this.currentMessageNumber + 1;
+                    this.currentMessageNumber++;
                 }
 
                 // reconnect endpoint
                 message.ReconnectEndpoint = new IpConnectionEndpoint()
                 {
-                    Hostname = Dns.GetHostName(),
+                    Hostname = Dns.GetHostName(), 
                     Port = this.reconnectPort
                 };
 
                 try
                 {
                     byte[] buffer = this.MessageTransformer.TransformTo(message);
-                    client.Send(buffer, buffer.Length);
+                    this.client.Send(buffer, buffer.Length);
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
             }
         }
@@ -335,7 +376,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
             }
             catch (Exception ex)
             {
-                LogMessage(new LogMessage(ex));
+                this.LogMessage(new LogMessage(ex));
             }
 
             while (this.isRunning)
@@ -351,7 +392,7 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(new LogMessage(ex));
+                    this.LogMessage(new LogMessage(ex));
                 }
 
                 if (message != null && message.SessionId != null && message.SessionId.Value.Equals(this.sessionId))
@@ -360,38 +401,24 @@ namespace CalcIt.Lib.NetworkAccess.Udp
                 }
                 else
                 {
-                    LogMessage(new LogMessage(LogMessageType.Debug, "Wrong Session ID"));
+                    this.LogMessage(new LogMessage(LogMessageType.Debug, "Wrong Session ID"));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:MessageReceived"/> event.
-        /// </summary>
-        /// <param name="args">
-        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
-        /// </param>
-        protected virtual void OnMessageReceived(MessageReceivedEventArgs<T> args)
-        {
-            // ReSharper disable once UseNullPropagation
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, args);
             }
         }
 
         /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
         }
-
     }
 }

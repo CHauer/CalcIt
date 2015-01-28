@@ -38,31 +38,45 @@ namespace CalcIt.Lib.NetworkAccess
         /// <summary>
         /// Gets or sets the connection settings.
         /// </summary>
+        /// <value>
+        /// The connection settings.
+        /// </value>
         ConnectionEndpoint ConnectionSettings { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether is running.
         /// </summary>
+        /// <value>
+        /// The is running.
+        /// </value>
         bool IsRunning { get; }
+
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        /// <value>
+        /// The logger.
+        /// </value>
+        ILog Logger { get; set; }
 
         /// <summary>
         /// Gets or sets the message transformer.
         /// </summary>
+        /// <value>
+        /// The message transformer.
+        /// </value>
         IMessageTransformer<T> MessageTransformer { get; set; }
 
         /// <summary>
         /// Gets the sessions.
         /// </summary>
+        /// <value>
+        /// The sessions.
+        /// </value>
         List<Guid> Sessions { get; }
 
         /// <summary>
-        /// Gets or sets the logger.
-        /// </summary>
-        /// <value>The logger.</value>
-        ILog Logger { get; set; }
-
-        /// <summary>
-        /// The send.
+        /// The send method.
         /// </summary>
         /// <param name="message">
         /// The message.
@@ -75,7 +89,7 @@ namespace CalcIt.Lib.NetworkAccess
         void Start();
 
         /// <summary>
-        /// The stop.
+        /// The stop method.
         /// </summary>
         void Stop();
     }

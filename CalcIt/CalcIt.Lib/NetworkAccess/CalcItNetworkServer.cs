@@ -9,6 +9,7 @@ namespace CalcIt.Lib.NetworkAccess
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -21,10 +22,21 @@ namespace CalcIt.Lib.NetworkAccess
     /// The calc it network server.
     /// </summary>
     /// <typeparam name="T">
+    /// Type of class and ICalcItSession implemented.
     /// </typeparam>
     public class CalcItNetworkServer<T> : INetworkAccess<T>
         where T : class, ICalcItSession
     {
+        /// <summary>
+        /// The receive queues.
+        /// </summary>
+        private Dictionary<Guid, Queue<T>> receiveQueues = new Dictionary<Guid, Queue<T>>();
+
+        /// <summary>
+        /// The listen types.
+        /// </summary>
+        private List<Type> listenTypes;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CalcItNetworkServer{T}"/> class.
         /// </summary>
@@ -38,23 +50,10 @@ namespace CalcIt.Lib.NetworkAccess
         /// </summary>
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
+        /// <summary>
+        /// The message send.
+        /// </summary>
         public event EventHandler<MessageReceivedEventArgs<T>> MessageSend;
-
-        /// <summary>
-        /// Gets or sets the server connector.
-        /// </summary>
-        /// <value>
-        /// The server connector.
-        /// </value>
-        public INetworkServerConnector<T> ServerConnector { get; set; }
-
-        /// <summary>
-        /// Gets or sets the sessions.
-        /// </summary>
-        /// <value>
-        /// The sessions.
-        /// </value>
-        public List<Guid> Sessions { get; private set; }
 
         /// <summary>
         /// Gets or sets the logger.
@@ -65,9 +64,27 @@ namespace CalcIt.Lib.NetworkAccess
         public ILog Logger { get; set; }
 
         /// <summary>
+        /// Gets or sets the server connector.
+        /// </summary>
+        /// <value>
+        /// The server connector.
+        /// </value>
+        public INetworkServerConnector<T> ServerConnector { get; set; }
+
+        /// <summary>
+        /// Gets the sessions.
+        /// </summary>
+        /// <value>
+        /// The sessions.
+        /// </value>
+        public List<Guid> Sessions { get; private set; }
+
+        /// <summary>
         /// Starts this instance.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">ServerConnector has to be initialized!</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// ServerConnector has to be initialized!.
+        /// </exception>
         public void Start()
         {
             if (this.ServerConnector == null)
@@ -96,16 +113,16 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         /// <summary>
-        /// The send.
+        /// The send method.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        /// The message parameter.
         /// </param>
         /// <exception cref="System.InvalidOperationException">
-        /// ServerConnector has to be initialized!
+        /// ServerConnector has to be initialized!.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
-        /// message
+        /// Message exception.
         /// </exception>
         public void Send(T message)
         {
@@ -121,35 +138,40 @@ namespace CalcIt.Lib.NetworkAccess
 
             this.ServerConnector.Send(message);
 
-            OnMessageSend(new MessageReceivedEventArgs<T>(message));
+            this.OnMessageSend(new MessageReceivedEventArgs<T>(message));
         }
 
         /// <summary>
         /// Receives this instance.
         /// </summary>
-        /// <param name="messageType">Type of the message.</param>
-        /// <returns></returns>
+        /// <param name="messageType">
+        /// Type of the message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/> the received message.
+        /// </returns>
         public async Task<T> Receive(Type messageType)
         {
             Queue<T> input = new Queue<T>();
 
             EventHandler<MessageReceivedEventArgs<T>> handler = (sender, e) =>
-            {
-                if (e.Message.GetType() == messageType)
                 {
-                    input.Enqueue(e.Message);
-                }
-            };
+                    if (e.Message.GetType() == messageType)
+                    {
+                        input.Enqueue(e.Message);
+                    }
+                };
 
             this.MessageReceived += handler;
 
-            await Task.Run(() =>
-            {
-                while (input.Count == 0)
-                {
-                    Thread.Sleep(100);
-                }
-            });
+            await Task.Run(
+                () =>
+                    {
+                        while (input.Count == 0)
+                        {
+                            Thread.Sleep(100);
+                        }
+                    });
 
             this.MessageReceived -= handler;
 
@@ -162,48 +184,62 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         /// <summary>
+        /// Starts the queue receiver.
+        /// </summary>
+        /// <param name="types">
+        /// The types.
+        /// </param>
+        public void StartQueueReceiver(params Type[] types)
+        {
+            this.listenTypes = types.ToList();
+
+            this.MessageReceived += this.HandleQueueReceiveMessage;
+        }
+
+        /// <summary>
+        /// Stops the queue receiver.
+        /// </summary>
+        public void StopQueueReceiver()
+        {
+            this.MessageReceived -= this.HandleQueueReceiveMessage;
+        }
+
+        /// <summary>
         /// Receives this instance.
         /// </summary>
-        /// <param name="messageType">Type of the message.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns></returns>
-        public async Task<T> Receive(Type messageType, TimeSpan timeout)
+        /// <param name="sessionId">
+        /// The session identifier.
+        /// </param>
+        /// <param name="timeout">
+        /// The timeout.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/> received message.
+        /// </returns>
+        public async Task<T> Receive(Guid sessionId, TimeSpan timeout)
         {
             DateTime start = DateTime.Now;
-            Queue<T> input = new Queue<T>();
 
-            EventHandler<MessageReceivedEventArgs<T>> handler = (sender, e) =>
-            {
-                if (e.Message.GetType() == messageType)
-                {
-                    input.Enqueue(e.Message);
-                }
-            };
-
-            this.MessageReceived += handler;
-
-            await Task.Run(() =>
-            {
-                while (input.Count == 0)
-                {
-                    Thread.Sleep(100);
-
-                    if ((DateTime.Now - start) >= timeout)
+            await Task.Run(
+                () =>
                     {
-                        this.MessageReceived -= handler;
-                        return;
-                    }
-                }
-            });
+                        while (this.receiveQueues[sessionId].Count == 0)
+                        {
+                            Thread.Sleep(100);
 
-            this.MessageReceived -= handler;
+                            if ((DateTime.Now - start) >= timeout)
+                            {
+                                return;
+                            }
+                        }
+                    });
 
-            if (input.Count == 0)
+            if (this.receiveQueues[sessionId].Count == 0)
             {
                 return null;
             }
 
-            return input.Dequeue();
+            return this.receiveQueues[sessionId].Dequeue();
         }
 
         /// <summary>
@@ -224,9 +260,11 @@ namespace CalcIt.Lib.NetworkAccess
         }
 
         /// <summary>
-        /// Raises the <see cref="E:MessageSend" /> event.
+        /// Raises the <see cref="E:MessageSend"/> event.
         /// </summary>
-        /// <param name="e">The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.</param>
+        /// <param name="e">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
         protected virtual void OnMessageSend(MessageReceivedEventArgs<T> e)
         {
             var onMessageSend = this.MessageSend;
@@ -241,15 +279,53 @@ namespace CalcIt.Lib.NetworkAccess
         /// <summary>
         /// Logs the message.
         /// </summary>
-        /// <param name="logMessage">The log message.</param>
+        /// <param name="logMessage">
+        /// The log message.
+        /// </param>
         private void LogMessage(LogMessage logMessage)
         {
             // ReSharper disable once UseNullPropagation
-            if (Logger != null)
+            if (this.Logger != null)
             {
-                Logger.AddLogMessage(logMessage);
+                this.Logger.AddLogMessage(logMessage);
             }
         }
 
+        /// <summary>
+        /// Handles the queue receive message.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The <see cref="MessageReceivedEventArgs{T}"/> instance containing the event data.
+        /// </param>
+        private void HandleQueueReceiveMessage(object sender, MessageReceivedEventArgs<T> e)
+        {
+            if (this.listenTypes == null)
+            {
+                return;
+            }
+
+            if (e.Message.SessionId == null)
+            {
+                return;
+            }
+
+            if (!this.receiveQueues.ContainsKey(e.Message.SessionId.Value))
+            {
+                this.receiveQueues.Add(e.Message.SessionId.Value, new Queue<T>());
+            }
+
+            if (this.listenTypes.Contains(e.Message.GetType()))
+            {
+                // ReSharper disable once PossibleInvalidOperationException
+                // ReSharper disable once AssignNullToNotNullAttribute
+                if (this.receiveQueues.ContainsKey(e.Message.SessionId.Value))
+                {
+                    this.receiveQueues[e.Message.SessionId.Value].Enqueue(e.Message);
+                }
+            }
+        }
     }
 }

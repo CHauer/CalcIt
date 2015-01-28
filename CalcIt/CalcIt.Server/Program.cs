@@ -11,9 +11,7 @@ namespace CalcIt.Server
     using System.Configuration;
     using System.IO;
     using System.Linq;
-    using System.Threading;
 
-    using CalcIt.Lib;
     using CalcIt.Lib.CommandExecution;
     using CalcIt.Lib.Log;
     using CalcIt.Lib.Monitor;
@@ -26,9 +24,9 @@ namespace CalcIt.Server
     using CalcIt.Lib.Server.Configuration;
     using CalcIt.Lib.Server.Watcher;
     using CalcIt.Protocol.Client;
+    using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
     using CalcIt.Protocol.Server;
-    using CalcIt.Protocol.Endpoint;
     using CalcIt.Server.Properties;
 
     /// <summary>
@@ -37,44 +35,24 @@ namespace CalcIt.Server
     public class Program
     {
         /// <summary>
-        /// The configuration file
+        /// The configuration file.
         /// </summary>
         private static string configurationFile;
 
         /// <summary>
-        /// The _connection watcher.
+        /// The connection watcher.
         /// </summary>
         private static ServerConnectionWatcher connectionWatcher;
 
         /// <summary>
-        /// The _game client commmand executor.
-        /// </summary>
-        private static CommandExecutor<CalcItClientMessage> gameCommmandExecutor;
-
-        /// <summary>
-        /// The _game client connection server.
+        /// The game client connection server.
         /// </summary>
         private static CalcItNetworkServer<CalcItClientMessage> gameClientConnectionServer;
 
         /// <summary>
-        /// The _monitor client commmand executor.
+        /// The game client command executor.
         /// </summary>
-        private static CommandExecutor<CalcItMonitorMessage> monitorCommmandExecutor;
-
-        /// <summary>
-        /// The _monitor client connection server.
-        /// </summary>
-        private static CalcItNetworkServer<CalcItMonitorMessage> monitorClientConnectionServer;
-
-        /// <summary>
-        /// The _server commmand executor.
-        /// </summary>
-        private static CommandExecutor<CalcItServerMessage> serverCommmandExecutor;
-
-        /// <summary>
-        /// The _server manager.
-        /// </summary>
-        private static ServerManager serverManager;
+        private static CommandExecutor<CalcItClientMessage> gameCommmandExecutor;
 
         /// <summary>
         /// The logger instance.
@@ -82,14 +60,34 @@ namespace CalcIt.Server
         private static Logger logger;
 
         /// <summary>
-        /// The main.
+        /// The monitor client connection server.
+        /// </summary>
+        private static CalcItNetworkServer<CalcItMonitorMessage> monitorClientConnectionServer;
+
+        /// <summary>
+        /// The monitor client command executor.
+        /// </summary>
+        private static CommandExecutor<CalcItMonitorMessage> monitorCommmandExecutor;
+
+        /// <summary>
+        /// The server command executor.
+        /// </summary>
+        private static CommandExecutor<CalcItServerMessage> serverCommmandExecutor;
+
+        /// <summary>
+        /// The server manager.
+        /// </summary>
+        private static ServerManager serverManager;
+
+        /// <summary>
+        /// The main method.
         /// </summary>
         /// <param name="args">
-        /// The args.
+        /// The args array.
         /// </param>
         public static void Main(string[] args)
         {
-            bool exit = false; 
+            bool exit = false;
 
             HandleArguments(args);
 
@@ -122,7 +120,7 @@ namespace CalcIt.Server
             monitorClientConnectionServer.Start();
 
             // the connection watcher for server to server messages
-             connectionWatcher.Start();
+            connectionWatcher.Start();
 
             // Server end
             PrepareConsoleWindow();
@@ -135,27 +133,26 @@ namespace CalcIt.Server
             EndServer();
         }
 
-        private static void PrepareConsoleWindow()
-        {
-            Console.Title = Resources.ConsoleHeader;
-            Console.WriteLine(Resources.Enter_for_Server_End);
-        }
-
         /// <summary>
-        /// Initializes the monitor logger.
+        /// Ends the server.
         /// </summary>
-        private static void InitializeMonitorLogger()
+        private static void EndServer()
         {
-            logger.AddListener(new MonitorLogListener()
-            {
-                MonitorNetworkAccess = monitorClientConnectionServer
-            });
+            gameClientConnectionServer.Stop();
+            monitorClientConnectionServer.Stop();
+
+            gameCommmandExecutor.StopExecutor();
+            monitorCommmandExecutor.StopExecutor();
+
+            connectionWatcher.Stop();
         }
 
         /// <summary>
         /// Handles the arguments.
         /// </summary>
-        /// <param name="args">The arguments.</param>
+        /// <param name="args">
+        /// The arguments.
+        /// </param>
         private static void HandleArguments(string[] args)
         {
             if (args.Any(a => a.Equals("-h") || a.Equals("/h")))
@@ -178,16 +175,28 @@ namespace CalcIt.Server
         }
 
         /// <summary>
-        /// Initializes the server manager.
+        /// The initialize command executor.
         /// </summary>
-        private static void InitializeServerManager()
+        private static void InitializeCommandExecutor()
         {
-            serverManager = new ServerManager(new XmlConfigurationSerializer<ServerConfiguration>()
-                                            {
-                                                ConfigurationFile = configurationFile
-                                            })
+            gameCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
             {
-                Logger = logger
+                MethodProvider = serverManager, 
+                NetworkAccess = gameClientConnectionServer
+            };
+            serverManager.OnTunneldMessageReceived +=
+                (sender, e) => gameCommmandExecutor.HandleTunneldMessage(e.Message);
+
+            monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
+            {
+                MethodProvider = serverManager, 
+                NetworkAccess = monitorClientConnectionServer
+            };
+
+            serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>()
+            {
+                MethodProvider = serverManager, 
+                NetworkAccess = connectionWatcher
             };
         }
 
@@ -201,43 +210,11 @@ namespace CalcIt.Server
         }
 
         /// <summary>
-        /// Ends the server.
+        /// Initializes the monitor logger.
         /// </summary>
-        private static void EndServer()
+        private static void InitializeMonitorLogger()
         {
-            gameClientConnectionServer.Stop();
-            monitorClientConnectionServer.Stop();
-
-            gameCommmandExecutor.StopExecutor();
-            monitorCommmandExecutor.StopExecutor();
-
-            connectionWatcher.Stop();
-        }
-
-        /// <summary>
-        /// The initialize command executor.
-        /// </summary>
-        private static void InitializeCommandExecutor()
-        {
-            gameCommmandExecutor = new CommandExecutor<CalcItClientMessage>()
-            {
-                MethodProvider = serverManager,
-                NetworkAccess = gameClientConnectionServer
-            };
-            serverManager.OnTunneldMessageReceived += (sender, e) => gameCommmandExecutor.HandleTunneldMessage(e.Message);
-
-            monitorCommmandExecutor = new CommandExecutor<CalcItMonitorMessage>()
-            {
-                MethodProvider = serverManager,
-                NetworkAccess = monitorClientConnectionServer
-            };
-
-            serverCommmandExecutor = new CommandExecutor<CalcItServerMessage>()
-            {
-                MethodProvider = serverManager,
-                NetworkAccess = connectionWatcher
-            };
-
+            logger.AddListener(new MonitorLogListener() { MonitorNetworkAccess = monitorClientConnectionServer });
         }
 
         /// <summary>
@@ -250,7 +227,7 @@ namespace CalcIt.Server
                 ServerConnector =
                     new UdpServerListener<CalcItClientMessage>()
                     {
-                        MessageTransformer = new DataContractTransformer<CalcItClientMessage>(),
+                        MessageTransformer = new DataContractTransformer<CalcItClientMessage>(), 
                         ConnectionSettings =
                             new IpConnectionEndpoint() { Port = serverManager.Configuration.GameServerPort }
                     }
@@ -261,7 +238,7 @@ namespace CalcIt.Server
                 ServerConnector =
                     new TcpServerListener<CalcItMonitorMessage>()
                     {
-                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(),
+                        MessageTransformer = new DataContractTransformer<CalcItMonitorMessage>(), 
                         ConnectionSettings =
                             new IpConnectionEndpoint() { Port = serverManager.Configuration.MonitorServerPort }
                     }
@@ -274,11 +251,33 @@ namespace CalcIt.Server
         }
 
         /// <summary>
+        /// Initializes the server manager.
+        /// </summary>
+        private static void InitializeServerManager()
+        {
+            serverManager =
+                new ServerManager(
+                    new XmlConfigurationSerializer<ServerConfiguration>() 
+                    { 
+                        ConfigurationFile = configurationFile 
+                    })
+                {
+                    Logger = logger
+                };
+        }
+
+        /// <summary>
         /// Logs the message from game client server.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.</param>
-        private static void LogMessageFromGameClientServer(object sender, MessageReceivedEventArgs<CalcItClientMessage> e)
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.
+        /// </param>
+        private static void LogMessageFromGameClientServer(
+            object sender, 
+            MessageReceivedEventArgs<CalcItClientMessage> e)
         {
             if (logger == null)
             {
@@ -291,9 +290,15 @@ namespace CalcIt.Server
         /// <summary>
         /// Logs the message send from game client server.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.</param>
-        private static void LogMessageSendFromGameClientServer(object sender, MessageReceivedEventArgs<CalcItClientMessage> e)
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The <see cref="MessageReceivedEventArgs{CalcItClientMessage}"/> instance containing the event data.
+        /// </param>
+        private static void LogMessageSendFromGameClientServer(
+            object sender, 
+            MessageReceivedEventArgs<CalcItClientMessage> e)
         {
             if (logger == null)
             {
@@ -303,5 +308,13 @@ namespace CalcIt.Server
             logger.AddLogMessage(new LogProtocolMessage(e.Message, "Message sent to GameClient.") { IsOutgoing = true });
         }
 
+        /// <summary>
+        /// The prepare console window.
+        /// </summary>
+        private static void PrepareConsoleWindow()
+        {
+            Console.Title = Resources.ConsoleHeader;
+            Console.WriteLine(Resources.Enter_for_Server_End);
+        }
     }
 }

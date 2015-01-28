@@ -16,13 +16,13 @@ namespace CalcIt.Protocol.Data
     public enum StatusType
     {
         /// <summary>
-        /// The ok.
+        /// The ok value.
         /// </summary>
         [EnumMember]
         Ok, 
 
         /// <summary>
-        /// The error.
+        /// The error value.
         /// </summary>
         [EnumMember]
         Error, 
