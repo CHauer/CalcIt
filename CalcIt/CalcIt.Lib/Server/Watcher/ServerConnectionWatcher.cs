@@ -314,6 +314,7 @@ namespace CalcIt.Lib.Server.Watcher
                     MessageTransformer = new DataContractTransformer<CalcItServerMessage>()
                 },
             };
+
             server.StartQueueReceiver(typeof(Heartbeat), typeof(ConnectServer), typeof(SyncMessage));
 
             return server;
@@ -443,6 +444,9 @@ namespace CalcIt.Lib.Server.Watcher
             var clientSessionId = message.SessionId.Value;
             bool connectionOpen = false;
 
+            // clear receive queue - incomming connect message
+            server.ClearReceiveQueue(clientSessionId);
+
             connectionOpen = await this.InitialServerSync(server, clientSessionId);
 
             if (!connectionOpen)
@@ -478,7 +482,8 @@ namespace CalcIt.Lib.Server.Watcher
                 {
                     // reset counter
                     heartbeatCounter = this.Configuration.HeartbeatRetryCounter;
-                    Thread.Sleep(new TimeSpan(0, 0, 0, this.Configuration.HeartbeatTime));
+
+                    // Thread.Sleep(new TimeSpan(0, 0, 0, this.Configuration.HeartbeatTime));
                 }
 
                 if (heartbeatCounter == 0)
@@ -694,7 +699,11 @@ namespace CalcIt.Lib.Server.Watcher
                 {
                     client = this.CreateClient(endpoint);
                     connectionSynced = await this.InitialClientSync(client);
-                    Thread.Sleep(new TimeSpan(0, 0, this.Configuration.ReconnectServerConnectionTime, 0));
+
+                    if (!connectionSynced)
+                    {
+                        Thread.Sleep(new TimeSpan(0, 0, this.Configuration.ReconnectServerConnectionTime, 0));
+                    }
                 }
 
                 // Connection synced and open
@@ -719,7 +728,8 @@ namespace CalcIt.Lib.Server.Watcher
                     else
                     {
                         heartbeatCounter = this.Configuration.HeartbeatRetryCounter;
-                        Thread.Sleep(new TimeSpan(0, 0, 0, this.Configuration.HeartbeatTime));
+
+                        // Thread.Sleep(new TimeSpan(0, 0, 0, this.Configuration.HeartbeatTime));
                     }
 
                     if (heartbeatCounter == 0)

@@ -150,6 +150,7 @@ namespace CalcIt.Lib.NetworkAccess
         /// <returns>
         /// The <see cref="Task"/> the received message.
         /// </returns>
+        [Obsolete]
         public async Task<T> Receive(Type messageType)
         {
             Queue<T> input = new Queue<T>();
@@ -181,6 +182,18 @@ namespace CalcIt.Lib.NetworkAccess
             }
 
             return input.Dequeue();
+        }
+
+        /// <summary>
+        /// Clears the receive queue.
+        /// </summary>
+        /// <param name="sessionId">The session identifier.</param>
+        public void ClearReceiveQueue(Guid sessionId)
+        {
+            if (this.receiveQueues.ContainsKey(sessionId))
+            {
+                this.receiveQueues[sessionId].Clear();
+            }
         }
 
         /// <summary>

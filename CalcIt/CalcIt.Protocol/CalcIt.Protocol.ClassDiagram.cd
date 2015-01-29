@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Comment CommentText="Lower Score is better!">
-    <Position X="10.318" Y="12.508" Height="0.295" Width="1.7" />
-  </Comment>
   <Comment CommentText="MessageNr = UPD Transmittion Control">
     <Position X="6.916" Y="1.612" Height="0.516" Width="1.7" />
   </Comment>
@@ -233,7 +230,7 @@
       <FileName>IMessageControl.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="CalcIt.Protocol.Data.StatusType" Collapsed="true">
+  <Enum Name="CalcIt.Protocol.Data.StatusType">
     <Position X="18.25" Y="8.5" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
