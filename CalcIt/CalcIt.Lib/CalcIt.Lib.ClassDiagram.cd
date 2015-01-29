@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Serializer">
-    <Position X="10.061" Y="11.363" Height="0.365" Width="0.887" />
+    <Position X="12.485" Y="13.058" Height="0.365" Width="0.887" />
   </Comment>
   <Comment CommentText="Handels Heartbeat and SyncMessage">
     <Position X="15.876" Y="15.028" Height="0.546" Width="1.7" />
@@ -9,7 +9,7 @@
   <Class Name="CalcIt.Lib.NetworkAccess.CalcItNetworkClient&lt;T&gt;">
     <Position X="13" Y="1" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAEQAAQAIAAAAAAEgAAIAAABAAAAAQAAAAAACAAgA=</HashCode>
+      <HashCode>AAAAEQAAQAIgYAAAAEgAAIAAABGgAAAQAAAAAACAAgA=</HashCode>
       <FileName>NetworkAccess\CalcItNetworkClient.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -18,9 +18,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.CalcItNetworkServer&lt;T&gt;">
-    <Position X="13" Y="5.25" Width="2" />
+    <Position X="13" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAYAAQCIAAAAAAGAAAAAAAAAAAAAQIAAAAAAAAgA=</HashCode>
+      <HashCode>BAAAAYAAQCIgAAAAAGAAAAQAAAGgAAAQIAAAAAAAAgA=</HashCode>
       <FileName>NetworkAccess\CalcItNetworkServer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -29,7 +29,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Events.MessageReceivedEventArgs&lt;T&gt;">
-    <Position X="1.5" Y="8" Width="2.5" />
+    <Position X="1.5" Y="10" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>NetworkAccess\Events\MessageReceivedEventArgs.cs</FileName>
@@ -87,7 +87,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.Transform.DataContractTransformer&lt;T&gt;">
-    <Position X="10" Y="10" Width="2.25" />
+    <Position X="12.5" Y="11.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\DataContractTransformer.cs</FileName>
@@ -151,27 +151,27 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.XmlConfigurationSerializer&lt;T&gt;">
-    <Position X="18.5" Y="11" Width="2.25" />
+    <Position X="18.5" Y="12" Width="2.25" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAYAQAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Server\Configuration\XmlDataManager.cs</FileName>
+      <FileName>Server\Configuration\XmlConfigurationSerializer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.Server.Configuration.ServerConfiguration">
     <Position X="21.25" Y="10.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAAAAABAAAAAAAAAAAAAABAACAAAEAQAABAAABAAEA=</HashCode>
+      <HashCode>AQAAAAABAAAEAAAAAAAAAABAgCAAAEAQAABAAABAAEA=</HashCode>
       <FileName>Server\Configuration\ServerConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CalcIt.Lib.Monitor.MonitorManager">
     <Position X="23.75" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AQAIAQAAAAIAAAAAAACAAAAgAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AYAYAQAAAAIAAAAAAAAAAAAgAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Monitor\MonitorManager.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -203,15 +203,15 @@
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeClientConnector&lt;T&gt;">
     <Position X="1.5" Y="1" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAYAAABAAEAAAIAAAAAAAIAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAAAAAAAQAYAAABAAEAAAIAAAAAAAIAAAAAAAACAAgA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeClientConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CalcIt.Lib.NetworkAccess.NamedPipes.NamedPipeServerConnector&lt;T&gt;">
-    <Position X="1.5" Y="4.25" Width="2.5" />
+    <Position X="1.5" Y="5.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAQCYAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AQAAAAAAQCYAAAAAAGBAQAAAAAAAAIAAIAAAAAAAAgA=</HashCode>
       <FileName>NetworkAccess\NamedPipes\NamedPipeServerConnector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -255,14 +255,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.NetworkAccess.Transform.IMessageTransformer&lt;T&gt;">
-    <Position X="10" Y="8" Width="2.25" />
+    <Position X="10" Y="11.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>NetworkAccess\Transform\IMessageTransformer.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="CalcIt.Lib.Server.Configuration.IConfigurationManager&lt;T&gt;">
-    <Position X="18.5" Y="9.25" Width="2.25" />
+    <Position X="18.5" Y="10.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAQAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Server\Configuration\IConfigurationManager.cs</FileName>

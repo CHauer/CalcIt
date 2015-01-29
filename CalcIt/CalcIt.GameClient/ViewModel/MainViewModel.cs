@@ -780,6 +780,7 @@ namespace CalcIt.GameClient.ViewModel
         /// </summary>
         private void InitializeGameClient()
         {
+            this.HighScoreList = new ObservableCollection<HighScoreItem>();
             this.gameClientManager = new GameClientManager() { Logger = this.logger };
             this.gameClientManager.QuestionReceived += this.NetworkQuestionReceived;
             this.gameClientManager.HighScoreReceived += this.NetworkHighScoreReceived;

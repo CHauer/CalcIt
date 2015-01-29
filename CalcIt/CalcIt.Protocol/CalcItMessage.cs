@@ -13,6 +13,7 @@ namespace CalcIt.Protocol
     using CalcIt.Protocol.Client;
     using CalcIt.Protocol.Endpoint;
     using CalcIt.Protocol.Monitor;
+    using CalcIt.Protocol.Server;
 
     /// <summary>
     /// The calc it message.
@@ -20,6 +21,7 @@ namespace CalcIt.Protocol
     [DataContract]
     [KnownType(typeof(CalcItClientMessage))]
     [KnownType(typeof(CalcItMonitorMessage))]
+    [KnownType(typeof(CalcItServerMessage))]
     public abstract class CalcItMessage : ICalcItSession, IMessageControl
     {
         /// <summary>
