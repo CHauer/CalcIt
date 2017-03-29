@@ -4,7 +4,7 @@ CalcIt is a simple "math-based" game to demonstrate a distributed server environ
 
 ## Implementation
 
-## System Architecture
+### System Architecture
 ![Server Messages](docs/systemarchitecture.png)
 
 ### Messages
